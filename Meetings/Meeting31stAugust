@@ -1,0 +1,43 @@
+Tema: Preplanning meeting
+Personer tilstede: Alle
+
+## Avgjørelser
+
+Arbeidstider:
+- Mandag kl 1415-1515, review/retrospective (online)
+- Tirsdag hele dagen (sprint planning kl 10-11)
+- Torsdag hele dagen.
+
+## Roller 
+
+Scrummaster:
+- André
+Møtebooker:
+- Paul
+Product Owner:
+- Alle i teamet vil forsøke å representere PO, for å foreslå endringer og prioritere. Dette foregår i begynnelsen av sprint planning.
+
+For hver sprint vil det naturlig bli slik at noen tar på seg oppgaver som gir spisskompetanse. Det forventes at at kompetansen deles/formidles til resten av gruppen.
+
+## Annet
+
+- Definisjon av done:
+	- følger kodestandard
+	- peer review
+	- testing (der det er hensiktsmessig)
+	- dokumentering til den grad at andre kan bruke den
+
+Dokumentasjon:
+	- markdown på wiki
+
+
+## Punkter til Tom:
+
+- Kan vi ditche forelesning uten å gå glipp av noe viktig?
+	- Minst 1 person fra gruppen bør delta
+- Kan vi bruke Clockify
+	- Ja
+- Er det tilstrekkelig det vi har på gitlab?
+	- Ja
+- Kan vi ha PBL, scrum board, burndown og gantt i Jira?
+	- Ja
