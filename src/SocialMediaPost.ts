@@ -1,3 +1,6 @@
+export interface SocialMediaPostDispatch {
+    (value: React.SetStateAction<SocialMediaPost[]>): void;
+}
 export interface SocialMediaPost {
     userId: string;
     published: Date;
