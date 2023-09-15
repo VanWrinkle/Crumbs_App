@@ -1,7 +1,14 @@
-
+body {
+  background: linear-gradient(to top, #dfe9f3 0%, white 100%);
+  min-height: 100vh;
+}
 
 .main-content {
   max-width: 600px !important;
   margin-left: auto;
   margin-right: auto;
+}
+
+.textarea {
+  resize: none;
 }

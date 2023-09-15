@@ -10,6 +10,8 @@ function App() {
   const [socialPosts, setSocialPosts] = useState<SocialMediaPost[]>([staticPost])
 
   return (
+      <body>
+
      <Container className="main-content">
       <Row>
           <SocialMediaTopPanel socialPosts={socialPosts} setSocialPosts={setSocialPosts} />
@@ -18,6 +20,7 @@ function App() {
           <SocialMediaPostsDisplayAllBrief posts={socialPosts} />
       </Row>
      </Container>
+      </body>
   );
 }
 
@@ -51,7 +54,7 @@ function SocialMediaPostNew(props: {socialPosts: SocialMediaPost[], setSocialPos
             rows={3}
             value={userInput}
             placeholder="Write your crumb..."
-            className="mt-2 mb-2"
+            className="mt-2 mb-2 textarea"
             onChange={(e) => setUserInput(e.target.value)}>
         </Form.Control>
         <div className="d-grid">
