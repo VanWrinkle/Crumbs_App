@@ -78,7 +78,19 @@ function SocialMediaPostsDisplayAllBrief({posts}: {posts: SocialMediaPost[]}) {
 
 function SocialMediaPostDisplayBrief({post}: {post: SocialMediaPost}) {
     return (
-        <Card body className="mt-2 mb-2">{post.userId}: {post.content}</Card>
+        <Card className="mb-2">
+            <Row>
+                <Col xs={3}>
+                    <Card.Img src="./logo192.png" />
+                </Col>
+                <Col>
+                    <Card.Body className="mt-2 mb-2">
+                        <Card.Title>{post.userId}:</Card.Title>
+                        <Card.Text>{post.content}</Card.Text>
+                    </Card.Body>
+                </Col>
+            </Row>
+        </Card>
     );
 }
 
