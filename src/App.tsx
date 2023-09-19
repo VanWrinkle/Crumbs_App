@@ -1,50 +1,58 @@
 import './App.css';
-import './SocialMediaPost.ts'
-import { SocialMediaPost, SocialMediaPostV1, SocialMediaPostDispatch } from "./SocialMediaPost";
+import './Crumb.ts'
+import { Crumb, CrumbV1, SocialMediaPostDispatch } from "./Crumb";
 import React, {SyntheticEvent, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Card, Col, Container, Form, Image, Row, Button} from "react-bootstrap";
 
 function App() {
-  let staticPost = new SocialMediaPostV1("Guest", "Hey there! This is a social media post!");
-  const [socialPosts, setSocialPosts] = useState<SocialMediaPost[]>([staticPost])
+  let staticPost = new CrumbV1("Guest", "Hey there! This is a social media post!");
+  const [crumbs, setCrumbs] = useState<Crumb[]>([staticPost])
 
   return (
       <body>
 
      <Container className="main-content">
       <Row>
-          <SocialMediaTopPanel socialPosts={socialPosts} setSocialPosts={setSocialPosts} />
+          <SocialMediaTopPanel crumbs={crumbs} setCrumbs={setCrumbs} />
       </Row>
       <Row>
-          <SocialMediaPostsDisplayAllBrief posts={socialPosts} />
+          <SocialMediaPostsDisplayAllBrief crumbs={crumbs} />
       </Row>
      </Container>
       </body>
   );
 }
 
-function SocialMediaTopPanel(props: {socialPosts: SocialMediaPost[], setSocialPosts: SocialMediaPostDispatch}) {
+/**
+ * main panel which includes logo and message compose component
+ * @param props - array of crumbs
+ */
+function SocialMediaTopPanel(props: {crumbs: Crumb[], setCrumbs: SocialMediaPostDispatch}) {
     return (
         <>
             <Col xs={3}>
                 <Image src="./logo.png" fluid />
             </Col>
             <Col>
-                <SocialMediaPostNew socialPosts={props.socialPosts} setSocialPosts={props.setSocialPosts} />
+                <SocialMediaPostNew crumbs={props.crumbs} setCrumbs={props.setCrumbs} />
             </Col>
         </>
     );
 }
 
-function SocialMediaPostNew(props: {socialPosts: SocialMediaPost[], setSocialPosts: SocialMediaPostDispatch}) {
+/**
+ * panel for composing new crumbs
+ * @param props - array of crumbs and setter
+ */
+function SocialMediaPostNew(props: {crumbs: Crumb[], setCrumbs: SocialMediaPostDispatch}) {
   const [userInput, setUserInput] = useState("");
   function onClick(e: SyntheticEvent) {
       e.preventDefault();
-      let post = new SocialMediaPostV1("Guest", userInput);
+      let post = new CrumbV1("Guest", userInput);
       setUserInput("");
       alert("DEBUG: new object created (not stored):\n\n" + JSON.stringify(post, null, 2));
-      props.setSocialPosts([post, ...props.socialPosts]);
+      props.setCrumbs([post, ...props.crumbs]);
   }
 
   return (
@@ -67,16 +75,24 @@ function SocialMediaPostNew(props: {socialPosts: SocialMediaPost[], setSocialPos
   );
 }
 
-function SocialMediaPostsDisplayAllBrief({posts}: {posts: SocialMediaPost[]}) {
-    const results = posts.map((post) =>
-        <SocialMediaPostDisplayBrief post={post} />
+/**
+ * panel that iterates over crumbs array and includes component for each
+ * @param crumb - array of crumbs
+ */
+function SocialMediaPostsDisplayAllBrief({crumbs}: {crumbs: Crumb[]}) {
+    const results = crumbs.map((crumb) =>
+        <SocialMediaPostDisplaySingleBrief crumb={crumb} />
     );
     return (
         <div>{results}</div>
     );
 }
 
-function SocialMediaPostDisplayBrief({post}: {post: SocialMediaPost}) {
+/**
+ * component for a single crumb
+ * @param crumb - single crumb
+ */
+function SocialMediaPostDisplaySingleBrief({crumb}: {crumb: Crumb}) {
     return (
         <Card className="mb-2">
             <Row>
@@ -85,8 +101,8 @@ function SocialMediaPostDisplayBrief({post}: {post: SocialMediaPost}) {
                 </Col>
                 <Col>
                     <Card.Body className="mt-2 mb-2">
-                        <Card.Title>{post.userId}:</Card.Title>
-                        <Card.Text>{post.content}</Card.Text>
+                        <Card.Title>{crumb.userId}:</Card.Title>
+                        <Card.Text>{crumb.content}</Card.Text>
                     </Card.Body>
                 </Col>
             </Row>

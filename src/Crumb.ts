@@ -1,20 +1,31 @@
+/**
+ * type alias for setState()
+ * makes argument type for mutating social media post array much easier to work with
+ */
 export interface SocialMediaPostDispatch {
-    (value: React.SetStateAction<SocialMediaPost[]>): void;
+    (value: React.SetStateAction<Crumb[]>): void;
 }
-export interface SocialMediaPost {
+
+/**
+ * data structure for a single post
+ */
+export interface Crumb {
     userId: string;
     published: Date;
     expires: Date;
     likes: number;
     content: string;
-    comments: SocialMediaPost[];
+    comments: Crumb[];
 }
 
-export class SocialMediaPostV1 implements SocialMediaPost {
+/**
+ *
+ */
+export class CrumbV1 implements Crumb {
     public published: Date;
     public expires: Date;
     public likes: number;
-    public comments: SocialMediaPostV1[];
+    public comments: CrumbV1[];
 
     constructor(public userId: string, public content: string) {
         this.published = new Date();
