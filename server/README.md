@@ -12,6 +12,72 @@ by manually executing `npm run build` from the client directory.
 
 ## Usage
 
+### User registration
+
+#### Request
+- URL: `/register`
+- HTTP Method: `POST`
+- Content-Type: `application/json`
+- Request Body:
+  ```json
+  {
+    "username": "exampleName",
+    "password": "examplePass"
+  }
+  ```
+#### Response
+- Success
+  - HTTP Method: `201 Created`
+- Failure:
+  - HTTP Method: `409 Conflict`
+    - Issued in cases where the username is not available
+  - HTTP Method: `400 Bad Request`
+    - Issued in cases where the password does not meet the security requirements
 
 
 
+### User login
+
+#### Request
+- URL: `/login`
+- HTTP Method: `POST`
+- Content-Type: `application/json`
+- Request Body:
+  ```json
+  {
+    "username": "exampleName",
+    "password": "examplePass"
+  }
+  ```
+#### Response
+- Success:
+  - HTTP Method: `200 OK`
+  - Content-Type: `application/json`
+  - Response Body: JWT Token
+- Failure:
+  - HTTP Method: `401 Unauthorized`
+    - Issued in cases where the username and/or password does not match any existing account
+
+### Post Crumb
+
+#### Request: 
+
+- URL: `/posts`
+- HTTP Method: `POST`
+- Content-Type: `application/json`
+- HTTP Header: `Authorization: bearer JSON_WEB_TOKEN_STRING.....`
+- Request Body:
+- ```json
+  {
+    "content": "example crumb text"
+  }
+  ```
+
+#### Response
+
+- Success:
+  - HTTP Method: `201 Created`
+    - The crumb has been accepted and successfully processed
+- Failure:
+  - HTTP Method: `401 Unauthorized`
+    - The access token provided by the client is invalid so the user must log in
