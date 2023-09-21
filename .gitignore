@@ -1,0 +1,6 @@
+/server/node_modules/
+/server/private-key.pem
+/server/server.crt
+/server/server.csr
+/client/build/
+/client/node_modules/
