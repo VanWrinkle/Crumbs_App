@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import {numberOfSaltRounds, reactDir} from "./config";
 import {meetsCredentialRequirements} from "./utils";
 import {Database} from "./database";
+import jwt from 'jsonwebtoken'
 
 
 export function reactApp(req: express.Request, res: express.Response) {
@@ -22,11 +23,17 @@ export function registerUser(database: Database) {
         } else {
             bcrypt
                 .genSalt(numberOfSaltRounds)
-                .then(salt => { return bcrypt.hash(userPass, salt) })
-                .then(hash => {
-                    database.addUser({userName: userName, userPass: hash})
-                        .then(() => { res.status(201).send('user created') })
-                        .catch(() => { res.status(504).send('database connection failed') })
+                .then(salt => {
+                    return Promise.all([bcrypt.hash(userPass, salt), salt])
+                })
+                .then(([hash, salt]) => {
+                    return database.addUser({userName: userName, hash: hash, salt: salt})
+                })
+                .then(() => {
+                    res.status(201).send('user created')
+                })
+                .catch(() => {
+                    res.status(504).send('database connection failed')
                 })
                 .catch(err => {
                     console.log(err); // hashing function failed
@@ -39,7 +46,37 @@ export function registerUser(database: Database) {
 
 export function loginUser(database: Database) {
     return async function loginUser(req: express.Request, res: express.Response) {
-        res.status(501).send('login not implemented yet');
+        const {userName, userPass} = req.body as any;
+        if (!userName || !userPass) {
+            res.status(400).send('required fields "userName" or "userPass" missing');
+            return
+        }
+
+        await database.getUser(userName)
+            .then(userData => {
+                if (!userData) {
+                    res.status(401).send('invalid username or password');
+                } else {
+                    bcrypt
+                        .hash(userPass, userData.salt)
+                        .then(hash => {
+                            if (userData.hash != hash) {
+                                res.status(401).send('invalid username or password');
+                            } else {
+                                const payload = { username: userData.userName }
+                                const token = jwt.sign(payload, 'secret-key', { expiresIn: '7d' })
+                                res.status(200).json({ token });
+                            }
+                        })
+                        .catch(err => {
+                            console.log(err); // hashing function failed
+                            res.status(500).send('internal server error');
+                        });
+                }
+            })
+            .catch(() => {
+                res.status(500).send('database connection failed');
+            })
     }
 }
 

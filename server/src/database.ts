@@ -4,7 +4,8 @@ export interface RequestWithDB extends Request {
 
 interface StoredUserData {
     userName: string,
-    userPass: string
+    hash: string,
+    salt: string,
 }
 
 
