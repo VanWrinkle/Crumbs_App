@@ -33,6 +33,8 @@ by manually executing `npm run build` from the client directory.
     - Issued in cases where the username is not available
   - HTTP Method: `400 Bad Request`
     - Issued in cases where the password does not meet the security requirements
+  - HTTP Method: `504 Gateway Timeout`
+    - Issued in cases where the database connection fails
 
 
 

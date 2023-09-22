@@ -1,4 +1,5 @@
-const meetsCredentialRequirements = require('../src/utils');
+import {meetsCredentialRequirements} from "../src/utils";
+
 
 test('legal username and password', () => {
     const username = 'myusername'
