@@ -35,6 +35,8 @@ by manually executing `npm run build` from the client directory.
     - Issued in cases where the password does not meet the security requirements
   - HTTP Method: `504 Gateway Timeout`
     - Issued in cases where the database connection fails
+  - HTTP Method: `500 Internal Server Error`
+    - Issued in cases where the hashing algorithm fails
 
 
 

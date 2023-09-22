@@ -1,8 +1,9 @@
 import express from "express";
 import path from "path";
-import {reactDir} from "./config";
+import bcrypt from 'bcrypt';
+import {numberOfSaltRounds, reactDir} from "./config";
 import {meetsCredentialRequirements} from "./utils";
-import {Database, RequestWithDB} from "./database";
+import {Database} from "./database";
 
 
 export function reactApp(req: express.Request, res: express.Response) {
@@ -19,13 +20,18 @@ export function registerUser(database: Database) {
         } else if (await database.getUser(userName)) {
             res.status(409).send('username already exists')
         } else {
-            await database.addUser({userName: userName, userPass: userPass})
-                .then(() => {
-                    res.status(201).send('user created')
-                }).catch(() => {
-                    res.status(504).send('database connection failed')
+            bcrypt
+                .genSalt(numberOfSaltRounds)
+                .then(salt => { return bcrypt.hash(userPass, salt) })
+                .then(hash => {
+                    database.addUser({userName: userName, userPass: hash})
+                        .then(() => { res.status(201).send('user created') })
+                        .catch(() => { res.status(504).send('database connection failed') })
                 })
-
+                .catch(err => {
+                    console.log(err); // hashing function failed
+                    res.status(500).send('internal server error');
+                })
         }
     }
 }
