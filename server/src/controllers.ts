@@ -13,21 +13,21 @@ export function reactApp(req: express.Request, res: express.Response) {
 
 export function registerUser(database: Database) {
     return async function(req: express.Request, res: express.Response) {
-        const {userName, userPass} = req.body as any;
-        if (!userName || !userPass) {
-            res.status(400).send('required fields "userName" or "userPass" missing');
-        } else if (!meetsCredentialRequirements(userName, userPass)) {
+        const {username, password} = req.body as any;
+        if (!username || !password) {
+            res.status(400).send('required fields "username" or "password" missing');
+        } else if (!meetsCredentialRequirements(username, password)) {
             res.status(400).send('username or password does not meet complexity requirements')
-        } else if (await database.getUser(userName)) {
+        } else if (await database.getUser(username)) {
             res.status(409).send('username already exists')
         } else {
             bcrypt
                 .genSalt(numberOfSaltRounds)
                 .then(salt => {
-                    return Promise.all([bcrypt.hash(userPass, salt), salt])
+                    return Promise.all([bcrypt.hash(password, salt), salt])
                 })
                 .then(([hash, salt]) => {
-                    return database.addUser({userName: userName, hash: hash, salt: salt})
+                    return database.addUser({userName: username, hash: hash, salt: salt})
                 })
                 .then(() => {
                     res.status(201).send('user created')
@@ -46,24 +46,25 @@ export function registerUser(database: Database) {
 
 export function loginUser(database: Database) {
     return async function loginUser(req: express.Request, res: express.Response) {
-        const {userName, userPass} = req.body as any;
-        if (!userName || !userPass) {
-            res.status(400).send('required fields "userName" or "userPass" missing');
+        const {username, password} = req.body as any;
+        if (!username || !password) {
+            res.status(400).send('required fields "username" or "password" missing');
             return
         }
 
-        await database.getUser(userName)
+        await database.getUser(username)
             .then(userData => {
                 if (!userData) {
                     res.status(401).send('invalid username or password');
                 } else {
                     bcrypt
-                        .hash(userPass, userData.salt)
+                        .hash(password, userData.salt)
                         .then(hash => {
                             if (userData.hash != hash) {
                                 res.status(401).send('invalid username or password');
                             } else {
                                 const payload = { username: userData.userName }
+                                // TODO: change secret key and store securely
                                 const token = jwt.sign(payload, 'secret-key', { expiresIn: '7d' })
                                 res.status(200).json({ token });
                             }
@@ -75,7 +76,7 @@ export function loginUser(database: Database) {
                 }
             })
             .catch(() => {
-                res.status(500).send('database connection failed');
+                res.status(504).send('database connection failed');
             })
     }
 }

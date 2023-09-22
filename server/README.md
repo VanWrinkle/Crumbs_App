@@ -29,14 +29,14 @@ by manually executing `npm run build` from the client directory.
 - Success
   - HTTP Method: `201 Created`
 - Failure:
-  - HTTP Method: `409 Conflict`
-    - Issued in cases where the username is not available
   - HTTP Method: `400 Bad Request`
-    - Issued in cases where the password does not meet the security requirements
-  - HTTP Method: `504 Gateway Timeout`
-    - Issued in cases where the database connection fails
+    - Issued in cases where the password does not meet the security requirements or are missing
+  - HTTP Method: `409 Conflict`
+    - Issued in cases where a an account already exist with that username
   - HTTP Method: `500 Internal Server Error`
     - Issued in cases where the hashing algorithm fails
+  - HTTP Method: `504 Gateway Timeout`
+    - Issued in cases where the database connection fails
 
 
 
@@ -57,10 +57,22 @@ by manually executing `npm run build` from the client directory.
 - Success:
   - HTTP Method: `200 OK`
   - Content-Type: `application/json`
-  - Response Body: JWT Token
+  - Response Body: 
+    ```json
+    {
+      "token": "JSON_WEB_TOKEN_STRING....."
+    }
+    ```
 - Failure:
+  - HTTP Method: `400 Bad Request`
+    - Issued in cases where username or password are missing
   - HTTP Method: `401 Unauthorized`
     - Issued in cases where the username and/or password does not match any existing account
+  - HTTP Method: `500 Internal Server Error`
+    - Issued in cases where the hashing algorithm fails
+  - HTTP Method: `504 Gateway Timeout`
+    - Issued in cases where the database connection fails
+
 
 ### Post Crumb
 
@@ -71,7 +83,7 @@ by manually executing `npm run build` from the client directory.
 - Content-Type: `application/json`
 - HTTP Header: `Authorization: bearer JSON_WEB_TOKEN_STRING.....`
 - Request Body:
-- ```json
+  ```json
   {
     "content": "example crumb text"
   }
