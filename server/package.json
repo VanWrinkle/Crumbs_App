@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
     "morgan": "~1.9.1"
   },
   "devDependencies": {
