@@ -14,7 +14,7 @@ const certificate = fs.readFileSync('server.crt', 'utf-8');
 
 const app = express();
 
-app.use('/', require('./routes')(new MockUserDatabase()));
+app.use('/', require('./routes')(new MongoUserDatabase()));
 
 http.createServer(app).listen(80);
 https.createServer({key: privateKey, cert: certificate}, app).listen(443, () => {
