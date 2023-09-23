@@ -1,5 +1,4 @@
 import express from "express";
-import {Database, RequestWithDB} from "./database";
 
 export function requireHTTPS(req: express.Request, res: express.Response, next: express.NextFunction) {
     if (!req.secure) {

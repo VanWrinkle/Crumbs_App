@@ -3,15 +3,15 @@ import path from "path";
 import bcrypt from 'bcrypt';
 import {numberOfSaltRounds, reactDir} from "./config";
 import {meetsCredentialRequirements} from "./utils";
-import {Database} from "./database";
 import jwt from 'jsonwebtoken'
+import {UserDatabase} from "./userDatabase/userDatabase";
 
 
 export function reactApp(req: express.Request, res: express.Response) {
     res.sendFile(path.join(reactDir, 'index.html'));
 }
 
-export function registerUser(database: Database) {
+export function registerUser(database: UserDatabase) {
     return async function(req: express.Request, res: express.Response) {
         const {username, password} = req.body as any;
         if (!username || !password) {
@@ -44,7 +44,7 @@ export function registerUser(database: Database) {
 }
 
 
-export function loginUser(database: Database) {
+export function loginUser(database: UserDatabase) {
     return async function loginUser(req: express.Request, res: express.Response) {
         const {username, password} = req.body as any;
         if (!username || !password) {

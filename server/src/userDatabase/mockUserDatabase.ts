@@ -1,20 +1,10 @@
+import {StoredUserData, UserDatabase} from "./userDatabase";
+
 export interface RequestWithDB extends Request {
-    db: Database;
+    db: UserDatabase;
 }
 
-interface StoredUserData {
-    userName: string,
-    hash: string,
-    salt: string,
-}
-
-
-export interface Database {
-    addUser(user: StoredUserData): Promise<void>
-    getUser(username: string): Promise<StoredUserData | undefined>
-}
-
-export class MockDatabase implements Database {
+export class MockUserDatabase implements UserDatabase {
     users: StoredUserData[];
     constructor() {
         this.users = [];
