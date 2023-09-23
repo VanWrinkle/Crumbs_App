@@ -1,6 +1,5 @@
-/server/node_modules/
+/node_modules/
+/.gitignore/
 /server/private-key.pem
 /server/server.crt
-/server/server.csr
-/client/build/
 /client/node_modules/
