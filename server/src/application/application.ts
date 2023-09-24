@@ -51,6 +51,7 @@ export class Application {
 
     public SetConfigAndReboot(config: ConfigSettings) {
         this.#config = config;
+        this.#initRouting();
         this.#httpServer?.close(() => {this.#startHTTP()});
         this.#httpsServer?.close(() => {this.#startHTTPS()});
     }
