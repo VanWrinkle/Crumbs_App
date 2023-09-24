@@ -6,10 +6,3 @@ export function requireHTTPS(req: express.Request, res: express.Response, next: 
     }
     next();
 }
-
-// export function attachDatabase(database: Database) {
-//     return function(req: RequestWithDB, res: express.Response, next: express.NextFunction) {
-//         req.db = database;
-//         next();
-//     }
-// }

@@ -1,8 +1,8 @@
-import {LoginService} from "./loginService";
+import {IUserLoginService} from "./IUserLoginService";
 import {StoredUserData, UserDatabase} from "../userDatabase/userDatabase";
 import bcrypt from "bcrypt";
 
-export class MDBLoginService implements LoginService {
+export class LoginService implements IUserLoginService {
     #persistence: UserDatabase;
 
     constructor(persistence: UserDatabase) {

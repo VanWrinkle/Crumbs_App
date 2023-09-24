@@ -1,50 +1,50 @@
 import express from "express";
 import path from "path";
-import bcrypt from 'bcrypt';
-import {numberOfSaltRounds, reactDir} from "./config";
-import {meetsCredentialRequirements} from "./utils";
+import {reactDir} from "./globals";
 import jwt from 'jsonwebtoken'
-import {UserDatabase} from "./userDatabase/userDatabase";
+import {IUserLoginService} from "./loginService/IUserLoginService";
+import {IUserRegistrationService} from "./registrationService/IUserRegistrationService";
 
 
 export function reactApp(req: express.Request, res: express.Response) {
     res.sendFile(path.join(reactDir, 'index.html'));
 }
 
-export function registerUser(database: UserDatabase) {
+export function registerUser(registrationService: IUserRegistrationService) {
     return async function(req: express.Request, res: express.Response) {
         const {username, password} = req.body as any;
-        if (!username || !password) {
-            res.status(400).send('required fields "username" or "password" missing');
-        } else if (!meetsCredentialRequirements(username, password)) {
-            res.status(400).send('username or password does not meet complexity requirements')
-        } else if (await database.getUser(username)) {
-            res.status(409).send('username already exists')
-        } else {
-            bcrypt
-                .genSalt(numberOfSaltRounds)
-                .then(salt => {
-                    return Promise.all([bcrypt.hash(password, salt), salt])
-                })
-                .then(([hash, salt]) => {
-                    return database.addUser({userName: username, hash: hash, salt: salt})
-                })
-                .then(() => {
-                    res.status(201).send('user created')
-                })
-                .catch(() => {
-                    res.status(504).send('database connection failed')
-                })
-                .catch(err => {
-                    console.log(err); // hashing function failed
-                    res.status(500).send('internal server error');
-                })
+
+        switch (true) {
+            case !username || !password: {
+                res.status(400)
+                    .send('required fields "username" or "password" missing');
+            } break;
+
+            case !registrationService.validateCredentialRequirements(username, password): {
+                res.status(400)
+                    .send('username or password does not meet complexity requirements');
+            } break;
+
+            case await registrationService.validateUsernameIsUnique(username): {
+                res.status(409).send('username already exists')
+            } break;
+
+            default: {
+                registrationService
+                    .registerUser(username, password)
+                    .then( () => {
+                        res.status(201).send('user created');
+                    })
+                    .catch( error => {
+                        res.status(500).send('failed to create new user');
+                    });
+            } break;
         }
     }
 }
 
 
-export function loginUser(database: UserDatabase) {
+export function loginUser(loginService: IUserLoginService) {
     return async function loginUser(req: express.Request, res: express.Response) {
         const {username, password} = req.body as any;
         if (!username || !password) {
@@ -52,21 +52,20 @@ export function loginUser(database: UserDatabase) {
             return
         }
 
-        await database.getUser(username)
+        loginService.retrieveUserData(username)
             .then(userData => {
                 if (!userData) {
                     res.status(401).send('invalid username or password');
                 } else {
-                    bcrypt
-                        .hash(password, userData.salt)
-                        .then(hash => {
-                            if (userData.hash != hash) {
-                                res.status(401).send('invalid username or password');
-                            } else {
+                    loginService.validateUserCredentials(userData, password)
+                        .then( credentialsMatch => {
+                            if (credentialsMatch) {
                                 const payload = { username: userData.userName }
                                 // TODO: change secret key and store securely
                                 const token = jwt.sign(payload, 'secret-key', { expiresIn: '7d' })
                                 res.status(200).json({ token });
+                            } else {
+                                res.status(401).send('invalid username or password');
                             }
                         })
                         .catch(err => {
@@ -76,7 +75,7 @@ export function loginUser(database: UserDatabase) {
                 }
             })
             .catch(() => {
-                res.status(504).send('database connection failed');
+                res.status(504).send('userDatabase connection failed');
             })
     }
 }
