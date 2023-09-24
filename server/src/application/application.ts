@@ -1,7 +1,7 @@
 import express, {Express} from "express";
-import {requireHTTPS} from "../middleware";
+import {requireHTTPS} from "./middleware";
 import {reactDir} from "../globals";
-import {loginUser, reactApp, registerUser} from "../controllers";
+import {loginUser, reactApp, registerUser} from "./controllers";
 import http from "http";
 import https from "https";
 import {ConfigSettings} from "./config";

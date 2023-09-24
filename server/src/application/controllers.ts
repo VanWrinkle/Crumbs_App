@@ -1,9 +1,9 @@
 import express from "express";
 import path from "path";
-import {reactDir} from "./globals";
+import {reactDir} from "../globals";
 import jwt from 'jsonwebtoken'
-import {IUserLoginService} from "./loginService/IUserLoginService";
-import {IUserRegistrationService} from "./registrationService/IUserRegistrationService";
+import {IUserLoginService} from "../loginService/IUserLoginService";
+import {IUserRegistrationService} from "../registrationService/IUserRegistrationService";
 
 
 export function reactApp(req: express.Request, res: express.Response) {
