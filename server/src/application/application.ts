@@ -10,6 +10,8 @@ import {ConfigSettings} from "./config";
 export class Application {
     #config: ConfigSettings;
     #app: Express;
+    #httpServer: http.Server | undefined;
+    #httpsServer: https.Server | undefined;
 
     constructor (config: ConfigSettings) {
         this.#config = config;
@@ -29,14 +31,28 @@ export class Application {
         this.#app.use('/', router);
     }
 
-    public Run() {
-        http.createServer(this.#app).listen(80);
-        https.createServer(
+    #startHTTP() {
+        this.#httpServer = http.createServer(this.#app).listen(80);
+    }
+
+    #startHTTPS() {
+        this.#httpsServer = https.createServer(
             {key: this.#config.httpsPrivateKey, cert: this.#config.httpsCertificate},
             this.#app)
             .listen(443, () => {
-            console.log(`Server running at https://localhost`);}
+                console.log(`Server running at https://localhost`);}
             );
+    }
+    public Run() {
+        this.#startHTTP();
+        this.#startHTTPS();
+    }
+
+
+    public SetConfigAndReboot(config: ConfigSettings) {
+        this.#config = config;
+        this.#httpServer?.close(() => {this.#startHTTP()});
+        this.#httpsServer?.close(() => {this.#startHTTPS()});
     }
 
 }
