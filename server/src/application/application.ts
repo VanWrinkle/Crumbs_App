@@ -43,13 +43,13 @@ export class Application {
                 console.log(`Server running at https://localhost`);}
             );
     }
-    public Run() {
+    public run() {
         this.#startHTTP();
         this.#startHTTPS();
     }
 
 
-    public SetConfigAndReboot(config: ConfigSettings) {
+     setConfigAndReboot(config: ConfigSettings) {
         this.#config = config;
         this.#initRouting();
         this.#httpServer?.close(() => {this.#startHTTP()});

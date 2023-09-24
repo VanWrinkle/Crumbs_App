@@ -18,4 +18,4 @@ const config: ConfigSettings = {
 
 const app = new Application(config);
 
-app.Run();
+app.run();

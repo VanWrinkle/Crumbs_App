@@ -5,7 +5,16 @@ export interface StoredUserData {
 }
 
 export interface IUserDatabase {
+    /**
+     *
+     * @param user - {StoredUserData}
+     */
     addUser(user: StoredUserData): Promise<void>
+
+    /**
+     *
+     * @param username
+     */
     getUser(username: string): Promise<StoredUserData | undefined>
 }
 
