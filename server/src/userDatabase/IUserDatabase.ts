@@ -4,7 +4,7 @@ export interface StoredUserData {
     salt: string,
 }
 
-export interface UserDatabase {
+export interface IUserDatabase {
     addUser(user: StoredUserData): Promise<void>
     getUser(username: string): Promise<StoredUserData | undefined>
 }

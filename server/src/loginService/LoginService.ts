@@ -1,11 +1,11 @@
 import {IUserLoginService} from "./IUserLoginService";
-import {StoredUserData, UserDatabase} from "../userDatabase/userDatabase";
+import {StoredUserData, IUserDatabase} from "../userDatabase/IUserDatabase";
 import bcrypt from "bcrypt";
 
 export class LoginService implements IUserLoginService {
-    #persistence: UserDatabase;
+    #persistence: IUserDatabase;
 
-    constructor(persistence: UserDatabase) {
+    constructor(persistence: IUserDatabase) {
         this.#persistence = persistence;
     }
     async retrieveUserData(name: string): Promise<StoredUserData | undefined> {

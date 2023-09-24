@@ -1,4 +1,4 @@
-import {UserDatabase} from "../userDatabase/userDatabase";
+import {IUserDatabase} from "../userDatabase/IUserDatabase";
 import {IUserRegistrationService} from "./IUserRegistrationService"
 import bcrypt from "bcrypt";
 
@@ -7,8 +7,8 @@ const passwordRequirements = RegExp("^(?=.*[a-zA-Z])(?=.*\\d).{8,}");
 const numberOfSaltRounds = 5;
 
 export class RegistrationService implements IUserRegistrationService {
-    userPersistence: UserDatabase;
-    constructor (persistence: UserDatabase) {
+    userPersistence: IUserDatabase;
+    constructor (persistence: IUserDatabase) {
         this.userPersistence = persistence;
     }
 

@@ -1,10 +1,10 @@
-import {StoredUserData, UserDatabase} from "./userDatabase";
+import {StoredUserData, IUserDatabase} from "./IUserDatabase";
 
 export interface RequestWithDB extends Request {
-    db: UserDatabase;
+    db: IUserDatabase;
 }
 
-export class MockUserDatabase implements UserDatabase {
+export class MockUserDatabase implements IUserDatabase {
     users: StoredUserData[];
     constructor() {
         this.users = [];
