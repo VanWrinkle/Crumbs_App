@@ -1,4 +1,5 @@
-import {StoredUserData, UserDatabase} from "./userDatabase";
+import {UserDatabase} from "./UserDatabase";
+import {StoredUserData} from "./StoredUserData";
 
 export interface RequestWithDB extends Request {
     db: UserDatabase;

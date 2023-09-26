@@ -1,8 +1,4 @@
-export interface StoredUserData {
-    userName: string,
-    hash: string,
-    salt: string,
-}
+import {StoredUserData} from "./StoredUserData";
 
 export interface UserDatabase {
     addUser(user: StoredUserData): Promise<void>

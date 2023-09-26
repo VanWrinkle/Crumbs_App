@@ -1,4 +1,5 @@
-import {UserDatabase, StoredUserData} from "./userDatabase";
+import {UserDatabase} from "./UserDatabase";
+import {StoredUserData} from "./StoredUserData"
 import {MongoClient, ServerApiVersion} from 'mongodb';
 export class MongoUserDatabase implements UserDatabase {
     #mongo_uri = "mongodb+srv://crumbdevs:crumbdevsruler@crumbdevs.ta4zcje.mongodb.net/?retryWrites=true&w=majority";

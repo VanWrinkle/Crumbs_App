@@ -1,4 +1,4 @@
-import {StoredUserData} from "../userDatabase/userDatabase";
+import {StoredUserData} from "../userDatabase/StoredUserData";
 
 export interface LoginService {
     retrieveUserData(name: string): Promise<StoredUserData | undefined>;

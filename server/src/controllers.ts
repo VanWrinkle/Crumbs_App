@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import {numberOfSaltRounds, reactDir} from "./config";
 import {meetsCredentialRequirements} from "./utils";
 import jwt from 'jsonwebtoken'
-import {UserDatabase} from "./userDatabase/userDatabase";
+import {UserDatabase} from "./userDatabase/UserDatabase";
 
 
 export function reactApp(req: express.Request, res: express.Response) {
