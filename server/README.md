@@ -15,7 +15,7 @@ by manually executing `npm run build` from the client directory.
 ### User registration
 
 #### Request
-- URL: `/register`
+- URL: `/api/register`
 - HTTP Method: `POST`
 - Content-Type: `application/json`
 - Request Body:
@@ -43,7 +43,7 @@ by manually executing `npm run build` from the client directory.
 ### User login
 
 #### Request
-- URL: `/login`
+- URL: `/api/login`
 - HTTP Method: `POST`
 - Content-Type: `application/json`
 - Request Body:
@@ -78,7 +78,7 @@ by manually executing `npm run build` from the client directory.
 
 #### Request: 
 
-- URL: `/posts`
+- URL: `/api/posts`
 - HTTP Method: `POST`
 - Content-Type: `application/json`
 - HTTP Header: `Authorization: bearer JSON_WEB_TOKEN_STRING.....`
