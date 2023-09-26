@@ -1,6 +1,22 @@
-import {StoredUserData} from "../userDatabase/StoredUserData";
+import {IUserLoginService} from "./IUserLoginService";
+import {IUserDatabase, StoredUserData} from "../userDatabase/IUserDatabase";
+import bcrypt from "bcrypt";
 
-export interface LoginService {
-    retrieveUserData(name: string): Promise<StoredUserData | undefined>;
-    validateUserCredentials(userData: StoredUserData, password: string): Promise<boolean>;
+
+export class LoginService implements IUserLoginService {
+    #persistence: IUserDatabase;
+
+    constructor(persistence: IUserDatabase) {
+        this.#persistence = persistence;
+    }
+
+    async retrieveUserData(name: string): Promise<StoredUserData | undefined> {
+        return this.#persistence.getUser(name);
+    };
+
+    async validateUserCredentials(userData: StoredUserData, password: string): Promise<boolean> {
+        return bcrypt.hash(password, userData.salt).then(hash => {
+            return (userData.hash === hash)
+        })
+    }
 }

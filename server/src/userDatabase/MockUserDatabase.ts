@@ -1,11 +1,8 @@
-import {UserDatabase} from "./UserDatabase";
+import {IUserDatabase} from "./IUserDatabase";
 import {StoredUserData} from "./StoredUserData";
 
-export interface RequestWithDB extends Request {
-    db: UserDatabase;
-}
 
-export class MockUserDatabase implements UserDatabase {
+export class MockUserDatabase implements IUserDatabase {
     users: StoredUserData[];
     constructor() {
         this.users = [];
