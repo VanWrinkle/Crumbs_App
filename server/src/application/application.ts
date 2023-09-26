@@ -24,7 +24,7 @@ export class Application {
             .use(requireHTTPS)
             .use(express.static(reactDir))
             .use(express.json())
-            .get('/', reactApp)
+            .get('*', reactApp)
             .post('/register', registerUser(this.#config.registrationService))
             .post('/login', loginUser(this.#config.loginService));
 
