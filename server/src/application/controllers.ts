@@ -2,8 +2,8 @@ import express from "express";
 import path from "path";
 import {reactDir} from "../globals";
 import jwt from 'jsonwebtoken'
-import {IUserLoginService} from "../loginService/IUserLoginService";
-import {IUserRegistrationService} from "../registrationService/IUserRegistrationService";
+import {IUserLoginService} from "../IUserLoginService/IUserLoginService";
+import {IUserRegistrationService} from "../IUserRegistrationService/IUserRegistrationService";
 
 
 export function reactApp(req: express.Request, res: express.Response) {
@@ -75,7 +75,7 @@ export function loginUser(loginService: IUserLoginService) {
                 }
             })
             .catch(() => {
-                res.status(504).send('userDatabase connection failed');
+                res.status(504).send('IUserDatabase connection failed');
             })
     }
 }

@@ -1,7 +1,7 @@
 import fs from 'fs';
-import {MDBUserDatabase} from "./userDatabase/MDBUserDatabase";
-import {LoginService} from "./loginService/LoginService";
-import {RegistrationService} from "./registrationService/RegistrationService";
+import {MDBUserDatabase} from "./IUserDatabase/MDBUserDatabase";
+import {LoginService} from "./IUserLoginService/LoginService";
+import {RegistrationService} from "./IUserRegistrationService/RegistrationService";
 import {Application} from "./application/application";
 import {ConfigSettings} from "./application/config";
 

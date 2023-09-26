@@ -1,4 +1,4 @@
-import {IUserDatabase} from "../userDatabase/IUserDatabase";
+import {IUserDatabase} from "../IUserDatabase/IUserDatabase";
 import {IUserRegistrationService} from "./IUserRegistrationService"
 import bcrypt from "bcrypt";
 

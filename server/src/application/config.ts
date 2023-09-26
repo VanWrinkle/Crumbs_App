@@ -1,5 +1,5 @@
-import {IUserRegistrationService} from "../registrationService/IUserRegistrationService";
-import {IUserLoginService} from "../loginService/IUserLoginService";
+import {IUserRegistrationService} from "../IUserRegistrationService/IUserRegistrationService";
+import {IUserLoginService} from "../IUserLoginService/IUserLoginService";
 
 export interface ConfigSettings {
     registrationService: IUserRegistrationService;

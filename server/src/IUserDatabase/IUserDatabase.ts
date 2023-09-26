@@ -1,8 +1,4 @@
-export interface StoredUserData {
-    userName: string,
-    hash: string,
-    salt: string,
-}
+import {StoredUserData} from "./StoredUserData";
 
 /**
  * Interface for user databases containing username, hash and salt.

@@ -1,4 +1,4 @@
-import {StoredUserData} from "../userDatabase/StoredUserData";
+import {StoredUserData} from "../IUserDatabase/StoredUserData";
 
 
 export interface IUserLoginService {

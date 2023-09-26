@@ -1,6 +1,7 @@
 import {IUserLoginService} from "./IUserLoginService";
-import {IUserDatabase, StoredUserData} from "../userDatabase/IUserDatabase";
+import {IUserDatabase} from "../IUserDatabase/IUserDatabase";
 import bcrypt from "bcrypt";
+import {StoredUserData} from "../IUserDatabase/StoredUserData";
 
 
 export class LoginService implements IUserLoginService {

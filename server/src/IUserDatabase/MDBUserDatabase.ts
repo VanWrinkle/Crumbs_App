@@ -20,7 +20,7 @@ export class MDBUserDatabase implements IUserDatabase {
         try {
             await this.#client.db(this.#dbName).command({ ping: 1 });
         } catch(error) {
-            console.log("Failed to ping userDatabase <" + this.#dbName + ">: " + error);
+            console.log("Failed to ping IUserDatabase <" + this.#dbName + ">: " + error);
         }
     }
 
