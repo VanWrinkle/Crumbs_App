@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "ts-node src/server.ts",
+    "start": "ts-node src/serverEntrypoint.ts",
     "build": "tsc",
     "test": "jest",
     "serve": "node dist/index.js",
