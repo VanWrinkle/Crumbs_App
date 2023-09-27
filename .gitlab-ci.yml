@@ -13,6 +13,9 @@ client-test:
     - cd client
     - npm install
     - npm test
+  artifacts:
+    paths:
+      - client/node_modules
 
 client-build:
   stage: client_build
@@ -20,6 +23,8 @@ client-build:
     - cd client
     - npm install
     - npm test
-
+  artifacts:
+    paths:
+      - client/node_modules
     
   
