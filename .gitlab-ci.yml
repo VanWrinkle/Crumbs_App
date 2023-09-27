@@ -12,8 +12,7 @@ client-test:
   script:
     - cd client
     - npm install
-    - npm build
-    - npm test
+    - npm run test
   artifacts:
     paths:
       - client/node_modules
@@ -23,8 +22,8 @@ client-build:
   stage: client_build
   script:
     - cd client
-    - npm install
-    - npm build
+    - npm run install
+    - npm run build
   artifacts:
     paths:
       - client/node_modules
