@@ -1,6 +1,5 @@
 
 stages:         
-  - client_install
   - client_test
 
 variables:
@@ -8,7 +7,7 @@ variables:
 
 client-install-job: 
   image: node:latest
-  stage: client_install
+  stage: client_test
   script:
     - cd client
     - npm install
