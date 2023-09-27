@@ -18,6 +18,7 @@ client-test:
       - client/node_modules
 
 client-build:
+  image: node:latest
   stage: client_build
   script:
     - cd client
