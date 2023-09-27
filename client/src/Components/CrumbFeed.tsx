@@ -1,5 +1,5 @@
 import '../App.css';
-import '../Crumb.ts'
+import '../Crumb';
 import { Crumb, CrumbV1, SocialMediaPostDispatch } from "../Crumb";
 import React, {SyntheticEvent, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
