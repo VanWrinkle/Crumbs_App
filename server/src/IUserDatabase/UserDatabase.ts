@@ -1,7 +1,7 @@
 import {IUserDatabase} from "./IUserDatabase";
 import {StoredUserData} from "./StoredUserData"
 import {MongoClient, ServerApiVersion} from 'mongodb';
-export class MDBUserDatabase implements IUserDatabase {
+export class UserDatabase implements IUserDatabase {
     #mongo_uri = "mongodb+srv://crumbdevs:crumbdevsruler@crumbdevs.ta4zcje.mongodb.net/?retryWrites=true&w=majority";
     #client: MongoClient = this.#createClient(this.#mongo_uri);
     #dbName: string = "userdata";

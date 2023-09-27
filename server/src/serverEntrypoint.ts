@@ -1,5 +1,5 @@
 import fs from 'fs';
-import {MDBUserDatabase} from "./IUserDatabase/MDBUserDatabase";
+import {UserDatabase} from "./IUserDatabase/UserDatabase";
 import {LoginService} from "./IUserLoginService/LoginService";
 import {RegistrationService} from "./IUserRegistrationService/RegistrationService";
 import {Application} from "./application/application";
@@ -8,7 +8,7 @@ import {ConfigSettings} from "./application/config";
 
 
 
-const userDatabase = new MDBUserDatabase();
+const userDatabase = new UserDatabase();
 const config: ConfigSettings = {
     registrationService: new RegistrationService(userDatabase),
     loginService: new LoginService(userDatabase),

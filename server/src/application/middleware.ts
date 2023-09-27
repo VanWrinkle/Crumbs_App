@@ -12,3 +12,4 @@ export function requireHTTPS(req: Request, res: Response, next: NextFunction) {
     }
     next();
 }
+
