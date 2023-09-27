@@ -12,6 +12,7 @@ client-test:
   script:
     - cd client
     - npm install
+    - npm build
     - npm test
   artifacts:
     paths:
