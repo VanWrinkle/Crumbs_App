@@ -3,7 +3,7 @@ stages:
   - client_build_and_test
   - server_build_and_test
 
-client-build-job: 
+client-build-and-test: 
   image: node:latest
   stage: client_build_and_test
   script:
@@ -15,7 +15,7 @@ client-build-job:
     paths:
       - client/node_modules
 
-client-test-job:
+server-build-and-test:
   image: node:latest
   stage: client_build_and_test
   script:
