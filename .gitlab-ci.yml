@@ -15,7 +15,7 @@ client-test:
     - npm run test
   artifacts:
     paths:
-      - client/node_modules
+      - node_modules
 
 client-build:
   image: node:latest
@@ -26,6 +26,6 @@ client-build:
     - npm run build
   artifacts:
     paths:
-      - client/node_modules
+      - node_modules
     
   
