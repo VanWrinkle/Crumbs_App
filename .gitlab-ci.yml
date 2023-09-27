@@ -1,29 +1,25 @@
 
 stages:         
-  - client_build_and_test
-  - server_build_and_test
+  - client_install
+  - client_test
 
-client-build-and-test: 
+client-install-job: 
   image: node:latest
-  stage: client_build_and_test
+  stage: client_install
   script:
     - cd client
     - npm install
-    - npm run build
-    - npm test
   artifacts:
     paths:
       - client/node_modules
 
-server-build-and-test:
-  image: node:latest
-  stage: client_build_and_test
+client-test-job:
+  stage: client_test
+  needs: 
+    - client-install-job
   script:
-    - cd server
-    - npm install
-    - npm run build
+    - cd client
     - npm test
-  artifacts:
-    paths:
-      - server/node_modules
+
+    
   
