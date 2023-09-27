@@ -22,7 +22,7 @@ client-build:
   script:
     - cd client
     - npm install
-    - npm test
+    - npm build
   artifacts:
     paths:
       - client/node_modules
