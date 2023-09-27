@@ -1,5 +1,5 @@
 import './App.css';
-import './Crumb.ts'
+import './Crumb';
 import React, {SyntheticEvent, useState} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Card, Col, Container, Form, Image, Row, Button, Nav} from "react-bootstrap";
