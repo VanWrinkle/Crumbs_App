@@ -1,29 +1,25 @@
 
 stages:         
   - client_test
+  - client_build
 
 variables:
   CI: "false"
 
-client-install-job: 
+client-test: 
   image: node:latest
   stage: client_test
   script:
     - cd client
     - npm install
-  artifacts:
-    paths:
-      - client/node_modules
+    - npm test
 
-client-test-job:
-  stage: client_test
-  dependencies: 
-    - client-install-job
+client-build:
+  stage: client_build
   script:
     - cd client
+    - npm install
     - npm test
-  artifacts:
-    when: always
 
     
   
