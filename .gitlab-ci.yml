@@ -1,23 +1,14 @@
 
-stages:         
-  - client_test
+stages:        
   - client_build
-  - server_test
+  - client_test
   - server_build
+  - server_test
 
 variables:
   CI: "false"
 
-client-test: 
-  image: node:latest
-  stage: client_test
-  script:
-    - cd client
-    - npm install
-    - npm run test
-  artifacts:
-    paths:
-      - node_modules
+# CLIENT 
 
 client-build:
   image: node:latest
@@ -28,18 +19,23 @@ client-build:
     - npm run build
   artifacts:
     paths:
-      - node_modules
-    
-server-test: 
+      - client/node_modules
+
+client-test: 
   image: node:latest
   stage: client_test
+  needs: 
+    - client-build
   script:
-    - cd server
+    - cd client
     - npm install
     - npm run test
   artifacts:
     paths:
-      - node_modules
+      - client/node_modules
+
+
+# SERVER
 
 server-build:
   image: node:latest
@@ -50,5 +46,18 @@ server-build:
     - npm run build
   artifacts:
     paths:
-      - node_modules
+      - server/node_modules
   
+      
+server-test: 
+  image: node:latest
+  stage: client_test
+  needs:
+    - server-build
+  script:
+    - cd server
+    - npm install
+    - npm run test
+  artifacts:
+    paths:
+      - server/node_modules
