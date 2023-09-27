@@ -15,7 +15,7 @@ client-build:
   stage: client_build
   script:
     - cd client
-    - npm run install
+    - npm install
     - npm run build
   artifacts:
     paths:
@@ -42,7 +42,7 @@ server-build:
   stage: client_build
   script:
     - cd server
-    - npm run install
+    - npm install
     - npm run build
   artifacts:
     paths:
