@@ -3,6 +3,9 @@ stages:
   - client_install
   - client_test
 
+variables:
+  CI: "false"
+
 client-install-job: 
   image: node:latest
   stage: client_install
