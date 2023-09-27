@@ -1,9 +1,7 @@
 
 stages:        
-  - client_build
-  - client_test
-  - server_build
-  - server_test
+  - build
+  - test
 
 variables:
   CI: "false"
@@ -12,7 +10,7 @@ variables:
 
 client-build:
   image: node:latest
-  stage: client_build
+  stage: build
   script:
     - cd client
     - npm install
@@ -23,7 +21,7 @@ client-build:
 
 client-test: 
   image: node:latest
-  stage: client_test
+  stage: test
   needs: 
     - client-build
   script:
@@ -39,7 +37,7 @@ client-test:
 
 server-build:
   image: node:latest
-  stage: client_build
+  stage: build
   script:
     - cd server
     - npm install
@@ -51,7 +49,7 @@ server-build:
       
 server-test: 
   image: node:latest
-  stage: client_test
+  stage: test
   needs:
     - server-build
   script:
