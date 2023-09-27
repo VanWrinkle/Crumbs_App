@@ -2,6 +2,8 @@
 stages:         
   - client_test
   - client_build
+  - server_test
+  - server_build
 
 variables:
   CI: "false"
@@ -28,4 +30,25 @@ client-build:
     paths:
       - node_modules
     
+server-test: 
+  image: node:latest
+  stage: client_test
+  script:
+    - cd server
+    - npm install
+    - npm run test
+  artifacts:
+    paths:
+      - node_modules
+
+server-build:
+  image: node:latest
+  stage: client_build
+  script:
+    - cd server
+    - npm run install
+    - npm run build
+  artifacts:
+    paths:
+      - node_modules
   
