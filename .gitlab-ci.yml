@@ -18,11 +18,13 @@ client-install-job:
 
 client-test-job:
   stage: client_test
-  needs: 
+  dependencies: 
     - client-install-job
   script:
     - cd client
     - npm test
+  artifacts:
+    when: always
 
     
   
