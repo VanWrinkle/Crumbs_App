@@ -2,11 +2,14 @@ import React, { SyntheticEvent } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Card, Form, Button} from "react-bootstrap";
 import { useState } from 'react';
-import axios, {AxiosResponse} from "axios";
+import axios from "axios";
+import {useAuthUpdate} from "../AuthProvider";
 
 function UserLogin() {
     const [userName, setUserName] = useState("");
     const [userPassword, setUserPassword] = useState("");
+    const setToken = useAuthUpdate();
+
     function onClick(e: SyntheticEvent) {
         e.preventDefault();
 
@@ -14,14 +17,13 @@ function UserLogin() {
             username: userName,
             password: userPassword
         })
-            .then(function (response: any) {
-                console.log(response);
+            .then(response => {
+                setToken(response.data.token);
             })
             .catch(function (error: Promise<void>) {
                 console.log(error);
             });
 
-        console.log(userName + ": " + userPassword);
     }
 
     return(
