@@ -8,6 +8,7 @@ export function CrumbNavbar() {
                 <Container className={"bg-body-secondary border-1 main-content"}>
                     <Navbar.Brand href={"/"}>Personal feed</Navbar.Brand>
                     <Navbar.Brand href={"signup"}>Signup</Navbar.Brand>
+                    <Navbar.Brand href={"login"}>Log in</Navbar.Brand>
                 </Container>
             </Navbar>
             <Outlet />

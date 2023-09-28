@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Card, Form, Button} from "react-bootstrap";
 import { useState } from 'react';
 
-function Login() {
+function UserLogin() {
     const [userName, setUserName] = useState("");
     const [userPassword, setUserPassword] = useState("");
     function onClick(e: SyntheticEvent) {
@@ -12,10 +12,10 @@ function Login() {
     }
 
     return(
-        <Card style={{ width: '18rem' }}>
+        <Card className="main-content">
             <Card.Body>
             <Form onSubmit={onClick}>
-                <Form.Group className="mb-2" controlId="userNAme">
+                <Form.Group className="mb-2" controlId="userName">
                    <Form.Label>User Name</Form.Label>
                    <Form.Control 
                    type="text" 
@@ -45,4 +45,4 @@ function Login() {
     )
 }
 
-export default Login
+export default UserLogin
