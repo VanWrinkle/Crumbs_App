@@ -1,6 +1,7 @@
-import React, {SyntheticEvent, useState} from "react";
+import * as React from "react";
+import {useState} from "react";
 import {Button, Card, Container, Form, FormGroup} from "react-bootstrap"
-import axios from "axios";
+import axios, {AxiosResponse} from "axios";
 
 export function UserRegistration() {
 
@@ -35,24 +36,24 @@ export function UserRegistration() {
 
     const submit = (event: React.MouseEvent) => {
         event.preventDefault();
-        console.log("You are here");
         axios.post("https://localhost/api/register", {
             username: name,
             password: password
 
         })
-            .then(function (response: any) {
+            .then(function (response: AxiosResponse<void>) {
                 console.log(response)
             })
-            .catch(function (error: any) {
+            .catch(function (error: Promise<void>) {
                 console.log(error)
             });
     }
 
     return (
         <Card className={"main-content"}>
+            <Card.Title className={"m-2"}>User Registration</Card.Title>
             <Form>
-                <Form.Group className={"m-3"}>
+                <Form.Group className={"m-2"}>
                     <Form.Label>Username</Form.Label>
                     <Form.Control
                         type={"text"}
@@ -66,7 +67,7 @@ export function UserRegistration() {
                         }
                 </Form.Group>
 
-                <Form.Group className={"m-3"}>
+                <Form.Group className={"m-2"}>
                     <Form.Label>Password</Form.Label>
                     <Form.Control
                         type={"password"}
@@ -75,17 +76,17 @@ export function UserRegistration() {
                     />
                     {passwordErr &&
                         <Form.Text>
-                            Your password is invalid; it must 8 characters or longer, and must contain at least one uppercase letter, one lowercase letter and one number
+                            Your password is invalid; it must be at least 8 characters long, and must contain at least one letter and one digit
                         </Form.Text>
                     }
                 </Form.Group>
 
-                <Form.Group className={"m-3"}>
+                <Form.Group className={"m-2"}>
                     <Button
                         disabled={(name.length === 0 || password.length === 0)||
                         (nameErr || passwordErr)}
                         type={"submit"}
-                        className={"btn-dark"}
+                        variant={"primary"}
                         onClick={(e) => submit(e)}>Submit</Button>
                 </Form.Group>
             </Form>
