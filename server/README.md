@@ -101,3 +101,123 @@ by manually executing `npm run build` from the client directory.
 - Failure:
   - HTTP Method: `401 Unauthorized`
     - The access token provided by the client is invalid so the user must log in
+
+
+
+
+## WIP
+
+### Get UserPosts 
+
+#### Request
+
+- URL: `/api/getUserPosts?sort=[time:engagement]&order=[asc:desc]`
+- HTTP Method: `GET`
+- Content-Type: `application/json`
+- Request Body:
+```json
+{
+  "username": "session_owner",
+  "author_username": "author_of_posts",
+  "max_posts": 3,
+  "continue_from": "35901*+24+w5ssfsdf+%%¤)"
+}
+```
+
+### Get Replies
+
+#### Request
+
+- URL: `/api/getReplies?sort=[time:engagement]&order=[asc:desc]`
+- HTTP Method: `GET`
+- Content-Type: `application/json`
+- Request Body:
+```json
+{
+  "username" : "session_owner",
+  "parent_post_ID": "5=%jf0f+24jajsf9u234n02",
+  "max_posts": 15,
+  "continue_from": "35901*+24+w5ssfsdf+%%¤)"
+}
+```
+
+### Get HashtagPosts
+
+#### Request
+
+- URL: `/api/getPostsByHashtags?sort=[time:engagement]&order=[asc:desc]`
+- HTTP Method: `GET`
+- Content-Type: `application/json`
+- Request Body:
+```json
+{
+  "username" : "session_owner",
+  "hashtags": [
+    "hashtag1",
+    "hashtag2"
+  ],
+  "max_posts": 15,
+  "continue_from": "35901*+24+w5ssfsdf+%%¤)"
+}
+```
+
+### Get PersonalFeed
+
+#### Request
+
+- URL: `/api/getPersonalFeed`
+- HTTP Method: `GET`
+- Content-Type: `application/json`
+- Request Body:
+```json
+{
+  "username" : "session_owner",
+  "max_posts": 7,
+  "continue_from": "35901*+24+w5ssfsdf+%%¤)"
+}
+```
+
+#### Response
+
+
+```json
+[
+  {
+    "user": "author_of_post",
+    "post_id": "35901*+24+w5ssfsdf+%%¤)",
+    "likes": 132,
+    "liked": false,
+    "post_content": [
+      {
+        "type": "[hashtag:mention:text:url:img]",
+        "val": "content"
+      },
+      {
+        "type": "text[hashtag:mention:text:url:img]",
+        "val": "Oh my god! "
+      },
+      {
+        "type": "mention",
+        "val": "Bingus"
+      },
+      {
+        "type": "text",
+        "val": " is just the cutest! "
+      },
+      {
+        "type": "hashtag",
+        "val": "bingusourlordandsaviour"
+      },
+      {
+        "type": "url",
+        "val": "www.bingusmerch.com"
+      }
+    ]
+  }
+]
+```
+
+
+
+
+
