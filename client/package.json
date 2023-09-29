@@ -49,5 +49,8 @@
     "transformIgnorePatterns": [
       "/node_modules/(?!(axios)/)"
     ]
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.4"
   }
 }

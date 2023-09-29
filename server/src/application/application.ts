@@ -1,11 +1,12 @@
 import express, {Express} from "express";
 import {requireHTTPS} from "./middleware";
 import {reactDir} from "../globals";
-import {loginUser, reactApp, registerUser} from "./controllers";
+import {loginUser, logoutUser, postCrumb, reactApp, registerUser, renewUserToken} from "./controllers";
 import http from "http";
 import https from "https";
 import {ConfigSettings} from "./config";
-
+import cookieParser from "cookie-parser";
+import passport from "passport";
 
 export class Application {
     #config: ConfigSettings;
@@ -20,13 +21,18 @@ export class Application {
     }
 
     #initRouting() {
+        const requireAuth = passport.authenticate('jwt', { session: false })
         let router = express.Router()
             .use(requireHTTPS)
             .use(express.static(reactDir))
             .use(express.json())
+            .use(cookieParser())
             .get('*', reactApp)
             .post('/api/register', registerUser(this.#config.registrationService))
-            .post('/api/login', loginUser(this.#config.loginService));
+            .post('/api/login', loginUser(this.#config.loginService))
+            .post('/api/logout', logoutUser(this.#config.loginService))
+            .post('/api/renew', requireAuth, renewUserToken)
+            .post('/api/postCrumb', requireAuth, postCrumb());
 
         this.#app.use('/', router);
     }

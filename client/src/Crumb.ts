@@ -34,4 +34,5 @@ export class CrumbV1 implements Crumb {
         this.likes = 0;
         this.comments = [];
     }
+
 }

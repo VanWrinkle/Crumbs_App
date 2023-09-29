@@ -78,14 +78,18 @@ by manually executing `npm run build` from the client directory.
 
 #### Request: 
 
-- URL: `/api/posts`
+- URL: `/api/postCrumb`
 - HTTP Method: `POST`
 - Content-Type: `application/json`
-- HTTP Header: `Authorization: bearer JSON_WEB_TOKEN_STRING.....`
 - Request Body:
   ```json
   {
-    "content": "example crumb text"
+    "userId": "test_user",
+    "content": "This is a crumb text",
+    "published": "2023-09-29T15:56:49.419Z",
+    "expires": "2023-10-13T15:56:49.419Z",
+    "likes": 0,
+    "comments": []
   }
   ```
 

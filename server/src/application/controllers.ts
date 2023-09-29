@@ -1,7 +1,6 @@
 import express from "express";
 import path from "path";
 import {reactDir} from "../globals";
-import jwt from 'jsonwebtoken'
 import {IUserLoginService} from "../IUserLoginService/IUserLoginService";
 import {IUserRegistrationService} from "../IUserRegistrationService/IUserRegistrationService";
 
@@ -52,6 +51,8 @@ export function loginUser(loginService: IUserLoginService) {
             return
         }
 
+
+
         loginService.retrieveUserData(username)
             .then(userData => {
                 if (!userData) {
@@ -60,10 +61,7 @@ export function loginUser(loginService: IUserLoginService) {
                     loginService.validateUserCredentials(userData, password)
                         .then( credentialsMatch => {
                             if (credentialsMatch) {
-                                const payload = { username: userData.userName }
-                                // TODO: change secret key and store securely
-                                const token = jwt.sign(payload, 'secret-key', { expiresIn: '7d' })
-                                res.status(200).json({ token });
+                                loginService.sendSessionToken(userData, res)
                             } else {
                                 res.status(401).send('invalid username or password');
                             }
@@ -81,3 +79,21 @@ export function loginUser(loginService: IUserLoginService) {
 }
 
 
+export function logoutUser(loginService: IUserLoginService) {
+    return function (req: express.Request, res: express.Response) {
+        loginService.clearSessionToken(res)
+    }
+}
+
+export function renewUserToken(req: express.Request, res: express.Response) {
+    // TODO: Not implemented yet
+    console.log("renew handler reached with token")
+    res.status(200).send('ok')
+}
+
+export function postCrumb() {
+    return function(req: express.Request, res: express.Response) {
+        console.log(req.body)
+        res.status(201).send()
+    }
+}
