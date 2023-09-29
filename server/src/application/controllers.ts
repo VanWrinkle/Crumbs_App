@@ -87,6 +87,13 @@ export function logoutUser(loginService: IUserLoginService) {
 
 export function renewUserToken(req: express.Request, res: express.Response) {
     // TODO: Not implemented yet
-    console.log("access")
+    console.log("renew handler reached with token")
     res.status(200).send('ok')
+}
+
+export function postCrumb() {
+    return function(req: express.Request, res: express.Response) {
+        console.log(req.body)
+        res.status(201).send()
+    }
 }
