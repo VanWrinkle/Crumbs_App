@@ -25,7 +25,6 @@ function SocialMediaPostNew(props: {crumbs: Crumb[], setCrumbs: SocialMediaPostD
         e.preventDefault();
         let post = new CrumbV1("Guest", userInput);
         setUserInput("");
-        alert("DEBUG: new object created (not stored):\n\n" + JSON.stringify(post, null, 2));
         props.setCrumbs([post, ...props.crumbs]);
     }
 

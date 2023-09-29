@@ -3,6 +3,7 @@ import {SocialMediaTopPanel} from "../Components/CrumbTopPanel";
 import {SocialMediaPostsDisplayAllBrief} from "../Components/CrumbFeed";
 import React, {useState} from "react";
 import {Container, Row} from "react-bootstrap";
+import {useAuth} from "../AuthProvider";
 
 export function PersonalFeed() {
 
