@@ -1,4 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
+import axios from "axios";
 
 export interface AuthState {
     username: String,
@@ -50,11 +51,20 @@ export function AuthProvider({children}: { children: React.ReactNode }) {
         return true
     }
 
+    function renewTest() {
+        axios.post('/api/renew')
+            .then(response => {
+                console.log("response")
+            })
+            .catch(function (error: Promise<void>) {
+                console.log(error);
+            });
+    }
+
     useEffect(() => {
         if (token) {
             if (expiresWithinHours(48)) {
-                // TODO: Create handler for auto renewal!!!
-                console.log("should auto renew!")
+                renewTest()
             } else if (hasExpired()) {
                 renewToken(undefined)
             }

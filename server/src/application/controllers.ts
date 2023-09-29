@@ -1,10 +1,8 @@
 import express from "express";
 import path from "path";
 import {reactDir} from "../globals";
-import jwt from 'jsonwebtoken'
 import {IUserLoginService} from "../IUserLoginService/IUserLoginService";
 import {IUserRegistrationService} from "../IUserRegistrationService/IUserRegistrationService";
-import {StoredUserData} from "../IUserDatabase/StoredUserData";
 
 
 export function reactApp(req: express.Request, res: express.Response) {
@@ -63,7 +61,7 @@ export function loginUser(loginService: IUserLoginService) {
                     loginService.validateUserCredentials(userData, password)
                         .then( credentialsMatch => {
                             if (credentialsMatch) {
-                                sendAuthorizationCookies(userData, res)
+                                loginService.sendSessionToken(userData, res)
                             } else {
                                 res.status(401).send('invalid username or password');
                             }
@@ -81,28 +79,14 @@ export function loginUser(loginService: IUserLoginService) {
 }
 
 
-export function logout(req: express.Request, res: express.Response) {
-    console.log("wer")
-    res.clearCookie('token', { httpOnly: true, secure: true })
-    res.status(200).send('cookie cleared')
+export function logoutUser(loginService: IUserLoginService) {
+    return function (req: express.Request, res: express.Response) {
+        loginService.clearSessionToken(res)
+    }
 }
 
-
-
-function sendAuthorizationCookies(userData: StoredUserData, res: express.Response) {
-    // TODO: change secret key and expiration time
-    const secretKey = 'secret-key'
-    const expirationTime = 604800000 //ms
-    const now = new Date()
-    const payload = { username: userData.userName, ttl: new Date(now.getTime() + expirationTime) }
-    const token = jwt.sign(payload, secretKey, { expiresIn: 604800000 })
-
-    res.cookie('token', token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict',
-        maxAge: expirationTime,
-        path: '/'
-    })
-    res.status(200).json(payload)
+export function renewUserToken(req: express.Request, res: express.Response) {
+    // TODO: Not implemented yet
+    console.log("access")
+    res.status(200).send('ok')
 }

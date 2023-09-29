@@ -8,6 +8,7 @@ export function ProfileDropdown() {
     const userData = useAuth()
     const updateUserData = useAuthUpdate()
 
+
     function onLogout(e: SyntheticEvent) {
         e.preventDefault();
         axios.post('/api/logout', {

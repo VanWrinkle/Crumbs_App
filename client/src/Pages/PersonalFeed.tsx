@@ -1,9 +1,10 @@
 import {Crumb, CrumbV1} from "../Crumb";
 import {SocialMediaTopPanel} from "../Components/CrumbTopPanel";
 import {SocialMediaPostsDisplayAllBrief} from "../Components/CrumbFeed";
-import React, {useState} from "react";
-import {Container, Row} from "react-bootstrap";
+import React, {SyntheticEvent, useState} from "react";
+import {Button, Container, Row} from "react-bootstrap";
 import {useAuth} from "../AuthProvider";
+import axios from "axios";
 
 export function PersonalFeed() {
 
