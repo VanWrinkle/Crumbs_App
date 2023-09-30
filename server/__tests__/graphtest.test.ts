@@ -161,6 +161,7 @@ test('should successfully remove like relationship', async () => {
 
 test('should retrieve posts', async () => {
     let filter = new CrumbFilter();
+    filter.parent_post = "1004"
     filter.sort = Sort.Engagement;
     filter.max = 200
     await neo.getCrumbs(null, filter);

@@ -9,6 +9,7 @@ const neo4j_url = "neo4j://10.212.172.128:7687"
 
 
 export class CrumbFilter {
+    parent_post: string | undefined
     authors: string[] | undefined
     hashtags: string[] | undefined
     descending = true
@@ -98,6 +99,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
         let query =
             `MATCH (c:Crumb)-[:POSTED_BY]->(author)
             ${filter.authors != undefined? "WHERE author.username IN $authors" : ""}
+            ${filter.parent_post!=undefined? `MATCH (c)-[:REPLIES_TO]->(p:Crumb) WHERE ID(p) = ${filter.parent_post}`:""}
             OPTIONAL MATCH (c)<-[:LIKES]-(liker)
             ${engagement? "OPTIONAL MATCH (c)<-[:REPLIES_TO]-(reply)" : ""}
             WITH c, author, COUNT(DISTINCT liker) AS likes ${engagement? ", COUNT(DISTINCT reply) AS replies":""}
