@@ -1,7 +1,9 @@
-import * as React from "react";
-import {useState} from "react";
-import {Button, Card, Container, Form, FormGroup} from "react-bootstrap"
-import axios, {AxiosResponse} from "axios";
+import React from "react";
+import {SyntheticEvent, useState} from "react";
+import {Button, Card, Form} from "react-bootstrap"
+import {Api} from "../Api";
+import {useAuthUpdate} from "../AuthProvider";
+import {useNavigate} from 'react-router-dom';
 
 export function UserRegistration() {
 
@@ -11,6 +13,8 @@ export function UserRegistration() {
     const [passwordErr, setPasswordErr] = useState(false);
     const validName = new RegExp("^(?=[a-z_]{4,30}$)");
     const validPassword = new RegExp("^(?=.*[a-zA-Z])(?=.*\\d).{8,}");
+    const setToken = useAuthUpdate()
+    const navigate = useNavigate();
 
     const validateName = (event: any) => {
 
@@ -34,19 +38,17 @@ export function UserRegistration() {
         }
     }
 
-    const submit = (event: React.MouseEvent) => {
-        event.preventDefault();
-        axios.post("https://localhost/api/register", {
-            username: name,
-            password: password
-
-        })
-            .then(function (response: AxiosResponse<void>) {
-                console.log(response)
-            })
-            .catch(function (error: Promise<void>) {
-                console.log(error)
-            });
+    async function onSubmit(e: SyntheticEvent) {
+        e.preventDefault();
+        try {
+            const api = new Api()
+            await api.userRegistration(name, password);
+            const response = await api.userLogin(name, password)
+            setToken(response)
+            navigate('/')
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
@@ -87,7 +89,7 @@ export function UserRegistration() {
                         (nameErr || passwordErr)}
                         type={"submit"}
                         variant={"primary"}
-                        onClick={(e) => submit(e)}>Submit</Button>
+                        onClick={onSubmit}>Submit</Button>
                 </Form.Group>
             </Form>
         </Card>
