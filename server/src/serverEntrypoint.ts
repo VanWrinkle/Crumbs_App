@@ -1,5 +1,5 @@
 import fs from 'fs';
-import {UserDatabase} from "./IUserDatabase/UserDatabase";
+import {MDBUserDatabase} from "./IUserDatabase/MDBUserDatabase";
 import {LoginService} from "./IUserLoginService/LoginService";
 import {RegistrationService} from "./IUserRegistrationService/RegistrationService";
 import {Application} from "./application/application";
@@ -9,7 +9,7 @@ import {Passport} from "./IUserAuthenticator/Passport";
 
 
 
-const userDatabase = new UserDatabase();
+const userDatabase = new MDBUserDatabase();
 const sessionManagement = new Passport('secret-key', 100)
 const config: ConfigSettings = {
     registrationService: new RegistrationService(userDatabase),
