@@ -75,7 +75,7 @@ test('should successfully create new user', async () => {
 })
 
 test('should successfully delete user and their posts', async () => {
-    await neo.deleteUserNode("treng")
+    await neo.deleteUserNodeAndUserCrumbs("treng")
 })
 
 test('should successfully create new user nodes', async () => {

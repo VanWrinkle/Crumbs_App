@@ -1,6 +1,6 @@
 export interface ISocialGraphPersistence {
     createUserNode(username: string): Promise<void>
-    deleteUserNode(username: string): Promise<void>
+    deleteUserNodeAndUserCrumbs(username: string): Promise<void>
 
     createCrumb(parent: string | null, username: string, crumb: UserPostData): Promise<void>
     updateCrumb(crumb_id: string, newBody: UserPostData): Promise<void>
