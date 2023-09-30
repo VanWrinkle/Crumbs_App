@@ -2,14 +2,14 @@ export interface ISocialGraphPersistence {
     createUserNode(username: string): Promise<void>
     deleteUserNode(username: string): Promise<void>
 
-    createCrumb(username: string, crumb: UserPostData): Promise<void>
+    createCrumb(parent: string | null, username: string, crumb: UserPostData): Promise<void>
     updateCrumb(crumb_id: string, newBody: UserPostData): Promise<void>
     deleteCrumb(crumb_id: string): Promise<void>
     getCrumb(crumb_id: string): Promise <UserPostView>
     // Relationships
     setUserFollowing(username: string, followTarget: string, following: boolean): Promise <void>
-    setCrumbLiked(username: string, liked: boolean) : Promise<void>
-    setCrumbParent(crumb_id: string, parent_id: string): Promise<void>
+    setCrumbLiked(username: string, crumb_id: string, liked: boolean) : Promise<void>
+    //setCrumbParent(crumb_id: string, parent_id: string): Promise<void>
 }
 
 export interface UserPostData {
