@@ -1,12 +1,12 @@
 import {UserPostView} from "../ISocialGraphPersistence/ISocialGraphPersistence";
 
 
-enum Order {
+export enum Order {
     Ascending,
     Descending
 }
 
-enum Sort {
+export enum Sort {
     Time,
     Engagement
 }

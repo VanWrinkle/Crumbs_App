@@ -1,17 +1,28 @@
 import {ISocialGraphPersistence, UserPostData, UserPostView} from "./ISocialGraphPersistence";
 import neo4j from 'neo4j-driver'
+import json from 'json5';
+import {Order, Sort} from "../IPostPresentationService/IPostPresentationService";
+
 const neo4j_username = "neo4j"
 const neo4j_password = "crumbdevsrule"
 const neo4j_url = "neo4j://10.212.172.128:7687"
-import json from 'json5';
 
+
+export class CrumbFilter {
+    authors: string[] | undefined
+    hashtags: string[] | undefined
+    descending = true
+    order = Order.Descending
+    sort = Sort.Time
+    max = 15
+}
 
 
 export class NeoGraphPersistence implements ISocialGraphPersistence {
     // TODO: Review security of connection
     #driver = neo4j.driver(neo4j_url, neo4j.auth.basic(neo4j_username, neo4j_password))
 
-    createUserNode(username: string): Promise<void> {
+    async createUserNode(username: string): Promise<void> {
         return new Promise( resolve => {
             let session = this.#driver.session();
             session
@@ -25,7 +36,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
         })
     }
 
-    deleteUserNode(username: string): Promise<void> {
+    async deleteUserNode(username: string): Promise<void> {
         return new Promise( resolve => {
             let session = this.#driver.session();
             session
@@ -45,7 +56,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
 
     async createCrumb(parent: string | null, username: string, crumb: UserPostData): Promise<void> {
         return new Promise( resolve => {
-            if (typeof(parent) != typeof ("")) {throw new Error('post id must be integer')}
+            if (parent != null && typeof(parent) != typeof ("")) {throw new Error('post id must be integer')}
             let session = this.#driver.session();
             session
                 .run(
@@ -56,8 +67,8 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                     ${parent != null? "CREATE (c)-[:REPLIES_TO]->(p)":""}`,
                     {
                         user: username,
-                        contents: json.stringify(crumb.contents),
-                        flags: json.stringify(crumb.flags)
+                        contents: crumb.contents,
+                        flags: crumb.flags
                     }
                 )
                 .catch( error => {
@@ -80,9 +91,56 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
         return new Promise(() => {})
     }
 
+    async getCrumbs(user: string | null, filter: CrumbFilter): Promise <UserPostView[]> {
+        let view: UserPostView[] = [];
+        let engagement = filter.sort === Sort.Engagement
+        let desc = filter.order === Order.Descending
+        let query =
+            `MATCH (c:Crumb)-[:POSTED_BY]->(author)
+            ${filter.authors != undefined? "WHERE author.username IN $authors" : ""}
+            OPTIONAL MATCH (c)<-[:LIKES]-(liker)
+            ${engagement? "OPTIONAL MATCH (c)<-[:REPLIES_TO]-(reply)" : ""}
+            WITH c, author, COUNT(DISTINCT liker) AS likes ${engagement? ", COUNT(DISTINCT reply) AS replies":""}
+            RETURN c, author, likes${engagement?", replies, likes + replies AS engagement":""}
+            ORDER BY ${engagement? "replies":"c.created"} ${desc? "DESC":""}
+            LIMIT ${filter.max};`
+        console.log(query)
+        return new Promise( resolve => {
+            let session = this.#driver.session();
+            session
+                .run(
+                    query,
+                    {
+                        authors: filter.authors,
+                        hashtags: filter.hashtags
+                    }
+                )
+                .then( results => {
+                    results.records.forEach( record => {
+                        let crumb: UserPostView = {
+                            author: record.get('author').properties.username,
+                            post_id: record.get('c').identity.toString(),
+                            likes: record.get('likes').low,
+                            liked: false,
+                            contents: [
 
+                            ]
+                        };
+                        console.log(crumb)
+                        view.push(crumb)
+                    })
+                })
+                .catch( error => {
+                    console.error(error)
+                })
+                .finally( () => {
+                    session.close();
+                    resolve(view);
+                })
+        })
+    }
 
-    setUserFollowing(username: string, followTarget: string, following: boolean): Promise <void> {
+    async setUserFollowing(username: string, followTarget: string, following: boolean): Promise <void> {
         let addFollow =
             `MATCH (n:User {username: $user})
             MATCH (m:User {username: $followTarget})
@@ -110,7 +168,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 })
         })
     }
-    setCrumbLiked(username: string, crumb_id: string, likes: boolean) : Promise<void> {
+    async setCrumbLiked(username: string, crumb_id: string, likes: boolean) : Promise<void> {
         let id = parseInt(crumb_id);
         if (id === undefined) { throw new Error('Neo4j id must be an int'); }
         let addLike =
