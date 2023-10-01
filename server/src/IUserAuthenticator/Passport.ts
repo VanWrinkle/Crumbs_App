@@ -19,7 +19,7 @@ export class Passport implements IUserAuthenticator {
             },
             secretOrKey: this.#secretKey
         }, (payload: any, done: any) => {
-            done(null, true)
+            done(null, payload.username)
         }))
     }
 

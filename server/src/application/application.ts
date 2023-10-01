@@ -31,7 +31,7 @@ export class Application {
             .post('/api/register', registerUser(this.#config.registrationService))
             .post('/api/login', loginUser(this.#config.loginService))
             .post('/api/logout', logoutUser(this.#config.loginService))
-            .post('/api/renew', requireAuth, renewUserToken)
+            .post('/api/renew', requireAuth, renewUserToken(this.#config.loginService))
             .post('/api/postCrumb', requireAuth, postCrumb());
 
         this.#app.use('/', router);

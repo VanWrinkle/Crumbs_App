@@ -34,7 +34,7 @@ export function registerUser(registrationService: IUserRegistrationService) {
                     .then( () => {
                         res.status(201).send('user created');
                     })
-                    .catch( error => {
+                    .catch( () => {
                         res.status(500).send('failed to create new user');
                     });
             } break;
@@ -85,11 +85,13 @@ export function logoutUser(loginService: IUserLoginService) {
     }
 }
 
-export function renewUserToken(req: express.Request, res: express.Response) {
-    // TODO: Not implemented yet
-    console.log("renew handler reached with token")
-    res.status(200).send('ok')
+export function renewUserToken(loginService: IUserLoginService) {
+    return function renewUserToken(req: express.Request, res: express.Response) {
+        console.log(req.user)
+        loginService.sendSessionToken({userName: req.user!.toString(), salt: "", hash: ""}, res)
+    }
 }
+
 
 export function postCrumb() {
     return function(req: express.Request, res: express.Response) {

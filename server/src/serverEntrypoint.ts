@@ -10,7 +10,7 @@ import {Passport} from "./IUserAuthenticator/Passport";
 
 
 const userDatabase = new MDBUserDatabase();
-const sessionManagement = new Passport('secret-key', 100)
+const sessionManagement = new Passport('secret-key', 24)
 const config: ConfigSettings = {
     registrationService: new RegistrationService(userDatabase),
     loginService: new LoginService(userDatabase, sessionManagement),
