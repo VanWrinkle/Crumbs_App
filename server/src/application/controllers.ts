@@ -61,7 +61,7 @@ export function loginUser(loginService: IUserLoginService) {
                     loginService.validateUserCredentials(userData, password)
                         .then( credentialsMatch => {
                             if (credentialsMatch) {
-                                loginService.sendSessionToken(userData, res)
+                                loginService.sendSessionToken(username, res)
                             } else {
                                 res.status(401).send('invalid username or password');
                             }
@@ -87,15 +87,24 @@ export function logoutUser(loginService: IUserLoginService) {
 
 export function renewUserToken(loginService: IUserLoginService) {
     return function renewUserToken(req: express.Request, res: express.Response) {
-        console.log(req.user)
-        loginService.sendSessionToken({userName: req.user!.toString(), salt: "", hash: ""}, res)
+        if (req.user) {
+            loginService.sendSessionToken(req.user.toString(), res)
+        } else {
+            res.status(401).send()
+        }
+
     }
 }
 
 
 export function postCrumb() {
     return function(req: express.Request, res: express.Response) {
-        console.log(req.body)
-        res.status(201).send()
+        if (req.user) {
+            console.log(req.body)
+            res.status(201).send()
+        } else {
+            console.log("unauthenticated user")
+            res.status(401).send()
+        }
     }
 }

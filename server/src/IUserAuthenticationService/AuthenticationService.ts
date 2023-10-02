@@ -1,32 +1,34 @@
-import {IUserAuthenticator} from "./IUserAuthenticator";
+import {IUserAuthentionService} from "./IUserAuthentionService";
 import express from "express";
-import {StoredUserData} from "../IUserDatabase/StoredUserData";
 import jwt from "jsonwebtoken";
-import passport from "passport";
-import {Strategy} from 'passport-jwt'
 
-export class Passport implements IUserAuthenticator {
+export class AuthenticationService implements IUserAuthentionService {
     readonly #secretKey: string;
     readonly #expirationTimeMilliseconds: number;
 
     constructor(secretKey: string, expirationHours: number) {
         this.#secretKey = secretKey;
         this.#expirationTimeMilliseconds = expirationHours * 60 * 60 * 1000;
-
-        passport.use(new Strategy({
-            jwtFromRequest: (req: express.Request) => {
-                return req && req.cookies ? req.cookies['token'] : null
-            },
-            secretOrKey: this.#secretKey
-        }, (payload: any, done: any) => {
-            done(null, payload.username)
-        }))
     }
 
+    tokenParser() {
+        return (req: express.Request, _res: express.Response, next: express.NextFunction) => {
+            const token = req.cookies['token'];
+            if (token) {
+                jwt.verify(token, this.#secretKey, (err: any, decoded: any) => {
+                    if (!err) {
+                        req.user = decoded.username;
+                    }
+                    return next();
+                });
+            }
+            return next();
+        }
+    }
 
-    sendToken(userData: StoredUserData, response: express.Response) {
+    sendToken(username: string, response: express.Response) {
         const now = new Date()
-        const payload = { username: userData.userName, ttl: new Date(now.getTime() + this.#expirationTimeMilliseconds) }
+        const payload = { username: username, ttl: new Date(now.getTime() + this.#expirationTimeMilliseconds) }
         const token = jwt.sign(payload, this.#secretKey, { expiresIn:  this.#expirationTimeMilliseconds})
 
         response.cookie('token', token, {
