@@ -7,8 +7,8 @@ export interface Index {
 }
 
 export class CrumbParser {
-    static #hashtagRegEx = /#\w+/g;
-    static #mentionRegEx = /@\w+/g;
+    static #hashtagRegEx = /(?<!\w)#\w+/g;
+    static #mentionRegEx = /(?<!\w)@\w+/g;
 
     static parseCrumb(crumbText: string): UserPostData {
         let userPost: UserPostData = {

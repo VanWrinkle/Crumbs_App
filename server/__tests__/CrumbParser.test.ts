@@ -52,3 +52,27 @@ test ('should successfully parse a simple string', async  () => {
 
     expect(CrumbParser.parseCrumb(unparsed)).toStrictEqual(post)
 })
+
+test ('should treat mid text and loose # or @ as regular text', async  () => {
+
+    let post: UserPostData =  {
+        flags: ["text"],
+        contents: ["A little du@ck wad#dled across @ # the street."]
+    }
+    const unparsed = "A little du@ck wad#dled across @ # the street.";
+
+
+    expect(CrumbParser.parseCrumb(unparsed)).toStrictEqual(post)
+})
+
+
+test ('should treat comma separated tags as distinct tags', async  () => {
+
+    let post: UserPostData =  {
+        flags: ["text","hashtag","text","hashtag"],
+        contents: ["Here are some tags ", "#tag",",","#tag2"]
+    }
+    const unparsed = "Here are some tags #tag,#tag2";
+
+    expect(CrumbParser.parseCrumb(unparsed)).toStrictEqual(post)
+})
