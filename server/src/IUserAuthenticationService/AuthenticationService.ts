@@ -21,8 +21,9 @@ export class AuthenticationService implements IUserAuthentionService {
                     }
                     return next();
                 });
+            } else {
+                return next();
             }
-            return next();
         }
     }
 
