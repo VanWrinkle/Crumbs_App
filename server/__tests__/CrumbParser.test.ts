@@ -76,3 +76,25 @@ test ('should treat comma separated tags as distinct tags', async  () => {
 
     expect(CrumbParser.parseCrumb(unparsed)).toStrictEqual(post)
 })
+
+test ('should not treat an url as a hashtag', async  () => {
+
+    let post: UserPostData =  {
+        flags: ["hashtag","text"],
+        contents: ["#www",".google.com"]
+    }
+    const unparsed = "#www.google.com";
+
+    expect(CrumbParser.parseCrumb(unparsed)).toStrictEqual(post)
+})
+
+test ('should allow word characters a-z, A-Z, 0-9 and _', async  () => {
+
+    let post: UserPostData =  {
+        flags: ["hashtag"],
+        contents: ["#17_Mai"]
+    }
+    const unparsed = "#17_Mai";
+
+    expect(CrumbParser.parseCrumb(unparsed)).toStrictEqual(post)
+})
