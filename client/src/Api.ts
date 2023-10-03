@@ -38,6 +38,26 @@ export class Api {
        }
     }
 
+    async userRenew() {
+        try {
+            const response = await this.client.post('/renew')
+            return response.data
+        } catch (error: any) {
+            if (error.response) {
+                switch (error.response.status) {
+                    case 401:
+                        throw new Error("Invalid token")
+                    default:
+                        throw new Error("Unexpected server error, try again later")
+                }
+            } else if (error.request) {
+                throw new Error('Network error or timeout');
+            } else {
+                throw new Error('Unexpected error')
+            }
+
+        }
+    }
 
     async userRegistration(username: string, password: string) {
         try {

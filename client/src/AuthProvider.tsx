@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import axios from "axios";
+import {Api} from "./Api";
 
 export interface AuthState {
     username: String,
@@ -51,20 +51,24 @@ export function AuthProvider({children}: { children: React.ReactNode }) {
         return true
     }
 
-    function renewTest() {
-        axios.post('/api/renew')
-            .then(response => {
-                console.log("response")
+    function silentLogin() {
+        const api = new Api()
+        api.userRenew()
+            .then((token) => {
+                renewToken(token)
             })
-            .catch(function (error: Promise<void>) {
-                console.log(error);
-            });
+            .catch((error) => {
+                if (error.message == "Invalid token") {
+                    renewToken(undefined)
+                    console.log("the server rejected the active token")
+                }
+            })
     }
 
     useEffect(() => {
         if (token) {
-            if (expiresWithinHours(48)) {
-                renewTest()
+            if (expiresWithinHours(12)) {
+                silentLogin()
             } else if (hasExpired()) {
                 renewToken(undefined)
             }
