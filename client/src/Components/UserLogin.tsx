@@ -1,22 +1,32 @@
 import React, { SyntheticEvent } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Form, Button, NavDropdown, InputGroup} from "react-bootstrap";
+import {Form, Button, NavDropdown, InputGroup, Alert, Spinner} from "react-bootstrap";
 import { useState } from 'react';
 import {useAuthUpdate} from "../AuthProvider";
 import {Api} from "../Api";
+import {LoadingButton} from "./CommonUI";
 
 function UserLogin() {
     const [userName, setUserName] = useState("");
     const [userPassword, setUserPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false)
+    const [showAlert, setShowAlert] = useState(false)
+    const [alert, setAlert] = useState("")
     const setToken = useAuthUpdate();
 
     async function onClick(e: SyntheticEvent) {
         e.preventDefault();
+        setIsLoading(true)
         try {
             const response = await new Api().userLogin(userName, userPassword)
             setToken(response)
         } catch(error) {
-            console.log(error);
+            if (error instanceof Error) {
+                setShowAlert(true)
+                setAlert(error.message)
+            }
+        } finally {
+            setIsLoading(false)
         }
 
     }
@@ -24,7 +34,7 @@ function UserLogin() {
     return(
         <NavDropdown title={"Login"} align={{ lg: 'end' }}>
             <div style={{width: '230px', padding: '20px'}}>
-            <Form onSubmit={onClick}>
+            <Form>
                 <Form.Group className="mb-2" controlId="userName">
                     <InputGroup hasValidation>
                         <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
@@ -50,16 +60,20 @@ function UserLogin() {
                     onChange={(e) => {setUserPassword(e.target.value)}}
                     required></Form.Control>
                 </Form.Group>
-            
-                <Button
-                    type="submit" 
-                    variant="primary">Log in</Button>
 
-                    <p style={{paddingTop: '20px'}}>
-                    No account? Sign up <> </>
-                    <a href={"/signup"}>here</a>
-                    !
-                    </p>
+                {showAlert && (
+                    <Alert variant="warning" onClose={() => setShowAlert(false)} dismissible>
+                        {alert}
+                    </Alert>
+                )}
+
+                <LoadingButton isLoading={isLoading} onClick={onClick} buttonText={'Log in'} disabled={false} />
+
+                <p style={{paddingTop: '20px'}}>
+                No account? Sign up <> </>
+                <a href={"/signup"}>here</a>
+                !
+                </p>
 
             </Form>
 
@@ -67,5 +81,10 @@ function UserLogin() {
         </NavDropdown>
     )
 }
+
+
+
+
+
 
 export default UserLogin
