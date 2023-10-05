@@ -1,7 +1,7 @@
 import '../App.css';
 import '../Crumb';
-import { Crumb, CrumbV1, SocialMediaPostDispatch } from "../Crumb";
-import React, {SyntheticEvent, useState} from "react";
+import {Crumb} from "../Crumb";
+import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Card, Col, Container, Form, Image, Row, Button} from "react-bootstrap";
 
@@ -23,6 +23,11 @@ export function SocialMediaPostsDisplayAllBrief({crumbs}: {crumbs: Crumb[]}) {
  * @param crumb - single crumb
  */
 function SocialMediaPostDisplaySingleBrief({crumb}: {crumb: Crumb}) {
+
+    const content = crumb.contents.reduce((acc: string, item: any) => {
+        return acc + " " + item.value
+    }, "")
+
     return (
         <Card className="mb-2">
             <Row>
@@ -31,8 +36,8 @@ function SocialMediaPostDisplaySingleBrief({crumb}: {crumb: Crumb}) {
                 </Col>
                 <Col>
                     <Card.Body className="mt-2 mb-2">
-                        <Card.Title>{crumb.userId}:</Card.Title>
-                        <Card.Text>{crumb.content}</Card.Text>
+                        <Card.Title>{crumb.author}:</Card.Title>
+                        <Card.Text>{content}</Card.Text>
                     </Card.Body>
                 </Col>
             </Row>

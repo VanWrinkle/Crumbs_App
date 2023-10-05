@@ -1,4 +1,4 @@
-import axios, {Axios, AxiosError, AxiosInstance, AxiosResponse} from "axios";
+import axios, {AxiosError, AxiosInstance} from "axios";
 import {Crumb} from "./Crumb";
 
 export class Api {
@@ -59,6 +59,56 @@ export class Api {
         }
     }
 
+    async getMainFeed(numberOfPosts: number = 10, continue_from: string = "") {
+        try {
+            // const url = '/getMainFeed?' + "max_posts=" + numberOfPosts + '&continue_from=' + continue_from
+            const response = await this.client.get('/getMainFeed', {params: {
+                    "max_posts": numberOfPosts,
+                    "continue_from": continue_from
+                }});
+            return response.data as Crumb[];
+
+            // return JSON.parse("[\n" +
+            //     "  {\n" +
+            //     "    \"user\": \"author_of_post\",\n" +
+            //     "    \"post_id\": \"35901*+24+w5ssfsdf+%%¤)\",\n" +
+            //     "    \"likes\": 132,\n" +
+            //     "    \"liked\": false,\n" +
+            //     "    \"post_content\": [\n" +
+            //     "      {\n" +
+            //     "        \"type\": \"[hashtag:mention:text:url:img]\",\n" +
+            //     "        \"val\": \"content\"\n" +
+            //     "      },\n" +
+            //     "      {\n" +
+            //     "        \"type\": \"text[hashtag:mention:text:url:img]\",\n" +
+            //     "        \"val\": \"Oh my god! \"\n" +
+            //     "      },\n" +
+            //     "      {\n" +
+            //     "        \"type\": \"mention\",\n" +
+            //     "        \"val\": \"Bingus\"\n" +
+            //     "      },\n" +
+            //     "      {\n" +
+            //     "        \"type\": \"text\",\n" +
+            //     "        \"val\": \" is just the cutest! \"\n" +
+            //     "      },\n" +
+            //     "      {\n" +
+            //     "        \"type\": \"hashtag\",\n" +
+            //     "        \"val\": \"bingusourlordandsaviour\"\n" +
+            //     "      },\n" +
+            //     "      {\n" +
+            //     "        \"type\": \"url\",\n" +
+            //     "        \"val\": \"www.bingusmerch.com\"\n" +
+            //     "      }\n" +
+            //     "    ]\n" +
+            //     "  }\n" +
+            //     "]")
+
+        } catch (error: any) {
+            this.handleApiError(error, {}) // TODO: Handle custom handler errors
+        }
+    }
+
+
     private handleApiError(error: AxiosError, customErrorMessages: Record<number, string> = {}) {
         if (error.response) {
             const status = error.response.status;
@@ -73,6 +123,7 @@ export class Api {
             throw new Error('Unexpected error');
         }
     }
+
 
 
 }

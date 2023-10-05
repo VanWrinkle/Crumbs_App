@@ -10,29 +10,37 @@ export interface SocialMediaPostDispatch {
  * data structure for a single post
  */
 export interface Crumb {
-    userId: string;
-    published: Date;
-    expires: Date;
+    author: string;
+    post_id: string | null;
     likes: number;
     content: string;
+    liked: boolean;
     comments: Crumb[];
+    contents: CrumbContent[]
 }
+
+export interface CrumbContent {
+    type: string,
+    value: string
+}
+
 
 /**
  *
  */
 export class CrumbV1 implements Crumb {
-    public published: Date;
-    public expires: Date;
     public likes: number;
-    public comments: CrumbV1[];
+    public liked: boolean;
+    public post_id: string | null;
+    public comments: Crumb[];
+    public contents: CrumbContent[]
 
-    constructor(public userId: string, public content: string) {
-        this.published = new Date();
-        this.expires = new Date();
-        this.expires.setDate(this.published.getDate() + 14);
+    constructor(public author: string, public content: string) {
         this.likes = 0;
+        this.post_id = null;
+        this.liked = false;
         this.comments = [];
+        this.contents = [];
     }
 
 }
