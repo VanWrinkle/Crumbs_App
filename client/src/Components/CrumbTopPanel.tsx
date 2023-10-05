@@ -9,7 +9,7 @@ export function SocialMediaTopPanel(props: {crumbs: Crumb[], setCrumbs: SocialMe
     return (
         <>
             <Col xs={3}>
-                <Image src="./logo.png" fluid />
+                <Image src="/logo.png" fluid />
             </Col>
             <Col>
                 <SocialMediaPostNew crumbs={props.crumbs} setCrumbs={props.setCrumbs} />
