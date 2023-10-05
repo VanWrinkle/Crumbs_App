@@ -161,7 +161,7 @@ by manually executing `npm run build` from the client directory.
 }
 ```
 
-### Get PersonalFeed
+### Get Main Feed
 
 #### Request
 
@@ -171,7 +171,6 @@ by manually executing `npm run build` from the client directory.
 - Request Body:
 ```json
 {
-  "username" : "session_owner",
   "max_posts": 7,
   "continue_from": "35901*+24+w5ssfsdf+%%¤)"
 }

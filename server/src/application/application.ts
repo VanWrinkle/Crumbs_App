@@ -1,7 +1,7 @@
 import express, {Express} from "express";
 import {requireHTTPS} from "./middleware";
 import {reactDir} from "../globals";
-import {loginUser, logoutUser, postCrumb, reactApp, registerUser, renewUserToken} from "./controllers";
+import {loginUser, logoutUser, postCrumb, reactApp, registerUser, renewUserToken, getMainFeed} from "./controllers";
 import http from "http";
 import https from "https";
 import {ConfigSettings} from "./config";
@@ -27,12 +27,13 @@ export class Application {
             .use(express.json())
             .use(cookieParser())
             .use(this.#config.loginService.tokenParser())
+            .get('/api/getMainFeed', getMainFeed(new NeoGraphPersistence()))
             .get('*', reactApp)
             .post('/api/register', registerUser(this.#config.registrationService))
             .post('/api/login', loginUser(this.#config.loginService))
             .post('/api/logout', logoutUser(this.#config.loginService))
             .post('/api/renew', renewUserToken(this.#config.loginService))
-            .post('/api/postCrumb', postCrumb(new NeoGraphPersistence())); //TODO: Inject
+            .post('/api/postCrumb', postCrumb(new NeoGraphPersistence())) //TODO: Inject
 
         this.#app.use('/', router);
     }

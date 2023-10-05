@@ -1,4 +1,4 @@
-import {ISocialGraphPersistence, UserPostData, UserPostView} from "./ISocialGraphPersistence";
+import {ISocialGraphPersistence, PostComponent, UserPostData, UserPostView} from "./ISocialGraphPersistence";
 import neo4j from 'neo4j-driver'
 import json from 'json5';
 import {Order, Sort} from "../IPostPresentationService/IPostPresentationService";
@@ -129,8 +129,8 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 .run(
                     `MATCH (u:User {username: $user}) 
                     ${parent != null? "MATCH (p) WHERE ID(p) = " + parent : ""}
-                    CREATE (c:Crumb {contents: $contents, flags: $flags})
-                    -[:POSTED_BY {created: timestamp()}]->(u)
+                    CREATE (c:Crumb {contents: $contents, flags: $flags, created: timestamp()})
+                    -[:POSTED_BY]->(u)
                     ${parent != null? "CREATE (c)-[:REPLIES_TO]->(p)":""}`,
                     {
                         user: username,
@@ -165,19 +165,23 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
      *
      * @param user The username of the user for whom to retrieve crumbs or null for all users.
      * @param filter An object specifying filter criteria, including sorting, ordering, authors, and more.
+     * @param cutoff ID of post used to get cutoff value for time or engagement
      * @returns A Promise that resolves to an array of UserPostView objects representing the retrieved crumbs.
      */
-    async getCrumbs(user: string | null, filter: CrumbFilter): Promise <UserPostView[]> {
+    async getCrumbs(user: string | null, filter: CrumbFilter, cutoff: string | null): Promise <UserPostView[]> {
         let view: UserPostView[] = [];
         let engagement = filter.sort === Sort.Engagement
         let desc = filter.order === Order.Descending
+        //TODO: fetch engagement for single post
         let query =
-            `MATCH (c:Crumb)-[:POSTED_BY]->(author)
+            `MATCH (c:Crumb)-[p:POSTED_BY]->(author)
             ${filter.authors != undefined? "WHERE author.username IN $authors" : ""}
             ${filter.parent_post!=undefined? "MATCH (c)-[:REPLIES_TO]->(p:Crumb) WHERE ID(p) = $parent":""}
             OPTIONAL MATCH (c)<-[:LIKES]-(liker)
+            ${cutoff? "MATCH (cutoff:Crumb) WHERE ID(cutoff) = " +  cutoff:""}
             ${engagement? "OPTIONAL MATCH (c)<-[:REPLIES_TO]-(reply)" : ""}
-            WITH c, author, COUNT(DISTINCT liker) AS likes ${engagement? ", COUNT(DISTINCT reply) AS replies":""}
+            WITH c, author, ${cutoff?"cutoff.created AS cutoff,":""} COUNT(DISTINCT liker) AS likes ${engagement? ", COUNT(DISTINCT reply) AS replies":""}
+            ${cutoff? (engagement? "WHERE c.created > cutoff":"WHERE c.created > cutoff") :""}
             RETURN c, author, likes${engagement?", replies, likes + replies AS engagement":""}
             ORDER BY ${engagement? "replies":"c.created"} ${desc? "DESC":""}
             LIMIT ${filter.max};`
@@ -195,15 +199,21 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 )
                 .then( results => {
                     results.records.forEach( record => {
-                        // TODO: proper setup of returned object with contents and liked
+                        let flags = record.get('c').properties.flags;
+                        let values = record.get('c').properties.contents;
+                        let contents: PostComponent[] = [];
+                        for (let i = 0; i < flags.length; i++) {
+                            contents.push({
+                                type: flags[i],
+                                value: values[i]
+                            })
+                        }
                         let crumb: UserPostView = {
                             author: record.get('author').properties.username,
                             post_id: record.get('c').identity.toString(),
                             likes: record.get('likes').low,
                             liked: false,
-                            contents: [
-
-                            ]
+                            contents: contents
                         };
                         console.log(crumb)
                         view.push(crumb)

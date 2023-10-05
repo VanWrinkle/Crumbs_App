@@ -5,6 +5,8 @@ import {IUserLoginService} from "../IUserLoginService/IUserLoginService";
 import {IUserRegistrationService} from "../IUserRegistrationService/IUserRegistrationService";
 import {ISocialGraphPersistence} from "../ISocialGraphPersistence/ISocialGraphPersistence";
 import {CrumbParser} from "../CrumbParser/CrumbParser";
+import {CrumbFilter} from "../ISocialGraphPersistence/NeoGraphPersistence";
+import {Sort} from "../IPostPresentationService/IPostPresentationService";
 
 
 export function reactApp(req: express.Request, res: express.Response) {
@@ -112,5 +114,31 @@ export function postCrumb(persistence: ISocialGraphPersistence) {
             console.log("unauthenticated user")
             res.status(401).send()
         }
+    }
+}
+
+export function getCrumbsByUser(persistence: ISocialGraphPersistence) {
+    return function(req: express.Request, res: express.Response) {
+
+    }
+}
+
+export function getMainFeed(persistence: ISocialGraphPersistence) {
+    return function(req: express.Request, res: express.Response) {
+        let filter = new CrumbFilter();
+        filter.sort = Sort.Engagement;
+        if(req.body.max_posts) {
+            console.log(req.body.max_posts)
+            filter.max = Math.min(req.body.max_posts, 5); //TODO: Use setters in CrumbFilter class for enforcing of rules
+        }
+        persistence.getCrumbs(
+            ((req.user != undefined)? req.user.toString() : null),
+            filter,
+            ((req.body.continue_from.toString() != "")? req.body.continue_from.toString() : null),
+        )
+            .catch( () => res.status(500).send() )
+            .then( crumbs => {
+                    res.status(200).send(crumbs);
+                })
     }
 }
