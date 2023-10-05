@@ -40,7 +40,7 @@ export class CrumbV1 implements Crumb {
         this.post_id = null;
         this.liked = false;
         this.comments = [];
-        this.contents = [];
+        this.contents = [{type: "txt", value: content}]
     }
 
 }
