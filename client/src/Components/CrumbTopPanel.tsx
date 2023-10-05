@@ -3,6 +3,7 @@ import {Alert, Button, Col, Form, Image, Spinner} from "react-bootstrap";
 import React, {SyntheticEvent, useState} from "react";
 import {useAuth} from "../AuthProvider";
 import {Api} from "../Api";
+import {LoadingButton} from "./CommonUI";
 
 export function SocialMediaTopPanel(props: {crumbs: Crumb[], setCrumbs: SocialMediaPostDispatch}) {
     return (
@@ -40,7 +41,6 @@ function SocialMediaPostNew(props: {crumbs: Crumb[], setCrumbs: SocialMediaPostD
         } catch (error) {
             if (error instanceof Error) {
                 setAlert(error.message)
-                console.log(error.message)
             }
         } finally {
             clearTimeout(timer)
@@ -52,7 +52,7 @@ function SocialMediaPostNew(props: {crumbs: Crumb[], setCrumbs: SocialMediaPostD
 
 
     return (
-        <Form onSubmit={onClick} className="mb-3">
+        <Form className="mb-3">
             <Form.Control
                 as="textarea"
                 rows={3}
@@ -68,20 +68,7 @@ function SocialMediaPostNew(props: {crumbs: Crumb[], setCrumbs: SocialMediaPostD
                 <Alert variant="warning" onClose={() => setAlert("")} hidden={alert == ""}>
                     {alert}
                 </Alert>
-                <Button
-                    type="submit"
-                    variant="primary"
-                    disabled={userInput.length === 0 || spinner}>
-                    <Spinner
-                        as="span"
-                        hidden={!spinner}
-                        animation="border"
-                        size="sm"
-                        role="status"
-                        aria-hidden="true"
-                        className="me-2"
-                    />
-                    Post Crumb</Button>
+                <LoadingButton isLoading={spinner} onClick={onClick} buttonText={'Post Crumb'} disabled={userInput.length === 0} />
             </div>
         </Form>
     );
