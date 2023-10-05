@@ -13,9 +13,7 @@ export interface Crumb {
     author: string;
     post_id: string | null;
     likes: number;
-    content: string;
     liked: boolean;
-    comments: Crumb[];
     contents: CrumbContent[]
 }
 
@@ -32,14 +30,12 @@ export class CrumbV1 implements Crumb {
     public likes: number;
     public liked: boolean;
     public post_id: string | null;
-    public comments: Crumb[];
     public contents: CrumbContent[]
 
     constructor(public author: string, public content: string) {
         this.likes = 0;
         this.post_id = null;
         this.liked = false;
-        this.comments = [];
         this.contents = [{type: "txt", value: content}]
     }
 
