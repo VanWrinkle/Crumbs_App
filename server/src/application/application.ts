@@ -1,7 +1,17 @@
 import express, {Express} from "express";
 import {requireHTTPS} from "./middleware";
 import {reactDir} from "../globals";
-import {loginUser, logoutUser, postCrumb, reactApp, registerUser, renewUserToken, getMainFeed} from "./controllers";
+import {
+    loginUser,
+    logoutUser,
+    postCrumb,
+    reactApp,
+    registerUser,
+    renewUserToken,
+    getMainFeed,
+    setLike,
+    setFollow
+} from "./controllers";
 import http from "http";
 import https from "https";
 import {ConfigSettings} from "./config";
@@ -34,6 +44,10 @@ export class Application {
             .post('/api/logout', logoutUser(this.#config.loginService))
             .post('/api/renew', renewUserToken(this.#config.loginService))
             .post('/api/postCrumb', postCrumb(new NeoGraphPersistence())) //TODO: Inject
+            .post('/api/likeCrumb', setLike(new NeoGraphPersistence(), true))
+            .delete('/api/likeCrumb', setLike(new NeoGraphPersistence(), false))
+            .post('/api/followUser', setFollow(new NeoGraphPersistence(), true))
+            .delete('/api/followUser', setFollow(new NeoGraphPersistence(), false))
 
         this.#app.use('/', router);
     }

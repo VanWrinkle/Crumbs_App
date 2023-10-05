@@ -123,6 +123,38 @@ export function getCrumbsByUser(persistence: ISocialGraphPersistence) {
     }
 }
 
+export function setFollow(persistence: ISocialGraphPersistence, follows: boolean) {
+    return function(req: express.Request, res: express.Response) {
+        if(req.user) {
+            persistence.setCrumbLiked(req.user.toString(), req.body.user, follows)
+                .catch(()=> {
+                    res.status(500).send() // TODO: Logic for not found
+                })
+                .then( () => {
+                    res.status(201).send()
+                })
+        } else {
+            res.status(401).send()
+        }
+    }
+}
+
+export function setLike(persistence: ISocialGraphPersistence, likes: boolean) {
+    return function(req: express.Request, res: express.Response) {
+        if(req.user) {
+            persistence.setCrumbLiked(req.user.toString(), req.body.crumb, likes)
+                .catch(()=> {
+                    res.status(500).send() // TODO: Logic for not found
+                })
+                .then( () => {
+                        res.status(201).send()
+                })
+        } else {
+            res.status(401).send()
+        }
+    }
+}
+
 export function getMainFeed(persistence: ISocialGraphPersistence) {
     return function(req: express.Request, res: express.Response) {
         let filter = new CrumbFilter();
