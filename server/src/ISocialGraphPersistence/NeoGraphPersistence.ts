@@ -175,6 +175,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
         //TODO: fetch engagement for single post
         let query =
             `MATCH (c:Crumb)-[p:POSTED_BY]->(author)
+            WHERE author.username <> $user
             ${filter.authors != undefined? "WHERE author.username IN $authors" : ""}
             ${filter.parent_post!=undefined? "MATCH (c)-[:REPLIES_TO]->(p:Crumb) WHERE ID(p) = $parent":""}
             OPTIONAL MATCH (c)<-[:LIKES]-(liker)
@@ -183,7 +184,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
             WITH c, author, ${cutoff?"cutoff.created AS cutoff,":""} COUNT(DISTINCT liker) AS likes ${engagement? ", COUNT(DISTINCT reply) AS replies":""}
             ${cutoff? (engagement? "WHERE c.created > cutoff":"WHERE c.created > cutoff") :""}
             RETURN c, author, likes${engagement?", replies, likes + replies AS engagement":""}
-            ORDER BY ${engagement? "replies":"c.created"} ${desc? "DESC":""}
+            ORDER BY ${engagement? "engagement":"c.created"} ${desc? "DESC":""}
             LIMIT ${filter.max};`
         console.log(query)
         return new Promise( resolve => {
@@ -192,6 +193,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 .run(
                     query,
                     {
+                        user: user,
                         authors: filter.authors,
                         hashtags: filter.hashtags,
                         parent: filter.parent_post
