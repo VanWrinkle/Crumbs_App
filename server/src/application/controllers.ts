@@ -1,4 +1,4 @@
-import express from "express";
+import express, {query} from "express";
 import path from "path";
 import {reactDir} from "../globals";
 import {IUserLoginService} from "../IUserLoginService/IUserLoginService";
@@ -142,13 +142,18 @@ export function setFollow(persistence: ISocialGraphPersistence, follows: boolean
 export function setLike(persistence: ISocialGraphPersistence, likes: boolean) {
     return function(req: express.Request, res: express.Response) {
         if(req.user) {
-            persistence.setCrumbLiked(req.user.toString(), req.body.crumb, likes)
-                .catch(()=> {
-                    res.status(500).send() // TODO: Logic for not found
-                })
-                .then( () => {
+            let id = req.query.crumb?.toString()
+            if (id) {
+                persistence.setCrumbLiked(req.user.toString(), id, likes)
+                    .catch(() => {
+                        res.status(500).send() // TODO: Logic for not found
+                    })
+                    .then(() => {
                         res.status(201).send()
-                })
+                    })
+            } else {
+                res.status(400).send()
+            }
         } else {
             res.status(401).send()
         }
