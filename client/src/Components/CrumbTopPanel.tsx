@@ -1,5 +1,5 @@
 import {Crumb, CrumbV1, SocialMediaPostDispatch} from "../Crumb";
-import {Alert, Button, Col, Form, Image, Spinner} from "react-bootstrap";
+import {Alert, Col, Form, Image} from "react-bootstrap";
 import React, {SyntheticEvent, useState} from "react";
 import {useAuth} from "../AuthProvider";
 import {Api} from "../Api";
@@ -68,7 +68,13 @@ function SocialMediaPostNew(props: {crumbs: Crumb[], setCrumbs: SocialMediaPostD
                 <Alert variant="warning" onClose={() => setAlert("")} hidden={alert == ""}>
                     {alert}
                 </Alert>
-                <LoadingButton isLoading={spinner} onClick={onClick} buttonText={'Post Crumb'} disabled={userInput.length === 0} />
+                <LoadingButton
+                    isLoading={spinner}
+                    onClick={onClick}
+                    buttonText={'Post Crumb'}
+                    disabled={userInput.length === 0}
+                    variant={'primary'}
+                />
             </div>
         </Form>
     );

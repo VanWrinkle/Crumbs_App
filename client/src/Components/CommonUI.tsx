@@ -5,11 +5,12 @@ export function LoadingButton(prop: {
     isLoading: boolean,
     onClick: (event: SyntheticEvent) => void,
     buttonText: string,
-    disabled: boolean}) {
+    disabled: boolean,
+    variant: string}) {
     return (
         <Button
             type = 'submit'
-            variant = 'primary'
+            variant = {prop.variant}
             onClick = {prop.onClick}
             disabled = {prop.isLoading || prop.disabled}
         >

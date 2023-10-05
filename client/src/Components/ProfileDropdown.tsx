@@ -24,11 +24,11 @@ export function ProfileDropdown() {
 
     return (
         <>
-        <Image src='./profile.png' roundedCircle width='30' height='30' className="d-inline-block align-self-center" />
+        <Image src='/profile.png' roundedCircle width='30' height='30' className="d-inline-block align-self-center" />
         <NavDropdown title={userData?.username} align={{ lg: 'end' }}>
             <NavDropdown.Item>Notifications <Badge bg='secondary'>0</Badge></NavDropdown.Item>
-            <NavDropdown.Item>Profile</NavDropdown.Item>
-            <NavDropdown.Item>Settings</NavDropdown.Item>
+            <NavDropdown.Item href={`/profile/${userData?.username}`} >Profile</NavDropdown.Item>
+            <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
             <NavDropdown.Item onClick={onLogout}>Logout</NavDropdown.Item>
         </NavDropdown>
         </>

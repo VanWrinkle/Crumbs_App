@@ -83,6 +83,15 @@ export class Api {
         }
     }
 
+    async deleteAccount(password: String) {
+        try {
+            await this.client.delete('/user', {params: {'password': password}})
+        } catch (error: any) {
+            this.handleApiError(error, {})
+        }
+    }
+
+
     private handleApiError(error: AxiosError, customErrorMessages: Record<number, string> = {}) {
         if (error.response) {
             const status = error.response.status;
