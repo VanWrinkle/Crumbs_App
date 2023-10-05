@@ -11,7 +11,7 @@ export function PersonalFeed() {
 
     async function updatePosts() {
         const api = new Api()
-        api.getMainFeed(10)
+        api.getMainFeed(100)
             .then((response) => {
                 if (response) {
                     // TODO appende response istedenfor?
