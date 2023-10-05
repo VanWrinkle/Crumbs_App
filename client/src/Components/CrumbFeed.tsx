@@ -4,6 +4,7 @@ import {Crumb} from "../Crumb";
 import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Card, Col, Container, Form, Image, Row, Button} from "react-bootstrap";
+import {Link} from "react-router-dom";
 
 /**
  * panel that iterates over crumbs array and includes component for each
@@ -24,9 +25,20 @@ export function SocialMediaPostsDisplayAllBrief({crumbs}: {crumbs: Crumb[]}) {
  */
 function SocialMediaPostDisplaySingleBrief({crumb}: {crumb: Crumb}) {
 
-    const content = crumb.contents.reduce((acc: string, item: any) => {
-        return acc + " " + item.value
-    }, "")
+    // const content = crumb.contents.reduce((acc: string, item: any) => {
+    //     return acc + " " + item.value
+    // }, "")
+
+    const content = crumb.contents.map(content => {
+        switch (content.type) {
+            case "hashtag":
+                return(<Link to={""}>{content.value}</Link>)
+            case "mention":
+                return(<Link to={""}>{content.value}</Link>)
+            default:
+                return (<>{content.value}</>)
+        }
+    })
 
     return (
         <Card className="mb-2">
@@ -38,6 +50,7 @@ function SocialMediaPostDisplaySingleBrief({crumb}: {crumb: Crumb}) {
                     <Card.Body className="mt-2 mb-2">
                         <Card.Title>{crumb.author}:</Card.Title>
                         <Card.Text>{content}</Card.Text>
+                        {/*<Card.Text>{content}</Card.Text>*/}
                     </Card.Body>
                 </Col>
             </Row>
