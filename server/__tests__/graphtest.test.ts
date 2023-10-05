@@ -1,6 +1,7 @@
 import {CrumbFilter, NeoGraphPersistence} from "../src/ISocialGraphPersistence/NeoGraphPersistence";
 import {ComponentType, UserPostData} from "../src/ISocialGraphPersistence/ISocialGraphPersistence";
 import {Sort} from "../src/IPostPresentationService/IPostPresentationService";
+import {CrumbParser} from "../src/CrumbParser/CrumbParser";
 
 
 const neo = new NeoGraphPersistence();
@@ -27,7 +28,9 @@ test('instantiate complex social graph', async () => {
         'YogaMaster36',
         'GamerPro99',
         'TravelBug88'
-    ];let post: UserPostData = {
+    ];
+
+    let post: UserPostData = {
         contents: [ "text" ],
         flags: [ ComponentType.Text ]
     }
@@ -161,8 +164,19 @@ test('should successfully remove like relationship', async () => {
 
 test('should retrieve posts', async () => {
     let filter = new CrumbFilter();
-    filter.parent_post = "1004"
     filter.sort = Sort.Engagement;
-    filter.max = 200
+    filter.max = 5
     await neo.getCrumbs(null, filter);
+})
+
+
+test('should create new crumb', async () => {
+    let post: UserPostData = {
+        contents: [ "text" ],
+        flags: [ ComponentType.Text ]
+    };
+
+    let parsedPost = CrumbParser.parseCrumb("Oh god I'm crumbing #crumblords")
+    await console.log(parsedPost)
+    await neo.createCrumb(null, "vanwrinkle", post)
 })

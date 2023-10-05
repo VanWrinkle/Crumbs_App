@@ -1,3 +1,5 @@
+import {CrumbFilter} from "./NeoGraphPersistence";
+
 export interface ISocialGraphPersistence {
     createUserNode(username: string): Promise<void>
     deleteUserNodeAndUserCrumbs(username: string): Promise<void>
@@ -10,6 +12,7 @@ export interface ISocialGraphPersistence {
     setUserFollowing(username: string, followTarget: string, following: boolean): Promise <void>
     setCrumbLiked(username: string, crumb_id: string, liked: boolean) : Promise<void>
     //setCrumbParent(crumb_id: string, parent_id: string): Promise<void>
+    getCrumbs(user: string | null, filter: CrumbFilter): Promise <UserPostView[]>
 }
 
 export interface UserPostData {

@@ -6,6 +6,7 @@ import http from "http";
 import https from "https";
 import {ConfigSettings} from "./config";
 import cookieParser from "cookie-parser";
+import {NeoGraphPersistence} from "../ISocialGraphPersistence/NeoGraphPersistence";
 
 export class Application {
     #config: ConfigSettings;
@@ -31,7 +32,7 @@ export class Application {
             .post('/api/login', loginUser(this.#config.loginService))
             .post('/api/logout', logoutUser(this.#config.loginService))
             .post('/api/renew', renewUserToken(this.#config.loginService))
-            .post('/api/postCrumb', postCrumb());
+            .post('/api/postCrumb', postCrumb(new NeoGraphPersistence())); //TODO: Inject
 
         this.#app.use('/', router);
     }

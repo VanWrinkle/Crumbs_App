@@ -3,6 +3,8 @@ import path from "path";
 import {reactDir} from "../globals";
 import {IUserLoginService} from "../IUserLoginService/IUserLoginService";
 import {IUserRegistrationService} from "../IUserRegistrationService/IUserRegistrationService";
+import {ISocialGraphPersistence} from "../ISocialGraphPersistence/ISocialGraphPersistence";
+import {CrumbParser} from "../CrumbParser/CrumbParser";
 
 
 export function reactApp(req: express.Request, res: express.Response) {
@@ -97,11 +99,15 @@ export function renewUserToken(loginService: IUserLoginService) {
 }
 
 
-export function postCrumb() {
+export function postCrumb(persistence: ISocialGraphPersistence) {
     return function(req: express.Request, res: express.Response) {
         if (req.user) {
-            console.log(req.body)
-            res.status(201).send()
+            let username = req.user.toString()
+            let parsedCrumb = CrumbParser.parseCrumb(req.body.content)
+            persistence
+                .createCrumb(null, username, parsedCrumb)
+                .catch( () => res.status(500).send() )
+                .then(  () => res.status(201).send() )
         } else {
             console.log("unauthenticated user")
             res.status(401).send()

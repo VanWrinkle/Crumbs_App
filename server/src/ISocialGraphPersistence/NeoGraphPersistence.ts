@@ -30,11 +30,6 @@ export class CrumbFilter {
      */
     hashtags: string[] | undefined;
 
-    /**
-     * Determines the sorting order of crumbs. If true, it sorts in descending order; otherwise, in ascending order.
-     * Default: true (descending)
-     */
-    descending = true;
 
     /**
      * The order in which crumbs should be sorted (e.g., by time, engagement, etc.).
@@ -179,7 +174,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
         let query =
             `MATCH (c:Crumb)-[:POSTED_BY]->(author)
             ${filter.authors != undefined? "WHERE author.username IN $authors" : ""}
-            ${filter.parent_post!=undefined? `MATCH (c)-[:REPLIES_TO]->(p:Crumb) WHERE ID(p) = ${filter.parent_post}`:""}
+            ${filter.parent_post!=undefined? "MATCH (c)-[:REPLIES_TO]->(p:Crumb) WHERE ID(p) = $parent":""}
             OPTIONAL MATCH (c)<-[:LIKES]-(liker)
             ${engagement? "OPTIONAL MATCH (c)<-[:REPLIES_TO]-(reply)" : ""}
             WITH c, author, COUNT(DISTINCT liker) AS likes ${engagement? ", COUNT(DISTINCT reply) AS replies":""}
@@ -194,7 +189,8 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                     query,
                     {
                         authors: filter.authors,
-                        hashtags: filter.hashtags
+                        hashtags: filter.hashtags,
+                        parent: filter.parent_post
                     }
                 )
                 .then( results => {
@@ -240,6 +236,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
         let addFollow =
             `MATCH (n:User {username: $user})
             MATCH (m:User {username: $followTarget})
+            WHERE NOT EXISTS((n)-[:FOLLOWS]->(m)) AND n.username <> m.username
             CREATE (n)-[:FOLLOWS]->(m)`
         let deleteFollow =
             `MATCH (n:User {username: $user})-[f:FOLLOWS]->(m:User {username: $followTarget})
@@ -285,8 +282,8 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
         if (id === undefined) { throw new Error('Neo4j id must be an int'); }
         let addLike =
             `MATCH (n:User {username: '${username}'})
-            MATCH (c:Crumb) 
-            WHERE ID(c) = ${id}
+            MATCH (m: User)<-[:POSTED_BY]-(c:Crumb)
+            WHERE ID(c) = ${id} AND NOT EXISTS((n)-[:LIKES]->(c)) AND m.username <> n.username
             CREATE (n)-[:LIKES]->(c)`
         let removeLike =
             `MATCH (c:Crumb) 
