@@ -1,6 +1,7 @@
 import {IUserDatabase} from "../IUserDatabase/IUserDatabase";
 import {IUserRegistrationService} from "./IUserRegistrationService"
 import bcrypt from "bcrypt";
+import {ISocialGraphPersistence} from "../ISocialGraphPersistence/ISocialGraphPersistence";
 
 const usernameRequirements = RegExp("^(?=[a-z_]{4,30}$)");
 const passwordRequirements = RegExp("^(?=.*[a-zA-Z])(?=.*\\d).{8,}");
@@ -8,8 +9,10 @@ const numberOfSaltRounds = 5;
 
 export class RegistrationService implements IUserRegistrationService {
     userPersistence: IUserDatabase;
-    constructor (persistence: IUserDatabase) {
+    graphPersistence: ISocialGraphPersistence;
+    constructor (persistence: IUserDatabase, socialGraphPersistence: ISocialGraphPersistence) {
         this.userPersistence = persistence;
+        this.graphPersistence = socialGraphPersistence;
     }
 
     validateCredentialRequirements(username: string, password: string): boolean {
@@ -34,6 +37,7 @@ export class RegistrationService implements IUserRegistrationService {
                 return Promise.all([bcrypt.hash(password, salt), salt]);
             })
             .then(([hash, salt]) => {
+                this.graphPersistence.createUserNode(userName); //TODO: Any need for synchronization rules?
                 return this.userPersistence.addUser({userName, hash, salt});
             })
             .catch( error => {
