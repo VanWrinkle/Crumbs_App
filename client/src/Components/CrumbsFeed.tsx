@@ -21,7 +21,6 @@ export function CrumbsFeed(prop: {
             setLoading(true)
         }, 300)
         const continueFrom = crumbs.length > 0 ? crumbs[crumbs.length - 1].post_id : ""
-        console.log(continueFrom)
         prop.feed(continueFrom)
             .then((response) => {
                 if (response) {

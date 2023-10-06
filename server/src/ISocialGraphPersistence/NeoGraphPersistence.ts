@@ -182,7 +182,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
             ${cutoff? "MATCH (cutoff:Crumb) WHERE ID(cutoff) = " +  cutoff:""}
             ${engagement? "OPTIONAL MATCH (c)<-[:REPLIES_TO]-(reply)" : ""}
             WITH c, author, ${cutoff?"cutoff.created AS cutoff,":""} COUNT(DISTINCT liker) AS likes ${engagement? ", COUNT(DISTINCT reply) AS replies":""}
-            ${cutoff? (engagement? "WHERE c.created > cutoff":"WHERE c.created > cutoff") :""}
+            ${cutoff? (engagement? "WHERE c.created > cutoff":"WHERE c.created < cutoff") :""}
             RETURN c, author, likes${engagement?", replies, likes + replies AS engagement":""}
             ORDER BY ${engagement? "engagement":"c.created"} ${desc? "DESC":""}
             LIMIT ${filter.max};`

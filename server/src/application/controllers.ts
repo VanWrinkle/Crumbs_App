@@ -159,7 +159,7 @@ export function setLike(persistence: ISocialGraphPersistence, likes: boolean) {
 export function getMainFeed(persistence: ISocialGraphPersistence) {
     return function(req: express.Request, res: express.Response) {
         let filter = new CrumbFilter();
-        filter.sort = Sort.Engagement;
+        filter.sort = Sort.Time;
 
         if(req.query.max_posts) {
             let max = Number.parseInt(req.query.max_posts.toString());
