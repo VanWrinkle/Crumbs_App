@@ -117,11 +117,7 @@ export function postCrumb(persistence: ISocialGraphPersistence) {
     }
 }
 
-export function getCrumbsByUser(persistence: ISocialGraphPersistence) {
-    return function(req: express.Request, res: express.Response) {
 
-    }
-}
 
 export function setFollow(persistence: ISocialGraphPersistence, follows: boolean) {
     return function(req: express.Request, res: express.Response) {
@@ -182,5 +178,33 @@ export function getMainFeed(persistence: ISocialGraphPersistence) {
             .then( crumbs => {
                     res.status(200).send(crumbs);
                 })
+    }
+}
+
+/**
+ * Handler should fetch in bulk the most recent posts by a specific user
+ * requested in by queries. Accepted queries:
+ *    "user": string
+ *    "max_posts": number
+ *    "continue_from": string
+ * Should be requestable by anyone, including anonymously
+ * @param persistence
+ * @return - same output format as main feed
+ */
+export function getUserFeed(persistence: ISocialGraphPersistence) {
+    return function(req: express.Request, res: express.Response) {
+        console.log("getUserFeed: " + req.query.user)
+    }
+}
+
+
+/**
+ * Handler should delete the authenticated, all data associated with the user,
+ * and finally clear the access token
+ * @param persistence
+ */
+export function deleteUser(persistence: ISocialGraphPersistence) {
+    return function(req: express.Request, res: express.Response) {
+        console.log("deleteUser: " + req.user)
     }
 }

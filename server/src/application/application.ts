@@ -10,7 +10,8 @@ import {
     renewUserToken,
     getMainFeed,
     setLike,
-    setFollow
+    setFollow,
+    getUserFeed, deleteUser
 } from "./controllers";
 import http from "http";
 import https from "https";
@@ -38,8 +39,10 @@ export class Application {
             .use(cookieParser())
             .use(this.#config.loginService.tokenParser())
             .get('/api/getMainFeed', getMainFeed(new NeoGraphPersistence()))
+            .get('/api/getUserFeed', getUserFeed(new NeoGraphPersistence()))
             .get('*', reactApp)
             .post('/api/register', registerUser(this.#config.registrationService))
+            .delete('/api/deleteUser', deleteUser(new NeoGraphPersistence()))
             .post('/api/login', loginUser(this.#config.loginService))
             .post('/api/logout', logoutUser(this.#config.loginService))
             .post('/api/renew', renewUserToken(this.#config.loginService))

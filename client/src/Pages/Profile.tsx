@@ -11,7 +11,7 @@ export function Profile() {
         <Container className="main-content">
             Personlig feed til {userid}. Almost. Hovedfeed as of now men vil bli endret
 
-            <CrumbsFeed canCompose={false} feed={() => new Api().getMainFeed(100)} />
+            <CrumbsFeed canCompose={false} feed={() => new Api().getUserFeed(userid!, 100)} />
         </Container>
     )
 }

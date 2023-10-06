@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {Api} from "./Api";
 
 export interface AuthState {
-    username: String,
+    username: string,
     ttl: Date
 }
 

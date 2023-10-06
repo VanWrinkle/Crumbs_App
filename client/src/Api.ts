@@ -1,5 +1,6 @@
 import axios, {AxiosError, AxiosInstance} from "axios";
 import {Crumb} from "./Crumb";
+import userLogin from "./Components/UserLogin";
 
 export class Api {
     private client: AxiosInstance
@@ -71,6 +72,21 @@ export class Api {
         }
     }
 
+
+    async getUserFeed(username: string, numberOfPosts: number = 10, continue_from: string = "") {
+        try {
+            const response = await this.client.get('/getUserFeed', {params: {
+                    "user": username,
+                    "max_posts": numberOfPosts,
+                    "continue_from": continue_from
+                }});
+            return response.data as Crumb[];
+        } catch (error: any) {
+            this.handleApiError(error, {}) // TODO: Handle custom handler errors
+        }
+    }
+
+
     async toggleLike(crumb: Crumb) {
         try {
             if (crumb.liked) {
@@ -83,10 +99,15 @@ export class Api {
         }
     }
 
-    async deleteAccount(password: String) {
+    async userDeletion(username: string, password: string) {
         try {
-            await this.client.delete('/user', {params: {'password': password}})
+            await this.userLogin(username, password)
+            await this.client.delete('/deleteUser')
         } catch (error: any) {
+            if (error.message == "Incorrect username and/or password") {
+                throw new Error("Incorrect password provided")
+            }
+            console.log(error)
             this.handleApiError(error, {})
         }
     }

@@ -1,4 +1,4 @@
-import {Alert, Button, Container, Form, Modal} from "react-bootstrap";
+import {Alert, Button, Card, Container, Form, Modal, Tab, Tabs} from "react-bootstrap";
 import React, {SyntheticEvent, useEffect, useState} from "react";
 import {useAuth, useAuthUpdate} from "../AuthProvider";
 import {useNavigate} from "react-router-dom";
@@ -13,9 +13,9 @@ export function Settings() {
     const [alertMessage, setAlertMessage] = useState("")
     const [showAlert, setShowAlert] = useState(false)
 
-    async function onDeleteAccount(_: SyntheticEvent, password: String) {
+    async function onDeleteAccount(_: SyntheticEvent, password: string) {
         setDeleteSpinning(true)
-        await new Api().deleteAccount(password)
+        await new Api().userDeletion(auth!.username, password)
             .then(_ => {
                 setAuth(undefined)
             })
@@ -43,15 +43,34 @@ export function Settings() {
             {showAlert && (
                 <Alert variant="warning" onClose={() => setShowAlert(false)} dismissible>
                     {alertMessage}
-                </Alert>
-            )}
-            <DeleteAccount deleteSpinning={deleteSpinning} onDelete={onDeleteAccount}/>
+                </Alert>)}
+            <h5>Settings</h5>
+            <Tabs defaultActiveKey="account" fill>
+                <Tab eventKey="account" title="Account">
+                    <Card style={{borderTop: "0", borderTopLeftRadius: "0", borderTopRightRadius: "0"}}>
+                        <Card.Body>
+                            <DeleteAccount deleteSpinning={deleteSpinning} onDelete={onDeleteAccount}/>
+                        </Card.Body>
+                    </Card>
+                    <Container style={{backgroundColor: "white"}}>
+                    </Container>
+                </Tab>
+                <Tab eventKey="notifications" title="Notifications" style={{color: "black"}}>
+
+                </Tab>
+                <Tab eventKey="security" title="Security & Privacy">
+
+                </Tab>
+                <Tab eventKey="personalization" title="Personalization">
+
+                </Tab>
+            </Tabs>
         </Container>
     )
 
 }
 
-function DeleteAccount(props: {deleteSpinning: boolean, onDelete: (e: SyntheticEvent, password: String) => {}}) {
+function DeleteAccount(props: {deleteSpinning: boolean, onDelete: (e: SyntheticEvent, password: string) => {}}) {
     const [showDialogue, setShowDialogue] = useState(false);
     const [password, setPassword] = useState("")
     const handleClose = () => setShowDialogue(false);
