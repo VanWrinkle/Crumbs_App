@@ -1,7 +1,7 @@
 import React, {SyntheticEvent, useEffect, useState} from "react";
 import {Crumb} from "../Crumb";
 import {Api} from "../Api";
-import {Button, Card, Col, Container, Row, Stack} from "react-bootstrap";
+import {Button, Card, Col, Container, Row, Spinner, Stack} from "react-bootstrap";
 import {SocialMediaTopPanel} from "./CrumbTopPanel";
 import {Link} from "react-router-dom";
 import {ThumbUp} from "@mui/icons-material";
@@ -12,18 +12,25 @@ export function CrumbsFeed(prop: {
     feed: () => Promise<Crumb[] | undefined>
 }) {
     const [crumbs, setCrumbs] = useState<Crumb[]>([])
+    const [loading, setLoading] = useState(false)
 
     async function updatePosts() {
+        const timer = setTimeout((e) => {
+            setLoading(true)
+        }, 300)
         prop.feed()
             .then((response) => {
                 if (response) {
                     // TODO appende response istedenfor?
                     setCrumbs(response)
                 }
-                console.log("test")
             })
             .catch(error => {
                 // TODO error handling
+            })
+            .finally(() => {
+                clearTimeout(timer)
+                setLoading(false)
             })
     }
 
@@ -42,23 +49,24 @@ export function CrumbsFeed(prop: {
     }
 
     useEffect(() => {
-        // TODO: Denne fetcher twice, for en eller annen grunn.. Yikes!
         updatePosts()
     }, []);
 
     return (
         <Container className="main-content">
-            {prop.canCompose ? (
+            {prop.canCompose && (
                 <Row>
                     <SocialMediaTopPanel crumbs={crumbs} setCrumbs={setCrumbs}/>
                 </Row>
-                ) : (
-                <></>
-                )
-            }
+            )}
             <Row>
                 <SocialMediaPostsDisplayAllBrief crumbs={crumbs} onLike={onLike}/>
             </Row>
+            {loading && (
+                <Row className="justify-content-center mt-4">
+                    <Spinner animation="border" variant="info" />
+                </Row>
+            )}
         </Container>
     );
 }
