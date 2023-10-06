@@ -29,13 +29,13 @@ function SocialMediaPostNew(props: {crumbs: Crumb[], setCrumbs: SocialMediaPostD
     const userData = useAuth()
     async function onClick(e: SyntheticEvent) {
         e.preventDefault();
-        const timer = setTimeout((e) => {
+        const timer = setTimeout(() => {
             setSpinner(true)
         }, 300)
         try {
             const api = new Api()
             const crumb = new CrumbV1(userData!.username.toString(), userInput)
-            const response = await api.postNewCrumb(crumb)
+            await api.postNewCrumb(crumb);
             setUserInput("");
             props.setCrumbs([crumb, ...props.crumbs]);
         } catch (error) {
@@ -65,7 +65,7 @@ function SocialMediaPostNew(props: {crumbs: Crumb[], setCrumbs: SocialMediaPostD
                 onChange={(e) => setUserInput(e.target.value)}>
             </Form.Control>
             <div className="d-grid">
-                <Alert variant="warning" onClose={() => setAlert("")} hidden={alert == ""}>
+                <Alert variant="warning" onClose={() => setAlert("")} hidden={alert === ""}>
                     {alert}
                 </Alert>
                 <LoadingButton

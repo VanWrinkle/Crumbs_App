@@ -13,7 +13,7 @@ export function ProfileDropdown() {
         e.preventDefault();
         axios.post('/api/logout', {
         })
-            .then(response => {
+            .then(() => {
                 updateUserData(undefined)
             })
             .catch(function (error: Promise<void>) {

@@ -1,6 +1,5 @@
 import axios, {AxiosError, AxiosInstance} from "axios";
 import {Crumb} from "./Crumb";
-import userLogin from "./Components/UserLogin";
 
 export class Api {
     private client: AxiosInstance
@@ -104,7 +103,7 @@ export class Api {
             await this.userLogin(username, password)
             await this.client.delete('/deleteUser')
         } catch (error: any) {
-            if (error.message == "Incorrect username and/or password") {
+            if (error.message === "Incorrect username and/or password") {
                 throw new Error("Incorrect password provided")
             }
             console.log(error)

@@ -13,13 +13,9 @@ export function CrumbsFeed(prop: {
     feed: (continueFrom: string) => Promise<Crumb[] | undefined>
 }) {
     const [crumbs, setCrumbs] = useState<Crumb[]>([])
-    const [loading, setLoading] = useState(false)
     const [hasMore, setHasMore] = useState(true)
 
     async function updatePosts() {
-        const timer = setTimeout((e) => {
-            setLoading(true)
-        }, 300)
         const continueFrom = crumbs.length > 0 ? crumbs[crumbs.length - 1].post_id : ""
         prop.feed(continueFrom)
             .then((response) => {
@@ -31,31 +27,28 @@ export function CrumbsFeed(prop: {
                     }
                 }
             })
-            .catch(error => {
+            .catch(() => {
                 // TODO error handling
-            })
-            .finally(() => {
-                clearTimeout(timer)
-                setLoading(false)
             })
     }
 
-    async function onLike(e: SyntheticEvent, crumb: Crumb) {
+    async function onLike(_e: SyntheticEvent, crumb: Crumb) {
         new Api().toggleLike(crumb)
             .then(() => {
                 crumb.likes += crumb.liked ? -1 : 1
                 crumb.liked = !crumb.liked
                 setCrumbs(crumbs.map(it => {
-                    return crumb.post_id == it.post_id ? crumb : it
+                    return crumb.post_id === it.post_id ? crumb : it
                 }))
             })
-            .catch(error => {
+            .catch(() => {
                 // TODO error handling
             })
     }
 
     useEffect(() => {
-        updatePosts()
+        void updatePosts()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
@@ -88,7 +81,7 @@ export function CrumbsFeed(prop: {
 
 /**
  * panel that iterates over crumbs array and includes component for each
- * @param crumb - array of crumbs
+ * @param props
  */
 export function SocialMediaPostsDisplayAllBrief(props: {crumbs: Crumb[], onLike: (e: SyntheticEvent, crumb: Crumb)=>{}}) {
     const results = props.crumbs.map((crumb) =>
@@ -101,7 +94,7 @@ export function SocialMediaPostsDisplayAllBrief(props: {crumbs: Crumb[], onLike:
 
 /**
  * component for a single crumb
- * @param crumb - single crumb
+ * @param props
  */
 function SocialMediaPostDisplaySingleBrief(props: {crumb: Crumb, onLike: (e: SyntheticEvent, crumb: Crumb)=>{}}) {
     const auth = useAuth()
@@ -136,7 +129,7 @@ function SocialMediaPostDisplaySingleBrief(props: {crumb: Crumb, onLike: (e: Syn
                                 <Button
                                     size="sm"
                                     className="ms-auto"
-                                    disabled={props.crumb.author == auth?.username}
+                                    disabled={props.crumb.author === auth?.username}
                                     variant={props.crumb.liked ? "info" : "outline-info"}
                                     onClick={e => props.onLike(e, props.crumb)}>
                                     <span className="pe-1">

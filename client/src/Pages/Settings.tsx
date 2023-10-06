@@ -35,6 +35,7 @@ export function Settings() {
         if (!auth?.username) {
             navigate("/")
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [auth]);
 
 
@@ -117,7 +118,7 @@ function DeleteAccount(props: {deleteSpinning: boolean, onDelete: (e: SyntheticE
                             handleClose();
                             props.onDelete(e, password);
                         }}
-                        disabled={password.length == 0}>
+                        disabled={password.length === 0}>
                         Delete my account
                     </Button>
                 </Modal.Footer>
