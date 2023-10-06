@@ -62,6 +62,7 @@ export class Api {
 
     async getMainFeed(numberOfPosts: number = 10, continue_from: string = "") {
         try {
+            console.log("received", continue_from)
             const response = await this.client.get('/getMainFeed', {params: {
                     "max_posts": numberOfPosts,
                     "continue_from": continue_from

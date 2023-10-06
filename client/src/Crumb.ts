@@ -11,7 +11,7 @@ export interface SocialMediaPostDispatch {
  */
 export interface Crumb {
     author: string;
-    post_id: string | null;
+    post_id: string;
     likes: number;
     liked: boolean;
     contents: CrumbContent[]
@@ -29,12 +29,12 @@ export interface CrumbContent {
 export class CrumbV1 implements Crumb {
     public likes: number;
     public liked: boolean;
-    public post_id: string | null;
+    public post_id: string;
     public contents: CrumbContent[]
 
     constructor(public author: string, public content: string) {
         this.likes = 0;
-        this.post_id = null;
+        this.post_id = "";
         this.liked = false;
         this.contents = [{type: "txt", value: content}]
     }

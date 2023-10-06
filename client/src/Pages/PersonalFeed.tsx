@@ -6,7 +6,7 @@ import {CrumbsFeed} from "../Components/CrumbsFeed";
 export function PersonalFeed() {
     return (
         <Container className="main-content">
-            <CrumbsFeed canCompose={true} feed={() => new Api().getMainFeed(100)} />
+            <CrumbsFeed canCompose={true} feed={(continueFrom: string) => new Api().getMainFeed(10, continueFrom)} />
         </Container>
     )
 }

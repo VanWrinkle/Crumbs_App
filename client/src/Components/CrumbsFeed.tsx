@@ -6,23 +6,30 @@ import {SocialMediaTopPanel} from "./CrumbTopPanel";
 import {Link} from "react-router-dom";
 import {ThumbUp} from "@mui/icons-material";
 import {useAuth} from "../AuthProvider";
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 export function CrumbsFeed(prop: {
     canCompose: boolean,
-    feed: () => Promise<Crumb[] | undefined>
+    feed: (continueFrom: string) => Promise<Crumb[] | undefined>
 }) {
     const [crumbs, setCrumbs] = useState<Crumb[]>([])
     const [loading, setLoading] = useState(false)
+    const [hasMore, setHasMore] = useState(true)
 
     async function updatePosts() {
         const timer = setTimeout((e) => {
             setLoading(true)
         }, 300)
-        prop.feed()
+        const continueFrom = crumbs.length > 0 ? crumbs[crumbs.length - 1].post_id : ""
+        console.log(continueFrom)
+        prop.feed(continueFrom)
             .then((response) => {
                 if (response) {
-                    // TODO appende response istedenfor?
-                    setCrumbs(response)
+                    if (response.length === 0) {
+                        setHasMore(false)
+                    } else {
+                        setCrumbs([...crumbs, ...response])
+                    }
                 }
             })
             .catch(error => {
@@ -59,14 +66,21 @@ export function CrumbsFeed(prop: {
                     <SocialMediaTopPanel crumbs={crumbs} setCrumbs={setCrumbs}/>
                 </Row>
             )}
-            <Row>
-                <SocialMediaPostsDisplayAllBrief crumbs={crumbs} onLike={onLike}/>
-            </Row>
-            {loading && (
-                <Row className="justify-content-center mt-4">
-                    <Spinner animation="border" variant="info" />
-                </Row>
-            )}
+                <InfiniteScroll
+                    next={updatePosts}
+                    hasMore={hasMore}
+                    loader={(
+                        <Row className="justify-content-center mt-4">
+                            <Spinner animation="border" variant="info" />
+                        </Row>
+                    )}
+                    dataLength={crumbs.length}
+                    className="overflow-x-hidden"
+                >
+                    <Row>
+                        <SocialMediaPostsDisplayAllBrief crumbs={crumbs} onLike={onLike}/>
+                    </Row>
+                </InfiniteScroll>
         </Container>
     );
 }
