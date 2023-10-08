@@ -1,8 +1,9 @@
 
 import {MockUserDatabase} from "../src/IUserDatabase/MockUserDatabase";
 import {RegistrationService} from "../src/IUserRegistrationService/RegistrationService";
+import {MockGraphPersistence} from "../src/ISocialGraphPersistence/MockGraphPersistence";
 
-const loginService = new RegistrationService(new MockUserDatabase())
+const loginService = new RegistrationService(new MockUserDatabase(), new MockGraphPersistence())
 test('legal username and password', () => {
     const username = 'myusername'
     const password = 'atLeastOneLetterAnd1Number'
