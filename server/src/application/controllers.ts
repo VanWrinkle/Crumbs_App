@@ -5,7 +5,7 @@ import {IUserLoginService} from "../IUserLoginService/IUserLoginService";
 import {IUserRegistrationService} from "../IUserRegistrationService/IUserRegistrationService";
 import {ISocialGraphPersistence} from "../ISocialGraphPersistence/ISocialGraphPersistence";
 import {CrumbParser} from "../CrumbParser/CrumbParser";
-import {CrumbFilter} from "../ISocialGraphPersistence/NeoGraphPersistence";
+import {CrumbFilter} from "../ISocialGraphPersistence/NeoGraphPersistence/NeoGraphPersistence";
 import {Sort} from "../IPostPresentationService/IPostPresentationService";
 
 

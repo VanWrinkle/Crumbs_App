@@ -97,7 +97,8 @@ export function SocialMediaPostsDisplayAllBrief(props: {crumbs: Crumb[], onLike:
  * @param props
  */
 function SocialMediaPostDisplaySingleBrief(props: {crumb: Crumb, onLike: (e: SyntheticEvent, crumb: Crumb)=>{}}) {
-    const auth = useAuth()
+    const auth = useAuth();
+    const date = new Date(props.crumb.timestamp_milliseconds);
     const content = props.crumb.contents.map(content => {
         switch (content.type) {
             case "hashtag":
@@ -122,6 +123,7 @@ function SocialMediaPostDisplaySingleBrief(props: {crumb: Crumb, onLike: (e: Syn
                                style={{color: 'black'}}>
                                 <em>{props.crumb.author}</em>
                             </a>
+                            <em style={{color: 'blue',fontSize: '0.5em'}}>   {date.toDateString() + " : " + date.toLocaleTimeString()}</em>
                         </Card.Title>
                         <Card.Text>{content}</Card.Text>
                         <Stack direction="horizontal">
