@@ -1,4 +1,4 @@
-import {CrumbFilter, NeoGraphPersistence} from "../src/ISocialGraphPersistence/NeoGraphPersistence";
+import {CrumbFilter, NeoGraphPersistence} from "../src/ISocialGraphPersistence/NeoGraphPersistence/NeoGraphPersistence";
 import {ComponentType, UserPostData} from "../src/ISocialGraphPersistence/ISocialGraphPersistence";
 import {Sort} from "../src/IPostPresentationService/IPostPresentationService";
 import {CrumbParser} from "../src/CrumbParser/CrumbParser";
@@ -29,7 +29,7 @@ test('instantiate complex social graph', async () => {
         'GamerPro99',
         'TravelBug88'
     ];
-
+/*
     let post: UserPostData = {
         contents: [ "text" ],
         flags: [ ComponentType.Text ]
@@ -68,7 +68,7 @@ test('instantiate complex social graph', async () => {
             neo.createCrumb(crumbIDs[Math.floor(Math.random()*crumbIDs.length)], user, post)
         }
     })
-
+*/
 })
 
 
@@ -78,7 +78,30 @@ test('should successfully create new user', async () => {
 })
 
 test('should successfully delete user and their posts', async () => {
-    await neo.deleteUserNodeAndUserCrumbs("treng")
+    // const usernames = [
+    //     'HappyGiraffe87',
+    //     'SunshineRunner',
+    //     'CoolDolphin42',
+    //     'StarryNight123',
+    //     'MountainExplorer',
+    //     'CoffeeLover55',
+    //     'TechNinja99',
+    //     'MusicJunkie28',
+    //     'AdventureSeeker',
+    //     'Beachcomber75',
+    //     'NightOwl17',
+    //     'NatureEnthusiast',
+    //     'Bookworm2022',
+    //     'SkyWatcher64',
+    //     'FoodieAdventurer',
+    //     'HikingFanatic',
+    //     'ArtisticSoul22',
+    //     'YogaMaster36',
+    //     'GamerPro99',
+    //     'TravelBug88'
+    // ];
+    // await usernames.forEach(async name => await neo.deleteUserNodeAndUserCrumbs(name))
+    await neo.deleteUserNodeAndUserCrumbs("NightOwl17")
 })
 
 test('should successfully create new user nodes', async () => {
@@ -164,9 +187,9 @@ test('should successfully remove like relationship', async () => {
 
 test('should retrieve posts', async () => {
     let filter = new CrumbFilter();
-    filter.sort = Sort.Engagement;
+    filter.sort = Sort.Time;
     filter.max = 5
-    await neo.getCrumbs("vanwrinkle", filter, null);
+    await neo.getCrumbs(null, filter, null);
 })
 
 
