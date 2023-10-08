@@ -107,7 +107,7 @@ export function postCrumb(persistence: ISocialGraphPersistence) {
             let username = req.user.toString()
             let parsedCrumb = CrumbParser.parseCrumb(req.body.content)
             persistence
-                .createCrumb(null, username, parsedCrumb)
+                .createCrumb(req.body!.parent, username, parsedCrumb)
                 .catch( () => res.status(500).send() )
                 .then(  () => res.status(201).send() )
         } else {
@@ -224,9 +224,31 @@ export function deleteUser(userRegistration: IUserRegistrationService) {
                 .catch( _ => {
                     res.status(500).send();
                 })
-
         } else {
             res.status(401).send("Access forbidden");
         }
+    }
+}
+
+/**
+ *
+ * example request body
+ * {
+ *   "parent": "130123",
+ *   "max_posts": 15,
+ *   "continue_from": "1234"
+ * }
+ */
+export function getReplies(persistence: ISocialGraphPersistence) {
+    return function(req: express.Request, res: express.Response) {
+        let filter = new CrumbFilter();
+        filter.parent_post = req.body.parent;
+        persistence.getCrumbs(req.user? req.user.toString():null, filter, req.body.continue_from)
+            .then( crumbs => {
+                res.status(200).send(crumbs);
+            })
+            .catch( _ => {
+                res.status(500).send();
+            })
     }
 }

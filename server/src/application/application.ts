@@ -11,7 +11,7 @@ import {
     getMainFeed,
     setLike,
     setFollow,
-    getUserFeed, deleteUser
+    getUserFeed, deleteUser, getReplies
 } from "./controllers";
 import http from "http";
 import https from "https";
@@ -40,6 +40,7 @@ export class Application {
             .use(this.#config.loginService.tokenParser())
             .get('/api/getMainFeed', getMainFeed(new NeoGraphPersistence()))
             .get('/api/getUserFeed', getUserFeed(new NeoGraphPersistence()))
+            .get('/api/getReplies', getReplies(new NeoGraphPersistence()))
             .get('*', reactApp)
             .post('/api/register', registerUser(this.#config.registrationService))
             .delete('/api/deleteUser', deleteUser(this.#config.registrationService))
