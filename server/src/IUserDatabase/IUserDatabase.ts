@@ -11,6 +11,13 @@ export interface IUserDatabase {
      */
     addUser(user: StoredUserData): Promise<void>
 
+
+    /**
+     * Deletes user's details from database
+     * @param username - username of user to be deleted
+     */
+    deleteUser(username: string): Promise<void>
+
     /**
      * Retrieves the data matching on username, otherwise undefined.
      * An error is raised only if interaction with the database fails.

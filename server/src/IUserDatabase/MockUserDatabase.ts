@@ -14,6 +14,13 @@ export class MockUserDatabase implements IUserDatabase {
             resolve()
         })
     }
+
+    deleteUser(username:string): Promise<void> {
+        return new Promise((resolve) => {
+            this.users = this.users.filter( (user) =>  {return user.userName != username});
+            resolve()
+        })
+    }
     getUser(username: string): Promise<StoredUserData | undefined> {
         return new Promise((resolve) => {
             const user = this.users.find((element) => {

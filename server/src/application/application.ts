@@ -42,7 +42,7 @@ export class Application {
             .get('/api/getUserFeed', getUserFeed(new NeoGraphPersistence()))
             .get('*', reactApp)
             .post('/api/register', registerUser(this.#config.registrationService))
-            .delete('/api/deleteUser', deleteUser(new NeoGraphPersistence()))
+            .delete('/api/deleteUser', deleteUser(this.#config.registrationService))
             .post('/api/login', loginUser(this.#config.loginService))
             .post('/api/logout', logoutUser(this.#config.loginService))
             .post('/api/renew', renewUserToken(this.#config.loginService))

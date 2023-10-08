@@ -193,7 +193,17 @@ export function getMainFeed(persistence: ISocialGraphPersistence) {
  */
 export function getUserFeed(persistence: ISocialGraphPersistence) {
     return function(req: express.Request, res: express.Response) {
-        console.log("getUserFeed: " + req.query.user)
+        if(req.body.user) {
+            let filter = new CrumbFilter();
+            persistence
+                .getCrumbs(null, filter, req.body.continue_from)
+                .then( crumbs => {
+                        res.status(200).send(crumbs);
+                    })
+                .catch( _ => res.status(500).send())
+        } else {
+            res.status(404).send();
+        }
     }
 }
 
@@ -201,10 +211,21 @@ export function getUserFeed(persistence: ISocialGraphPersistence) {
 /**
  * Handler should delete the authenticated, all data associated with the user,
  * and finally clear the access token
- * @param persistence
  */
-export function deleteUser(persistence: ISocialGraphPersistence) {
+export function deleteUser(userRegistration: IUserRegistrationService) {
     return function(req: express.Request, res: express.Response) {
         console.log("deleteUser: " + req.user)
+        if (req.user) {
+            userRegistration.deleteUser(req.user.toString())
+                .then( () => {
+                    res.status(204).send();
+                })
+                .catch( _ => {
+                    res.status(500).send();
+                })
+
+        } else {
+            res.status(401).send("Access forbidden");
+        }
     }
 }

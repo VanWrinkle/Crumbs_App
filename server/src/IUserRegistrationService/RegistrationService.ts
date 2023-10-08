@@ -29,6 +29,18 @@ export class RegistrationService implements IUserRegistrationService {
         });
     }
 
+
+    deleteUser(username: string): Promise<void> {
+        return new Promise<void>(  resolve =>  {
+            this.userPersistence.deleteUser(username)
+                .then( () => {
+                    this.graphPersistence
+                        .deleteUserNodeAndUserCrumbs(username)
+                        .then( () => resolve() )
+                });
+        });
+    }
+
     async registerUser(userName: string, password:string): Promise<void> {
         console.log("registering new user");
         return bcrypt

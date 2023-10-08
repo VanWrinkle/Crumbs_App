@@ -44,6 +44,25 @@ export class MDBUserDatabase implements IUserDatabase {
         });
     }
 
+    public deleteUser(username: string): Promise<void> {
+        return new Promise(async (resolve) => {
+            try {
+                await this.#client.connect();
+                await this.#verifySuccessfulConnection();
+                await this.#client
+                    .db(this.#dbName)
+                    .collection("login_info")
+                    .deleteOne({userName: username});
+            } catch {
+                console.log("Failed to insert userdata");
+            } finally {
+                // Ensures that the client will close when you finish/error
+                await this.#client.close();
+                resolve()
+            }
+        });
+    }
+
 
     public getUser(username: string): Promise<StoredUserData | undefined> {
         return new Promise(async (resolve) => {
