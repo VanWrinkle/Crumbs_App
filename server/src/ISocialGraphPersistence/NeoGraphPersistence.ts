@@ -12,42 +12,105 @@ const neo4j_url = "neo4j://10.212.172.128:7687"
  * Represents a filter configuration for retrieving crumbs (posts) in the application.
  */
 export class CrumbFilter {
+    private _parent_post: string | undefined;
+    private _authors: string[] | undefined;
+    private _hashtags: string[] | undefined;
+    private _order = Order.Descending;
+    private _sort = Sort.Time;
+    private _max = 15;
+
     /**
-     * The ID of the parent post to filter crumbs by replies.
+     * Get the ID of the parent post to filter crumbs by replies.
      * If undefined, no filtering by parent post is applied.
      */
-    parent_post: string | undefined;
+    get parent_post(): string | undefined {
+        return this._parent_post;
+    }
 
     /**
-     * An array of author usernames to filter crumbs by specific authors.
+     * Set the ID of the parent post to filter crumbs by replies.
+     */
+    set parent_post(value: string | undefined) {
+        this._parent_post = value;
+    }
+
+    /**
+     * Get an array of author usernames to filter crumbs by specific authors.
      * If undefined, no filtering by authors is applied.
      */
-    authors: string[] | undefined;
+    get authors(): string[] | undefined {
+        return this._authors;
+    }
 
     /**
-     * An array of hashtags to filter crumbs by specific hashtags.
+     * Set an array of author usernames to filter crumbs by specific authors.
+     */
+    set authors(value: string[] | undefined) {
+        this._authors = value;
+    }
+
+    /**
+     * Get an array of hashtags to filter crumbs by specific hashtags.
      * If undefined, no filtering by hashtags is applied.
      */
-    hashtags: string[] | undefined;
-
+    get hashtags(): string[] | undefined {
+        return this._hashtags;
+    }
 
     /**
-     * The order in which crumbs should be sorted (e.g., by time, engagement, etc.).
+     * Set an array of hashtags to filter crumbs by specific hashtags.
+     */
+    set hashtags(value: string[] | undefined) {
+        this._hashtags = value;
+    }
+
+    /**
+     * Get the order in which crumbs should be sorted (e.g., by time, engagement, etc.).
      * Default: Order.Descending
      */
-    order = Order.Descending;
+    get order(): Order {
+        return this._order;
+    }
 
     /**
-     * The method used for sorting crumbs (e.g., by time, engagement, etc.).
+     * Set the order in which crumbs should be sorted.
+     */
+    set order(value: Order) {
+        this._order = value;
+    }
+
+    /**
+     * Get the method used for sorting crumbs (e.g., by time, engagement, etc.).
      * Default: Sort.Time
      */
-    sort = Sort.Time;
+    get sort(): Sort {
+        return this._sort;
+    }
 
     /**
-     * The maximum number of crumbs to retrieve. Limits the result set.
+     * Set the method used for sorting crumbs.
+     */
+    set sort(value: Sort) {
+        this._sort = value;
+    }
+
+    /**
+     * Get the maximum number of crumbs to retrieve. Limits the result set.
      * Default: 15
      */
-    max = 15;
+    get max(): number {
+        return this._max;
+    }
+
+    /**
+     * Set the maximum number of crumbs to retrieve.
+     * Set value is clamped between 0 and 200
+     */
+    set max(value: number) {
+        this._max = value;
+        this._max = Math.min(this._max, 200);
+        this._max = Math.max(this._max, 0);
+    }
 }
 
 
@@ -176,14 +239,15 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
         let query =
             `MATCH (c:Crumb)-[p:POSTED_BY]->(author)
             WHERE author.username <> $user
+            ${user? "MATCH (u:User {username: $user}) ":""}
             ${filter.authors != undefined? "WHERE author.username IN $authors" : ""}
             ${filter.parent_post!=undefined? "MATCH (c)-[:REPLIES_TO]->(p:Crumb) WHERE ID(p) = $parent":""}
-            OPTIONAL MATCH (c)<-[:LIKES]-(liker)
+            OPTIONAL MATCH (c)<-[liked:LIKES]-(liker)
             ${cutoff? "MATCH (cutoff:Crumb) WHERE ID(cutoff) = " +  cutoff:""}
             ${engagement? "OPTIONAL MATCH (c)<-[:REPLIES_TO]-(reply)" : ""}
-            WITH c, author, ${cutoff?"cutoff.created AS cutoff,":""} COUNT(DISTINCT liker) AS likes ${engagement? ", COUNT(DISTINCT reply) AS replies":""}
+            WITH c, author, u, ${cutoff?"cutoff.created AS cutoff,":""} COUNT(DISTINCT liker) AS likes ${engagement? ", COUNT(DISTINCT reply) AS replies":""}
             ${cutoff? (engagement? "WHERE c.created > cutoff":"WHERE c.created > cutoff") :""}
-            RETURN c, author, likes${engagement?", replies, likes + replies AS engagement":""}
+            RETURN c, author,  ${user? "EXISTS( (u)-[:LIKES]->(c) )":"false"} AS liked, likes${engagement?", replies, likes + replies AS engagement":""}
             ORDER BY ${engagement? "engagement":"c.created"} ${desc? "DESC":""}
             LIMIT ${filter.max};`
         console.log(query)
@@ -201,6 +265,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 )
                 .then( results => {
                     results.records.forEach( record => {
+                        console.log(record.get('liked'))
                         let flags = record.get('c').properties.flags;
                         let values = record.get('c').properties.contents;
                         let contents: PostComponent[] = [];
@@ -214,7 +279,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                             author: record.get('author').properties.username,
                             post_id: record.get('c').identity.toString(),
                             likes: record.get('likes').low,
-                            liked: false,
+                            liked: record.get('liked'),
                             contents: contents
                         };
                         console.log(crumb)

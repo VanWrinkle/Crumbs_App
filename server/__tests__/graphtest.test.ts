@@ -48,7 +48,7 @@ test('instantiate complex social graph', async () => {
         }
         let filter = new CrumbFilter()
         filter.authors = [name];
-        neo.getCrumbs(null, filter)
+        neo.getCrumbs(null, filter, null)
             .then(crumbs => {
                 crumbs.forEach( crumb => {
                     crumbIDs.push(crumb.post_id)
@@ -166,7 +166,7 @@ test('should retrieve posts', async () => {
     let filter = new CrumbFilter();
     filter.sort = Sort.Engagement;
     filter.max = 5
-    await neo.getCrumbs(null, filter);
+    await neo.getCrumbs("vanwrinkle", filter, null);
 })
 
 
@@ -178,5 +178,7 @@ test('should create new crumb', async () => {
 
     let parsedPost = CrumbParser.parseCrumb("Oh god I'm crumbing #crumblords")
     await console.log(parsedPost)
-    await neo.createCrumb(null, "vanwrinkle", post)
+    await neo.createCrumb(null, "bobby", post)
 })
+
+
