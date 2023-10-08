@@ -38,7 +38,7 @@ export class CrumbV1 implements Crumb {
         this.likes = 0;
         this.post_id = "";
         this.liked = false;
-        this.timestamp_milliseconds = 0;
+        this.timestamp_milliseconds = new Date().getTime();
         this.contents = [{type: "txt", value: content}]
     }
 

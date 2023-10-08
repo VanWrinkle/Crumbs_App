@@ -7,6 +7,7 @@ import {Link} from "react-router-dom";
 import {ThumbUp} from "@mui/icons-material";
 import {useAuth} from "../AuthProvider";
 import InfiniteScroll from 'react-infinite-scroll-component';
+import {getTimeSince} from "../utils";
 
 export function CrumbsFeed(prop: {
     canCompose: boolean,
@@ -102,9 +103,9 @@ function SocialMediaPostDisplaySingleBrief(props: {crumb: Crumb, onLike: (e: Syn
     const content = props.crumb.contents.map(content => {
         switch (content.type) {
             case "hashtag":
-                return(<Link to={""}>{content.value}</Link>)
+                return(<Link to={""} style={{color: "inherit"}}>{content.value}</Link>)
             case "mention":
-                return(<Link to={""}>{content.value}</Link>)
+                return(<Link to={`/profile/${content.value.substring(1)}`} style={{color: "inherit"}}>{content.value}</Link>)
             default:
                 return (<>{content.value}</>)
         }
@@ -117,14 +118,20 @@ function SocialMediaPostDisplaySingleBrief(props: {crumb: Crumb, onLike: (e: Syn
                     <Card.Img src="/logo192.png" />
                 </Col>
                 <Col>
-                    <Card.Body className="mt-2 mb-2">
-                        <Card.Title>@
-                            <a href={`/profile/${props.crumb.author}`}
-                               style={{color: 'black'}}>
-                                <em>{props.crumb.author}</em>
-                            </a>
-                            <em style={{color: 'blue',fontSize: '0.5em'}}>   {date.toDateString() + " : " + date.toLocaleTimeString()}</em>
-                        </Card.Title>
+                    <Card.Body>
+                        <Row className="pb-2">
+                            <Col sm={8} style={{color: 'black', fontSize: '1.2em'}}>@
+                                <a href={`/profile/${props.crumb.author}`} style={{color: "inherit"}}>
+                                    <em>{props.crumb.author}</em>
+                                </a>
+                            </Col>
+                            <Col style={{textAlign: 'right'}}>
+                                <em style={{color: 'gray', fontSize: '0.8em'}}>
+                                    {getTimeSince(date)}
+                                </em>
+                            </Col>
+
+                        </Row>
                         <Card.Text>{content}</Card.Text>
                         <Stack direction="horizontal">
                             <div className="ms-auto">
