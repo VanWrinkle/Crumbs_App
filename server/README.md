@@ -84,6 +84,7 @@ by manually executing `npm run build` from the client directory.
 - Request Body:
   ```json
   {
+    "parent": "optional_parent_id",
     "userId": "test_user",
     "content": "This is a crumb text",
     "published": "2023-09-29T15:56:49.419Z",
@@ -117,7 +118,6 @@ by manually executing `npm run build` from the client directory.
 - Request Body:
 ```json
 {
-  "username": "session_owner",
   "author_username": "author_of_posts",
   "max_posts": 3,
   "continue_from": "35901*+24+w5ssfsdf+%%¤)"
@@ -134,8 +134,7 @@ by manually executing `npm run build` from the client directory.
 - Request Body:
 ```json
 {
-  "username" : "session_owner",
-  "parent_post_ID": "5=%jf0f+24jajsf9u234n02",
+  "parent": "5=%jf0f+24jajsf9u234n02",
   "max_posts": 15,
   "continue_from": "35901*+24+w5ssfsdf+%%¤)"
 }
@@ -151,7 +150,6 @@ by manually executing `npm run build` from the client directory.
 - Request Body:
 ```json
 {
-  "username" : "session_owner",
   "hashtags": [
     "hashtag1",
     "hashtag2"
@@ -182,34 +180,35 @@ by manually executing `npm run build` from the client directory.
 ```json
 [
   {
-    "user": "author_of_post",
+    "author": "author_of_post",
+    "date": "Date string",
     "post_id": "35901*+24+w5ssfsdf+%%¤)",
     "likes": 132,
     "liked": false,
     "post_content": [
       {
         "type": "[hashtag:mention:text:url:img]",
-        "val": "content"
+        "value": "content"
       },
       {
         "type": "text[hashtag:mention:text:url:img]",
-        "val": "Oh my god! "
+        "value": "Oh my god! "
       },
       {
         "type": "mention",
-        "val": "Bingus"
+        "value": "Bingus"
       },
       {
         "type": "text",
-        "val": " is just the cutest! "
+        "value": " is just the cutest! "
       },
       {
         "type": "hashtag",
-        "val": "bingusourlordandsaviour"
+        "value": "bingusourlordandsaviour"
       },
       {
         "type": "url",
-        "val": "www.bingusmerch.com"
+        "value": "www.bingusmerch.com"
       }
     ]
   }
