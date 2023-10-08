@@ -26,6 +26,14 @@ export class Api {
        }
     }
 
+    async userLogout() {
+        try {
+            await this.client.post('/logout')
+        } catch (error: any) {
+            this.handleApiError(error, {})
+        }
+    }
+
     async userRenew() {
         try {
             const response = await this.client.post('/renew')

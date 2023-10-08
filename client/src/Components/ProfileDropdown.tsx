@@ -3,6 +3,7 @@ import {Badge, Image, NavDropdown} from "react-bootstrap";
 import React, {SyntheticEvent} from "react";
 import {useAuth, useAuthUpdate} from "../AuthProvider";
 import axios from "axios";
+import {Api} from "../Api";
 
 export function ProfileDropdown() {
     const userData = useAuth()
@@ -11,8 +12,7 @@ export function ProfileDropdown() {
 
     function onLogout(e: SyntheticEvent) {
         e.preventDefault();
-        axios.post('/api/logout', {
-        })
+        new Api().userLogout()
             .then(() => {
                 updateUserData(undefined)
             })

@@ -67,7 +67,7 @@ export function CrumbsFeed(prop: {
                         </Row>
                     )}
                     dataLength={crumbs.length}
-                    className="overflow-x-hidden"
+                    className="overflow-hidden"
                 >
                     <Row>
                         <SocialMediaPostsDisplayAllBrief crumbs={crumbs} onLike={onLike}/>
