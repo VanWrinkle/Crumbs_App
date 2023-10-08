@@ -195,6 +195,7 @@ export function getUserFeed(persistence: ISocialGraphPersistence) {
     return function(req: express.Request, res: express.Response) {
         if(req.body.user) {
             let filter = new CrumbFilter();
+            filter.max = req.body.max_posts;
             persistence
                 .getCrumbs(null, filter, req.body.continue_from)
                 .then( crumbs => {
