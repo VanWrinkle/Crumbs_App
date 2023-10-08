@@ -1,6 +1,6 @@
 import React, { SyntheticEvent } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Form, Button, NavDropdown, InputGroup, Alert, Spinner} from "react-bootstrap";
+import {Form, NavDropdown, InputGroup, Alert} from "react-bootstrap";
 import { useState } from 'react';
 import {useAuthUpdate} from "../AuthProvider";
 import {Api} from "../Api";
@@ -67,7 +67,13 @@ function UserLogin() {
                     </Alert>
                 )}
 
-                <LoadingButton isLoading={isLoading} onClick={onClick} buttonText={'Log in'} disabled={false} />
+                <LoadingButton
+                    isLoading={isLoading}
+                    onClick={onClick}
+                    buttonText={'Log in'}
+                    disabled={false}
+                    variant={'primary'}
+                />
 
                 <p style={{paddingTop: '20px'}}>
                 No account? Sign up <> </>

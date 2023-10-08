@@ -10,6 +10,8 @@ import {Login} from "./Pages/Login";
 
 import {CrumbNavbar} from "./Components/Navbar";
 import {AuthProvider} from "./AuthProvider";
+import {Settings} from "./Pages/Settings";
+import {Profile} from "./Pages/Profile";
 
 function App() {
     return (
@@ -20,6 +22,8 @@ function App() {
                     <Route path="/" element={<PersonalFeed />}>For you</Route>
                     <Route path="/signup" element={<Signup />}>Signup</Route>
                     <Route path="/login" element={<Login />}>Login</Route>
+                    <Route path="/profile/:userid" element={<Profile />}>Profile</Route>
+                    <Route path="/settings" element={<Settings />}>Settings</Route>
                 </Route>
             </Routes>
         </AuthProvider>

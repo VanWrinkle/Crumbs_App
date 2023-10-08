@@ -1,5 +1,5 @@
 import {Crumb, CrumbV1, SocialMediaPostDispatch} from "../Crumb";
-import {Alert, Button, Col, Form, Image, Spinner} from "react-bootstrap";
+import {Alert, Col, Form, Image} from "react-bootstrap";
 import React, {SyntheticEvent, useState} from "react";
 import {useAuth} from "../AuthProvider";
 import {Api} from "../Api";
@@ -9,7 +9,7 @@ export function SocialMediaTopPanel(props: {crumbs: Crumb[], setCrumbs: SocialMe
     return (
         <>
             <Col xs={3}>
-                <Image src="./logo.png" fluid />
+                <Image src="/logo.png" fluid />
             </Col>
             <Col>
                 <SocialMediaPostNew crumbs={props.crumbs} setCrumbs={props.setCrumbs} />
@@ -29,13 +29,13 @@ function SocialMediaPostNew(props: {crumbs: Crumb[], setCrumbs: SocialMediaPostD
     const userData = useAuth()
     async function onClick(e: SyntheticEvent) {
         e.preventDefault();
-        const timer = setTimeout((e) => {
+        const timer = setTimeout(() => {
             setSpinner(true)
         }, 300)
         try {
             const api = new Api()
             const crumb = new CrumbV1(userData!.username.toString(), userInput)
-            const response = await api.postNewCrumb(crumb)
+            await api.postNewCrumb(crumb);
             setUserInput("");
             props.setCrumbs([crumb, ...props.crumbs]);
         } catch (error) {
@@ -65,10 +65,16 @@ function SocialMediaPostNew(props: {crumbs: Crumb[], setCrumbs: SocialMediaPostD
                 onChange={(e) => setUserInput(e.target.value)}>
             </Form.Control>
             <div className="d-grid">
-                <Alert variant="warning" onClose={() => setAlert("")} hidden={alert == ""}>
+                <Alert variant="warning" onClose={() => setAlert("")} hidden={alert === ""}>
                     {alert}
                 </Alert>
-                <LoadingButton isLoading={spinner} onClick={onClick} buttonText={'Post Crumb'} disabled={userInput.length === 0} />
+                <LoadingButton
+                    isLoading={spinner}
+                    onClick={onClick}
+                    buttonText={'Post Crumb'}
+                    disabled={userInput.length === 0}
+                    variant={'primary'}
+                />
             </div>
         </Form>
     );

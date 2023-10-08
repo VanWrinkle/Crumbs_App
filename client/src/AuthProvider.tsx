@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {Api} from "./Api";
 
 export interface AuthState {
-    username: String,
+    username: string,
     ttl: Date
 }
 
@@ -58,7 +58,7 @@ export function AuthProvider({children}: { children: React.ReactNode }) {
                 renewToken(token)
             })
             .catch((error) => {
-                if (error.message == "Invalid token") {
+                if (error.message === "Invalid token") {
                     renewToken(undefined)
                     console.log("the server rejected the active token")
                 }
@@ -73,6 +73,7 @@ export function AuthProvider({children}: { children: React.ReactNode }) {
                 renewToken(undefined)
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token])
 
 

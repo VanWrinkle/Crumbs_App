@@ -1,42 +1,12 @@
-import {Crumb} from "../Crumb";
-import {SocialMediaTopPanel} from "../Components/CrumbTopPanel";
-import {SocialMediaPostsDisplayAllBrief} from "../Components/CrumbFeed";
-import React, {useEffect, useState} from "react";
-import {Container, Row} from "react-bootstrap";
+import React from "react";
+import {Container} from "react-bootstrap";
 import {Api} from "../Api";
+import {CrumbsFeed} from "../Components/CrumbsFeed";
 
 export function PersonalFeed() {
-    // let staticPost = new CrumbV1("Guest", "Hey there! This is a social media post!");
-    const [crumbs, setCrumbs] = useState<Crumb[]>([])
-
-    async function updatePosts() {
-        const api = new Api()
-        api.getMainFeed(100)
-            .then((response) => {
-                if (response) {
-                    // TODO appende response istedenfor?
-                    setCrumbs(response)
-                }
-                console.log("test")
-            })
-            .catch(error => {
-                // TODO error handling
-            })
-    }
-
-    useEffect(() => {
-        // TODO: Denne fetcher twice, for en eller annen grunn.. Yikes!
-        updatePosts()
-    }, []);
-
     return (
         <Container className="main-content">
-            <Row>
-                <SocialMediaTopPanel crumbs={crumbs} setCrumbs={setCrumbs}/>
-            </Row>
-            <Row>
-                <SocialMediaPostsDisplayAllBrief crumbs={crumbs}/>
-            </Row>
+            <CrumbsFeed canCompose={true} feed={(continueFrom: string) => new Api().getMainFeed(10, continueFrom)} />
         </Container>
-    );
+    )
 }

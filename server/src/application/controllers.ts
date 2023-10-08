@@ -1,4 +1,4 @@
-import express from "express";
+import express, {query} from "express";
 import path from "path";
 import {reactDir} from "../globals";
 import {IUserLoginService} from "../IUserLoginService/IUserLoginService";
@@ -117,11 +117,7 @@ export function postCrumb(persistence: ISocialGraphPersistence) {
     }
 }
 
-export function getCrumbsByUser(persistence: ISocialGraphPersistence) {
-    return function(req: express.Request, res: express.Response) {
 
-    }
-}
 
 export function setFollow(persistence: ISocialGraphPersistence, follows: boolean) {
     return function(req: express.Request, res: express.Response) {
@@ -142,13 +138,18 @@ export function setFollow(persistence: ISocialGraphPersistence, follows: boolean
 export function setLike(persistence: ISocialGraphPersistence, likes: boolean) {
     return function(req: express.Request, res: express.Response) {
         if(req.user) {
-            persistence.setCrumbLiked(req.user.toString(), req.body.crumb, likes)
-                .catch(()=> {
-                    res.status(500).send() // TODO: Logic for not found
-                })
-                .then( () => {
+            let id = req.query.crumb?.toString()
+            if (id) {
+                persistence.setCrumbLiked(req.user.toString(), id, likes)
+                    .catch(() => {
+                        res.status(500).send() // TODO: Logic for not found
+                    })
+                    .then(() => {
                         res.status(201).send()
-                })
+                    })
+            } else {
+                res.status(400).send()
+            }
         } else {
             res.status(401).send()
         }
@@ -158,7 +159,7 @@ export function setLike(persistence: ISocialGraphPersistence, likes: boolean) {
 export function getMainFeed(persistence: ISocialGraphPersistence) {
     return function(req: express.Request, res: express.Response) {
         let filter = new CrumbFilter();
-        filter.sort = Sort.Engagement;
+        filter.sort = Sort.Time;
 
         if(req.query.max_posts) {
             let max = Number.parseInt(req.query.max_posts.toString());
@@ -177,5 +178,33 @@ export function getMainFeed(persistence: ISocialGraphPersistence) {
             .then( crumbs => {
                     res.status(200).send(crumbs);
                 })
+    }
+}
+
+/**
+ * Handler should fetch in bulk the most recent posts by a specific user
+ * requested in by queries. Accepted queries:
+ *    "user": string
+ *    "max_posts": number
+ *    "continue_from": string
+ * Should be requestable by anyone, including anonymously
+ * @param persistence
+ * @return - same output format as main feed
+ */
+export function getUserFeed(persistence: ISocialGraphPersistence) {
+    return function(req: express.Request, res: express.Response) {
+        console.log("getUserFeed: " + req.query.user)
+    }
+}
+
+
+/**
+ * Handler should delete the authenticated, all data associated with the user,
+ * and finally clear the access token
+ * @param persistence
+ */
+export function deleteUser(persistence: ISocialGraphPersistence) {
+    return function(req: express.Request, res: express.Response) {
+        console.log("deleteUser: " + req.user)
     }
 }
