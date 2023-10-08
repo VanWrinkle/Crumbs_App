@@ -1,7 +1,8 @@
-import {ISocialGraphPersistence, PostComponent, UserPostData, UserPostView} from "./ISocialGraphPersistence";
-import neo4j from 'neo4j-driver'
+import {ISocialGraphPersistence, PostComponent, UserPostData, UserPostView} from "../ISocialGraphPersistence";
+import neo4j, {DateTime} from 'neo4j-driver'
 import json from 'json5';
-import {Order, Sort} from "../IPostPresentationService/IPostPresentationService";
+import {Order, Sort} from "../../IPostPresentationService/IPostPresentationService";
+import {Neo4jQueryBuilder} from "./Neo4jQueryBuilder";
 
 const neo4j_username = "neo4j"
 const neo4j_password = "crumbdevsrule"
@@ -232,25 +233,54 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
      * @returns A Promise that resolves to an array of UserPostView objects representing the retrieved crumbs.
      */
     async getCrumbs(user: string | null, filter: CrumbFilter, cutoff: string | null): Promise <UserPostView[]> {
+        if (cutoff === "") {cutoff = null} // Simplifies logic un the query construction
         let view: UserPostView[] = [];
         let engagement = filter.sort === Sort.Engagement
         let desc = filter.order === Order.Descending
         //TODO: fetch engagement for single post
         let query =
-            `MATCH (c:Crumb)-[p:POSTED_BY]->(author)
-            WHERE author.username <> $user
-            ${user? "MATCH (u:User {username: $user}) ":""}
-            ${filter.authors != undefined? "WHERE author.username IN $authors" : ""}
-            ${filter.parent_post!=undefined? "MATCH (c)-[:REPLIES_TO]->(p:Crumb) WHERE ID(p) = $parent":""}
-            OPTIONAL MATCH (c)<-[liked:LIKES]-(liker)
+            `
+            ${filter.parent_post!=undefined? 
+                "MATCH (parent)<-[:REPLIES_TO]-(crumb:Crumb)-[p:POSTED_BY]->(author)"
+                :"MATCH (crumb:Crumb)-[p:POSTED_BY]->(author)"}
+            ${Neo4jQueryBuilder.WHERE([
+                (user)?"author.username <> $user":"",
+                (filter.authors)?"author.username IN $authors":"",
+                (filter.hashtags)?"":"" //TODO: Implement hashtags in DB
+            ])}
+            OPTIONAL MATCH (crumb)<-[liked:LIKES]-(liker)
+            ${user? "MATCH (user:User {username: $user})":""}
             ${cutoff? "MATCH (cutoff:Crumb) WHERE ID(cutoff) = " +  cutoff:""}
-            ${engagement? "OPTIONAL MATCH (c)<-[:REPLIES_TO]-(reply)" : ""}
-            WITH c, author, u, ${cutoff?"cutoff.created AS cutoff,":""} COUNT(DISTINCT liker) AS likes ${engagement? ", COUNT(DISTINCT reply) AS replies":""}
-            ${cutoff? (engagement? "WHERE c.created > cutoff":"WHERE c.created > cutoff") :""}
-            RETURN c, author,  ${user? "EXISTS( (u)-[:LIKES]->(c) )":"false"} AS liked, likes${engagement?", replies, likes + replies AS engagement":""}
-            ORDER BY ${engagement? "engagement":"c.created"} ${desc? "DESC":""}
+            ${engagement? "OPTIONAL MATCH (crumb)<-[:REPLIES_TO]-(reply)" : ""}
+            ${Neo4jQueryBuilder.WITH([
+                "crumb",
+                "author",
+                user ? "user" : "",
+                cutoff? "cutoff.created AS cutoff" : "",
+                "COUNT(DISTINCT liker) AS likes",
+                engagement? "COUNT(DISTINCT reply) AS replies":"",
+            ])}
+            ${cutoff?
+                Neo4jQueryBuilder.WHERE_CUTOFF(
+                engagement?"crumb.created":"crumb.created",
+                engagement?"cutoff":"cutoff",
+                filter.order)
+                :
+                ""}
+            ${Neo4jQueryBuilder.RETURN([
+                "crumb",
+                "author",
+                "likes",
+                `${user? "EXISTS( (user)-[:LIKES]->(crumb) )":"false"} AS liked`,
+                engagement?"likes + replies AS engagement":""
+                
+            ])}
+            ${Neo4jQueryBuilder.ORDER_BY(
+                [engagement? "engagement":"","crumb.created"], 
+                filter.order)}
             LIMIT ${filter.max};`
         console.log(query)
+        console.log("continue_from" + cutoff)
         return new Promise( resolve => {
             let session = this.#driver.session();
             session
@@ -265,9 +295,8 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 )
                 .then( results => {
                     results.records.forEach( record => {
-                        console.log(record.get('liked'))
-                        let flags = record.get('c').properties.flags;
-                        let values = record.get('c').properties.contents;
+                        let flags = record.get('crumb').properties.flags;
+                        let values = record.get('crumb').properties.contents;
                         let contents: PostComponent[] = [];
                         for (let i = 0; i < flags.length; i++) {
                             contents.push({
@@ -275,14 +304,16 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                                 value: values[i]
                             })
                         }
+                        let timestamp = Number(record.get('crumb').properties.created.toBigInt());
                         let crumb: UserPostView = {
                             author: record.get('author').properties.username,
-                            post_id: record.get('c').identity.toString(),
+                            timestamp_milliseconds: timestamp,
+                            post_id: record.get('crumb').identity.toString(),
                             likes: record.get('likes').low,
                             liked: record.get('liked'),
                             contents: contents
                         };
-                        console.log(crumb)
+                        console.log("id: " + crumb.post_id + "   created: " + crumb.timestamp_milliseconds)
                         view.push(crumb)
                     })
                 })
@@ -383,3 +414,6 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
         })
     }
 }
+
+
+

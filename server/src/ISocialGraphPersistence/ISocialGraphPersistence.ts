@@ -1,4 +1,4 @@
-import {CrumbFilter} from "./NeoGraphPersistence";
+import {CrumbFilter} from "./NeoGraphPersistence/NeoGraphPersistence";
 
 export interface ISocialGraphPersistence {
     createUserNode(username: string): Promise<void>
@@ -36,6 +36,7 @@ export interface PostComponent {
 
 export interface UserPostView {
     author: string
+    timestamp_milliseconds: number
     post_id: string
     likes: number,
     liked: boolean,

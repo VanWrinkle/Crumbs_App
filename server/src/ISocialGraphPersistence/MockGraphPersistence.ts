@@ -1,4 +1,4 @@
-import {CrumbFilter} from "./NeoGraphPersistence";
+import {CrumbFilter} from "./NeoGraphPersistence/NeoGraphPersistence";
 import {UserPostData, UserPostView} from "./ISocialGraphPersistence";
 
 export class MockGraphPersistence {
@@ -24,6 +24,7 @@ export class MockGraphPersistence {
             author: "test_user",
             contents: [],
             liked: false,
+            timestamp_milliseconds: 0,
             likes: 0
         }
         return view });

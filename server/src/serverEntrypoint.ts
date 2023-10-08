@@ -5,7 +5,7 @@ import {RegistrationService} from "./IUserRegistrationService/RegistrationServic
 import {Application} from "./application/application";
 import {ConfigSettings} from "./application/config";
 import {AuthenticationService} from "./IUserAuthenticationService/AuthenticationService";
-import {NeoGraphPersistence} from "./ISocialGraphPersistence/NeoGraphPersistence";
+import {NeoGraphPersistence} from "./ISocialGraphPersistence/NeoGraphPersistence/NeoGraphPersistence";
 
 
 
