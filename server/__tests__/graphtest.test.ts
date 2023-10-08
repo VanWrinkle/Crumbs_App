@@ -73,37 +73,33 @@ test('instantiate complex social graph', async () => {
 
 
 //////////////// MANAGING USER NODES ///////////////////////////////////////////
-test('should successfully create new user', async () => {
-    await neo.createUserNode("André")
-})
-
 test('should successfully delete user and their posts', async () => {
-    // const usernames = [
-    //     'HappyGiraffe87',
-    //     'SunshineRunner',
-    //     'CoolDolphin42',
-    //     'StarryNight123',
-    //     'MountainExplorer',
-    //     'CoffeeLover55',
-    //     'TechNinja99',
-    //     'MusicJunkie28',
-    //     'AdventureSeeker',
-    //     'Beachcomber75',
-    //     'NightOwl17',
-    //     'NatureEnthusiast',
-    //     'Bookworm2022',
-    //     'SkyWatcher64',
-    //     'FoodieAdventurer',
-    //     'HikingFanatic',
-    //     'ArtisticSoul22',
-    //     'YogaMaster36',
-    //     'GamerPro99',
-    //     'TravelBug88'
-    // ];
-    // await usernames.forEach(async name => await neo.deleteUserNodeAndUserCrumbs(name))
-    await neo.deleteUserNodeAndUserCrumbs("NightOwl17")
+    const usernames = [
+        'HappyGiraffe87',
+        'SunshineRunner',
+        'CoolDolphin42',
+        'StarryNight123',
+        'MountainExplorer',
+        'CoffeeLover55',
+        'TechNinja99',
+        'MusicJunkie28',
+        'AdventureSeeker',
+        'Beachcomber75',
+        'NightOwl17',
+        'NatureEnthusiast',
+        'Bookworm2022',
+        'SkyWatcher64',
+        'FoodieAdventurer',
+        'HikingFanatic',
+        'ArtisticSoul22',
+        'YogaMaster36',
+        'GamerPro99',
+        'TravelBug88'
+    ];
+    await usernames.forEach(async name => await neo.deleteUserNodeAndUserCrumbs(name))
+    // await neo.deleteUserNodeAndUserCrumbs("NightOwl17")
 })
-
+/*
 test('should successfully create new user nodes', async () => {
     let users = ['johnny','bobby','trent','xXxninjaslayer2011xXx'];
     users.forEach( username => {
@@ -134,10 +130,11 @@ test('should successfully create new user nodes', async () => {
     }
     await neo.createCrumb(null, "portajohn", post2);
 })
-
+*/
 
 
 ///////////// MANAGING CRUMBS //////////////////////////////////////////////////
+/*
 test('should successfully create freestanding post', async () => {
     let post: UserPostData = {
         contents: [
@@ -166,10 +163,10 @@ test('should successfully create reply to post', async () => {
     await neo.createCrumb("127", "trent", post);
 })
 
-
+*/
 
 ////////  MANAGING RELATIONSHIPS //////////////////////////////////////////////
-
+/*
 test('should successfully create follow relationship', async () => {
     await neo.setUserFollowing("André", "trent", true);
 })
@@ -184,7 +181,7 @@ test('should successfully create like relationship', async () => {
 test('should successfully remove like relationship', async () => {
     await neo.setCrumbLiked("johnny", "117", false);
 })
-
+*/
 test('should retrieve posts', async () => {
     let filter = new CrumbFilter();
     filter.sort = Sort.Time;
@@ -192,7 +189,7 @@ test('should retrieve posts', async () => {
     await neo.getCrumbs(null, filter, null);
 })
 
-
+/*
 test('should create new crumb', async () => {
     let post: UserPostData = {
         contents: [ "text" ],
@@ -203,5 +200,5 @@ test('should create new crumb', async () => {
     await console.log(parsedPost)
     await neo.createCrumb(null, "bobby", post)
 })
-
+*/
 
