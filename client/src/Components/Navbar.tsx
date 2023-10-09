@@ -10,7 +10,7 @@ export function CrumbNavbar() {
 
     return(
         <>
-            <Navbar expand={"lg"} className={"navbar sticky-top"} bg="white">
+            <Navbar className={"navbar sticky-top"} bg="white">
                 <Container className={"main-content"}>
                     <Navbar.Brand href={"/"}>Crumbs</Navbar.Brand>
                     <Navbar.Toggle aria-controls={"basic-navbar-nav"}/>

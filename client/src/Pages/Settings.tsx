@@ -40,7 +40,7 @@ export function Settings() {
 
 
     return (
-        <Container className="main-content" style={{marginTop: 60}}>
+        <Container className="main-content" style={{marginTop: 50}}>
             {showAlert && (
                 <Alert variant="warning" onClose={() => setShowAlert(false)} dismissible>
                     {alertMessage}

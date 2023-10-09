@@ -8,10 +8,9 @@ export function Profile() {
     const {userid} = useParams()
 
     return (
-        <Container className="main-content">
-            Personlig feed til {userid}. Almost. Hovedfeed as of now men vil bli endret
-
-            <CrumbsFeed canCompose={false} feed={() => new Api().getUserFeed(userid!, 100)} />
+        <Container className="main-content" style={{marginTop: 50}}>
+            <h5>@{userid!}</h5>
+            <CrumbsFeed canCompose={false} feed={(continueFrom: string) => new Api().getUserFeed(userid!, 100, continueFrom)} />
         </Container>
     )
 }
