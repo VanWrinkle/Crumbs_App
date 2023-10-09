@@ -1,4 +1,4 @@
-import express, {query} from "express";
+import express from "express";
 import path from "path";
 import {reactDir} from "../globals";
 import {IUserLoginService} from "../IUserLoginService/IUserLoginService";
@@ -209,11 +209,7 @@ export function getUserFeed(persistence: ISocialGraphPersistence) {
                     ? req.query.continue_from.toString()
                     : null
             persistence
-                .getCrumbs(
-                    null,
-                    filter,
-                    continue_from
-                )
+                .getCrumbs(null, filter, continue_from)
                 .then( crumbs => {
                         res.status(200).send(crumbs);
                     })
