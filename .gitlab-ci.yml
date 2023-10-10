@@ -15,9 +15,6 @@ client-build:
     - cd client
     - npm install
     - npm run build
-  artifacts:
-    paths:
-      - client/node_modules
 
 client-test: 
   image: node:latest
@@ -28,9 +25,6 @@ client-test:
     - cd client
     - npm install
     - npm run test
-  artifacts:
-    paths:
-      - client/node_modules
 
 
 # SERVER
@@ -42,9 +36,6 @@ server-build:
     - cd server
     - npm install
     - npm run build
-  artifacts:
-    paths:
-      - server/node_modules
   
       
 server-test: 
@@ -56,6 +47,3 @@ server-test:
     - cd server
     - npm install
     - npm run test
-  artifacts:
-    paths:
-      - server/node_modules
