@@ -1,9 +1,9 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Badge, Image, NavDropdown} from "react-bootstrap";
 import React, {SyntheticEvent} from "react";
-import {useAuth, useAuthUpdate} from "../AuthProvider";
+import {useAuth, useAuthUpdate} from "../context/AuthProvider";
 import axios from "axios";
-import {Api} from "../Api";
+import {Api} from "../services/Api";
 
 export function ProfileDropdown() {
     const userData = useAuth()

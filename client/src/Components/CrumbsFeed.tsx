@@ -1,13 +1,13 @@
 import React, {SyntheticEvent, useEffect, useState} from "react";
-import {Crumb} from "../Crumb";
-import {Api} from "../Api";
+import {Crumb} from "../types/Crumb";
+import {Api} from "../services/Api";
 import {Button, Card, Col, Container, Row, Spinner, Stack} from "react-bootstrap";
 import {SocialMediaTopPanel} from "./CrumbTopPanel";
 import {Link} from "react-router-dom";
 import {ThumbUp} from "@mui/icons-material";
-import {useAuth} from "../AuthProvider";
+import {useAuth} from "../context/AuthProvider";
 import InfiniteScroll from 'react-infinite-scroll-component';
-import {getTimeSince} from "../utils";
+import {getTimeSince} from "../utils/utils";
 
 export function CrumbsFeed(prop: {
     canCompose: boolean,

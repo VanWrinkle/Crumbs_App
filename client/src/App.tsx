@@ -1,34 +1,14 @@
-import './App.css';
-import './Crumb';
+import './styles/App.css';
+import './types/Crumb';
 import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import {PersonalFeed} from "./Pages/PersonalFeed";
-import {Signup} from "./Pages/Signup";
-import {Login} from "./Pages/Login";
+import {AuthProvider} from "./context/AuthProvider";
+import {PrimaryRouter} from "./routing/PrimaryRouter";
 
-
-import {CrumbNavbar} from "./Components/Navbar";
-import {AuthProvider} from "./AuthProvider";
-import {Settings} from "./Pages/Settings";
-import {Profile} from "./Pages/Profile";
-
-function App() {
+export default function App() {
     return (
-    <Router>
         <AuthProvider>
-            <Routes>
-                <Route element={<CrumbNavbar/>}>
-                    <Route path="/" element={<PersonalFeed />}>For you</Route>
-                    <Route path="/signup" element={<Signup />}>Signup</Route>
-                    <Route path="/login" element={<Login />}>Login</Route>
-                    <Route path="/profile/:userid" element={<Profile />}>Profile</Route>
-                    <Route path="/settings" element={<Settings />}>Settings</Route>
-                </Route>
-            </Routes>
+            <PrimaryRouter />
         </AuthProvider>
-    </Router>
     );
 }
-
-export default App;

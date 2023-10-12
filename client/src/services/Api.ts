@@ -1,5 +1,5 @@
 import axios, {AxiosError, AxiosInstance} from "axios";
-import {Crumb} from "./Crumb";
+import {Crumb} from "../types/Crumb";
 
 export class Api {
     private client: AxiosInstance

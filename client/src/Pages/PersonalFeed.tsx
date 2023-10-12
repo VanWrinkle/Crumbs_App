@@ -1,6 +1,6 @@
 import React from "react";
 import {Container} from "react-bootstrap";
-import {Api} from "../Api";
+import {Api} from "../services/Api";
 import {CrumbsFeed} from "../Components/CrumbsFeed";
 
 export function PersonalFeed() {

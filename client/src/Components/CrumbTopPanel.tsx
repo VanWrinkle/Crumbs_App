@@ -1,8 +1,8 @@
-import {Crumb, CrumbV1, SocialMediaPostDispatch} from "../Crumb";
+import {Crumb, CrumbV1, SocialMediaPostDispatch} from "../types/Crumb";
 import {Alert, Col, Form, Image} from "react-bootstrap";
 import React, {SyntheticEvent, useState} from "react";
-import {useAuth} from "../AuthProvider";
-import {Api} from "../Api";
+import {useAuth} from "../context/AuthProvider";
+import {Api} from "../services/Api";
 import {LoadingButton} from "./CommonUI";
 
 export function SocialMediaTopPanel(props: {crumbs: Crumb[], setCrumbs: SocialMediaPostDispatch}) {

@@ -2,8 +2,8 @@ import React, { SyntheticEvent } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Form, NavDropdown, InputGroup, Alert} from "react-bootstrap";
 import { useState } from 'react';
-import {useAuthUpdate} from "../AuthProvider";
-import {Api} from "../Api";
+import {useAuthUpdate} from "../context/AuthProvider";
+import {Api} from "../services/Api";
 import {LoadingButton} from "./CommonUI";
 
 function UserLogin() {

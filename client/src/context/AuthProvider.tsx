@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import {Api} from "./Api";
+import {Api} from "../services/Api";
 
 export interface AuthState {
     username: string,
