@@ -17,7 +17,7 @@ import http from "http";
 import https from "https";
 import {ConfigSettings} from "./config";
 import cookieParser from "cookie-parser";
-import {NeoGraphPersistence} from "../ISocialGraphPersistence/NeoGraphPersistence/NeoGraphPersistence";
+import {NeoGraphPersistence} from "../user/content/socialGraph/NeoGraphPersistence/NeoGraphPersistence";
 
 export class Application {
     #config: ConfigSettings;

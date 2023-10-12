@@ -1,6 +1,6 @@
-import {CrumbFilter, NeoGraphPersistence} from "../src/ISocialGraphPersistence/NeoGraphPersistence/NeoGraphPersistence";
-import {ComponentType, UserPostData} from "../src/ISocialGraphPersistence/ISocialGraphPersistence";
-import {Sort} from "../src/IPostPresentationService/IPostPresentationService";
+import {CrumbFilter, NeoGraphPersistence} from "../src/user/content/socialGraph/NeoGraphPersistence/NeoGraphPersistence";
+import {CrumbComponentType, CrumbContents} from "../src/contracts/ISocialGraphPersistence";
+import {Sort} from "../src/contracts/IPostPresentationService";
 import {CrumbParser} from "../src/CrumbParser/CrumbParser";
 
 
@@ -148,21 +148,20 @@ test('should successfully create freestanding post', async () => {
     }
     await neo.createCrumb(null, "trent", post);
 })
+*/
 
 test('should successfully create reply to post', async () => {
-    let post: UserPostData = {
+    let post: CrumbContents = {
         contents: [
-            "oij13oi1joij",
-            "ForHarambe"
+            "Nå må du gi deg da"
         ],
         flags: [
-            ComponentType.Text,
-            ComponentType.Hash
+            CrumbComponentType.Text
         ]
     }
-    await neo.createCrumb("127", "trent", post);
+    await neo.createCrumb("1039", "vanwrinkle", post);
 })
-
+/*
 */
 
 ////////  MANAGING RELATIONSHIPS //////////////////////////////////////////////

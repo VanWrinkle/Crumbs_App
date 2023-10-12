@@ -1,7 +1,7 @@
-import {IUserDatabase} from "./IUserDatabase";
-import {StoredUserData} from "./StoredUserData"
+import {IUserRegistrationDatabase} from "../../../../contracts/IUserRegistrationDatabase";
+import {UserRegistration} from "../../../../entities/UserRegistration"
 import {MongoClient, ServerApiVersion} from 'mongodb';
-export class MDBUserDatabase implements IUserDatabase {
+export class MDBUserRegistrationDatabase implements IUserRegistrationDatabase {
     #mongo_uri = "mongodb+srv://crumbdevs:crumbdevsruler@crumbdevs.ta4zcje.mongodb.net/?retryWrites=true&w=majority";
     #client: MongoClient = this.#createClient(this.#mongo_uri);
     #dbName: string = "userdata";
@@ -25,7 +25,7 @@ export class MDBUserDatabase implements IUserDatabase {
     }
 
 
-    public addUser(user: StoredUserData): Promise<void> {
+    public addUser(user: UserRegistration): Promise<void> {
         return new Promise(async (resolve) => {
             try {
                 await this.#client.connect();
@@ -64,7 +64,7 @@ export class MDBUserDatabase implements IUserDatabase {
     }
 
 
-    public getUser(username: string): Promise<StoredUserData | undefined> {
+    public getUser(username: string): Promise<UserRegistration | undefined> {
         return new Promise(async (resolve) => {
 
             try {
@@ -76,7 +76,7 @@ export class MDBUserDatabase implements IUserDatabase {
                     .collection("login_info")
                     .findOne({userName: username});
 
-                let user: StoredUserData | undefined;
+                let user: UserRegistration | undefined;
                 if (userData != null &&
                     userData.userName != null &&
                     userData.hash != null &&

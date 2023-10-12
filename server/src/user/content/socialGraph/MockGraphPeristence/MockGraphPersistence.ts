@@ -1,5 +1,6 @@
-import {CrumbFilter} from "./NeoGraphPersistence/NeoGraphPersistence";
-import {UserPostData, UserPostView} from "./ISocialGraphPersistence";
+import {Crumb, CrumbContent} from "../../../../entities/Crumb";
+import {CrumbFilter} from "../../../../entities/CrumbFilter";
+
 
 export class MockGraphPersistence {
     createUserNode(username: string): Promise<void> {
@@ -9,17 +10,17 @@ export class MockGraphPersistence {
         return new Promise(()=>{});
     }
 
-    createCrumb(parent: string | null, username: string, crumb: UserPostData): Promise<void> {
+    createCrumb(parent: string | null, username: string, crumb: CrumbContent[]): Promise<void> {
         return new Promise(()=>{});
     }
-    updateCrumb(crumb_id: string, newBody: UserPostData): Promise<void> {
+    updateCrumb(crumb_id: string, newBody: CrumbContent[]): Promise<void> {
         return new Promise(()=>{});
     }
     deleteCrumb(crumb_id: string): Promise<void> {
         return new Promise(()=>{});
     }
-    getCrumb(crumb_id: string): Promise <UserPostView> {
-        return new Promise(()=>{let view: UserPostView = {
+    getCrumb(crumb_id: string): Promise <Crumb> {
+        return new Promise(()=>{let view: Crumb = {
             post_id: "0",
             author: "test_user",
             contents: [],
@@ -37,7 +38,7 @@ export class MockGraphPersistence {
         return new Promise(()=>{});
     }
     //setCrumbParent(crumb_id: string, parent_id: string): Promise<void>
-    getCrumbs(user: string | null, filter: CrumbFilter, cutoff: string | null): Promise <UserPostView[]> {
-        return new Promise(()=>{ let views: UserPostView[] = []; return views;});
+    getCrumbs(user: string | null, filter: CrumbFilter, cutoff: string | null): Promise <Crumb[]> {
+        return new Promise(()=>{ let views: Crumb[] = []; return views;});
     }
 }

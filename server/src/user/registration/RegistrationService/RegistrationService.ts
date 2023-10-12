@@ -1,16 +1,16 @@
-import {IUserDatabase} from "../IUserDatabase/IUserDatabase";
-import {IUserRegistrationService} from "./IUserRegistrationService"
+import {IUserRegistrationDatabase} from "../../../contracts/IUserRegistrationDatabase";
+import {IUserRegistrationService} from "../../../contracts/IUserRegistrationService"
 import bcrypt from "bcrypt";
-import {ISocialGraphPersistence} from "../ISocialGraphPersistence/ISocialGraphPersistence";
+import {ISocialGraphPersistence} from "../../../contracts/ISocialGraphPersistence";
 
 const usernameRequirements = RegExp("^(?=[a-z_]{4,30}$)");
 const passwordRequirements = RegExp("^(?=.*[a-zA-Z])(?=.*\\d).{8,}");
 const numberOfSaltRounds = 5;
 
 export class RegistrationService implements IUserRegistrationService {
-    userPersistence: IUserDatabase;
+    userPersistence: IUserRegistrationDatabase;
     graphPersistence: ISocialGraphPersistence;
-    constructor (persistence: IUserDatabase, socialGraphPersistence: ISocialGraphPersistence) {
+    constructor (persistence: IUserRegistrationDatabase, socialGraphPersistence: ISocialGraphPersistence) {
         this.userPersistence = persistence;
         this.graphPersistence = socialGraphPersistence;
     }

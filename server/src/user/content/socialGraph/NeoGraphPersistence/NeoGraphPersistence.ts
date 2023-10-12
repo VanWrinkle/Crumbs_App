@@ -1,118 +1,15 @@
-import {ISocialGraphPersistence, PostComponent, UserPostData, UserPostView} from "../ISocialGraphPersistence";
-import neo4j, {DateTime} from 'neo4j-driver'
-import json from 'json5';
-import {Order, Sort} from "../../IPostPresentationService/IPostPresentationService";
+import {ISocialGraphPersistence} from "../../../../contracts/ISocialGraphPersistence";
+import neo4j from 'neo4j-driver'
+
 import {Neo4jQueryBuilder} from "./Neo4jQueryBuilder";
+import {CrumbFilter} from "../../../../entities/CrumbFilter";
+import {Crumb, CrumbContent} from "../../../../entities/Crumb";
 
 const neo4j_username = "neo4j"
 const neo4j_password = "crumbdevsrule"
 const neo4j_url = "neo4j://10.212.172.128:7687"
 
 
-/**
- * Represents a filter configuration for retrieving crumbs (posts) in the application.
- */
-export class CrumbFilter {
-    private _parent_post: string | undefined;
-    private _authors: string[] | undefined;
-    private _hashtags: string[] | undefined;
-    private _order = Order.Descending;
-    private _sort = Sort.Time;
-    private _max = 15;
-
-    /**
-     * Get the ID of the parent post to filter crumbs by replies.
-     * If undefined, no filtering by parent post is applied.
-     */
-    get parent_post(): string | undefined {
-        return this._parent_post;
-    }
-
-    /**
-     * Set the ID of the parent post to filter crumbs by replies.
-     */
-    set parent_post(value: string | undefined) {
-        this._parent_post = value;
-    }
-
-    /**
-     * Get an array of author usernames to filter crumbs by specific authors.
-     * If undefined, no filtering by authors is applied.
-     */
-    get authors(): string[] | undefined {
-        return this._authors;
-    }
-
-    /**
-     * Set an array of author usernames to filter crumbs by specific authors.
-     */
-    set authors(value: string[] | undefined) {
-        this._authors = value;
-    }
-
-    /**
-     * Get an array of hashtags to filter crumbs by specific hashtags.
-     * If undefined, no filtering by hashtags is applied.
-     */
-    get hashtags(): string[] | undefined {
-        return this._hashtags;
-    }
-
-    /**
-     * Set an array of hashtags to filter crumbs by specific hashtags.
-     */
-    set hashtags(value: string[] | undefined) {
-        this._hashtags = value;
-    }
-
-    /**
-     * Get the order in which crumbs should be sorted (e.g., by time, engagement, etc.).
-     * Default: Order.Descending
-     */
-    get order(): Order {
-        return this._order;
-    }
-
-    /**
-     * Set the order in which crumbs should be sorted.
-     */
-    set order(value: Order) {
-        this._order = value;
-    }
-
-    /**
-     * Get the method used for sorting crumbs (e.g., by time, engagement, etc.).
-     * Default: Sort.Time
-     */
-    get sort(): Sort {
-        return this._sort;
-    }
-
-    /**
-     * Set the method used for sorting crumbs.
-     */
-    set sort(value: Sort) {
-        this._sort = value;
-    }
-
-    /**
-     * Get the maximum number of crumbs to retrieve. Limits the result set.
-     * Default: 15
-     */
-    get max(): number {
-        return this._max;
-    }
-
-    /**
-     * Set the maximum number of crumbs to retrieve.
-     * Set value is clamped between 0 and 200
-     */
-    set max(value: number) {
-        this._max = value;
-        this._max = Math.min(this._max, 200);
-        this._max = Math.max(this._max, 0);
-    }
-}
 
 
 
@@ -185,9 +82,18 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
      *
      * @throws {Error} Throws an error if the parent ID is provided and is not a valid integer.
      */
-    async createCrumb(parent: string | null, username: string, crumb: UserPostData): Promise<void> {
+    async createCrumb(parent: string | null, username: string, crumb: CrumbContent[]): Promise<void> {
         return new Promise( resolve => {
-            if (parent != null && typeof(parent) != typeof ("")) {throw new Error('post id must be integer')}
+            if (parent != null && typeof(parent) != typeof ("")) {
+                throw new Error('post id must be integer')
+            }
+            let contents: string[] = [];
+            let flags: string[] = [];
+            crumb.forEach( component => {
+                contents.push(component.value)
+                flags.push(component.type)
+            })
+
             let session = this.#driver.session();
             session
                 .run(
@@ -198,8 +104,8 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                     ${parent != null? "CREATE (c)-[:REPLIES_TO]->(p)":""}`,
                     {
                         user: username,
-                        contents: crumb.contents,
-                        flags: crumb.flags
+                        contents: contents,
+                        flags: flags
                     }
                 )
                 .catch( error => {
@@ -213,13 +119,13 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
     }
 
 
-    updateCrumb(crumb_id: string, newBody: UserPostData): Promise<void> {
+    updateCrumb(crumb_id: string, newBody: CrumbContent[]): Promise<void> {
         return new Promise(() => {})
     }
     deleteCrumb(crumb_id: string): Promise<void> {
         return new Promise(() => {})
     }
-    getCrumb(crumb_id: string): Promise <UserPostView> {
+    getCrumb(crumb_id: string): Promise <Crumb> {
         return new Promise(() => {})
     }
 
@@ -232,11 +138,10 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
      * @param cutoff ID of post used to get cutoff value for time or engagement
      * @returns A Promise that resolves to an array of UserPostView objects representing the retrieved crumbs.
      */
-    async getCrumbs(user: string | null, filter: CrumbFilter, cutoff: string | null): Promise <UserPostView[]> {
+    async getCrumbs(user: string | null, filter: CrumbFilter, cutoff: string | null): Promise <Crumb[]> {
         if (cutoff === "") {cutoff = null} // Simplifies logic un the query construction
-        let view: UserPostView[] = [];
-        let engagement = filter.sort === Sort.Engagement
-        let desc = filter.order === Order.Descending
+        let view: Crumb[] = [];
+        let engagement = filter.sort === CrumbFilter.Sort.Engagement
         //TODO: fetch engagement for single post
         let query =
             `
@@ -273,7 +178,6 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 "likes",
                 `${user? "EXISTS( (user)-[:LIKES]->(crumb) )":"false"} AS liked`,
                 engagement?"likes + replies AS engagement":""
-                
             ])}
             ${Neo4jQueryBuilder.ORDER_BY(
                 [engagement? "engagement":"","crumb.created"], 
@@ -297,7 +201,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                     results.records.forEach( record => {
                         let flags = record.get('crumb').properties.flags;
                         let values = record.get('crumb').properties.contents;
-                        let contents: PostComponent[] = [];
+                        let contents: CrumbContent[] = [];
                         for (let i = 0; i < flags.length; i++) {
                             contents.push({
                                 type: flags[i],
@@ -305,7 +209,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                             })
                         }
                         let timestamp = Number(record.get('crumb').properties.created.toBigInt());
-                        let crumb: UserPostView = {
+                        let crumb: Crumb = {
                             author: record.get('author').properties.username,
                             timestamp_milliseconds: timestamp,
                             post_id: record.get('crumb').identity.toString(),

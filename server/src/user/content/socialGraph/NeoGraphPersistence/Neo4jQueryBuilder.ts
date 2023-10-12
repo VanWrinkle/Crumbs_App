@@ -1,4 +1,5 @@
-import {Order, Sort} from "../../IPostPresentationService/IPostPresentationService";
+import {CrumbFilter} from "../../../../entities/CrumbFilter";
+
 
 export class Neo4jQueryBuilder {
     static WHERE(conditions: String[]): string {
@@ -7,8 +8,8 @@ export class Neo4jQueryBuilder {
         return "WHERE " + conditions.join(' AND ')
     }
 
-    static WHERE_CUTOFF(lhs: string, rhs: string, order: Order) {
-        let operator = order === Order.Descending? " < ":" > ";
+    static WHERE_CUTOFF(lhs: string, rhs: string, order: CrumbFilter.Order) {
+        let operator = order === CrumbFilter.Order.Descending? " < ":" > ";
         return "WHERE " + lhs + operator + rhs
 
     }
@@ -25,9 +26,9 @@ export class Neo4jQueryBuilder {
         return "RETURN " + conditions.join(', ')
     }
 
-    static ORDER_BY(conditions: String[], order: Order): string {
+    static ORDER_BY(conditions: String[], order: CrumbFilter.Order): string {
         conditions = conditions.filter((val) => { return val !== "" })
         if (conditions.length === 0) { return "" }
-        return "ORDER BY " + conditions.join(', ') + ((order === Order.Descending)? " DESC":" ASC");
+        return "ORDER BY " + conditions.join(', ') + ((order === CrumbFilter.Order.Descending)? " DESC":" ASC");
     }
 }

@@ -1,5 +1,5 @@
-import {Neo4jQueryBuilder} from "../src/ISocialGraphPersistence/NeoGraphPersistence/Neo4jQueryBuilder";
-import {Order} from "../src/IPostPresentationService/IPostPresentationService";
+import {Neo4jQueryBuilder} from "../src/user/content/socialGraph/NeoGraphPersistence/Neo4jQueryBuilder";
+import {Order} from "../src/contracts/IPostPresentationService";
 
 
 test ('should inject AND between conditions', () => {

@@ -1,12 +1,11 @@
 import express from "express";
 import path from "path";
 import {reactDir} from "../globals";
-import {IUserLoginService} from "../IUserLoginService/IUserLoginService";
-import {IUserRegistrationService} from "../IUserRegistrationService/IUserRegistrationService";
-import {ISocialGraphPersistence} from "../ISocialGraphPersistence/ISocialGraphPersistence";
-import {CrumbParser} from "../CrumbParser/CrumbParser";
-import {CrumbFilter} from "../ISocialGraphPersistence/NeoGraphPersistence/NeoGraphPersistence";
-import {Sort} from "../IPostPresentationService/IPostPresentationService";
+import {IUserLoginService} from "../contracts/IUserLoginService";
+import {IUserRegistrationService} from "../contracts/IUserRegistrationService";
+import {ISocialGraphPersistence} from "../contracts/ISocialGraphPersistence";
+import {CrumbFilter} from "../entities/CrumbFilter";
+import {Crumb} from "../entities/Crumb";
 
 
 export function reactApp(req: express.Request, res: express.Response) {
@@ -96,7 +95,6 @@ export function renewUserToken(loginService: IUserLoginService) {
         } else {
             res.status(401).send()
         }
-
     }
 }
 
@@ -105,7 +103,7 @@ export function postCrumb(persistence: ISocialGraphPersistence) {
     return function(req: express.Request, res: express.Response) {
         if (req.user) {
             let username = req.user.toString()
-            let parsedCrumb = CrumbParser.parseCrumb(req.body.content)
+            let parsedCrumb = Crumb.parseContentsFromString(req.body.content)
             persistence
                 .createCrumb(req.body!.parent, username, parsedCrumb)
                 .catch( () => res.status(500).send() )
@@ -159,7 +157,7 @@ export function setLike(persistence: ISocialGraphPersistence, likes: boolean) {
 export function getMainFeed(persistence: ISocialGraphPersistence) {
     return function(req: express.Request, res: express.Response) {
         let filter = new CrumbFilter();
-        filter.sort = Sort.Time;
+        filter.sort = CrumbFilter.Sort.Time;
 
         if(req.query.max_posts) {
             let max = Number.parseInt(req.query.max_posts.toString());
@@ -194,7 +192,6 @@ export function getMainFeed(persistence: ISocialGraphPersistence) {
 export function getUserFeed(persistence: ISocialGraphPersistence) {
     return function(req: express.Request, res: express.Response) {
         let filter = new CrumbFilter();
-        filter.sort = Sort.Time;
 
         if(req.query.max_posts) {
             let max = Number.parseInt(req.query.max_posts.toString());

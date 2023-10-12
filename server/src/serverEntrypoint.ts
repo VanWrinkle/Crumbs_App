@@ -1,16 +1,16 @@
 import fs from 'fs';
-import {MDBUserDatabase} from "./IUserDatabase/MDBUserDatabase";
-import {LoginService} from "./IUserLoginService/LoginService";
-import {RegistrationService} from "./IUserRegistrationService/RegistrationService";
+import {MDBUserRegistrationDatabase} from "./user/registration/persistence/MDBUserRegistrationDatabase/MDBUserRegistrationDatabase";
+import {LoginService} from "./user/login/LoginService/LoginService";
+import {RegistrationService} from "./user/registration/RegistrationService/RegistrationService";
 import {Application} from "./application/application";
 import {ConfigSettings} from "./application/config";
-import {AuthenticationService} from "./IUserAuthenticationService/AuthenticationService";
-import {NeoGraphPersistence} from "./ISocialGraphPersistence/NeoGraphPersistence/NeoGraphPersistence";
+import {AuthenticationService} from "./user/login/authentication/AuthenticationService/AuthenticationService";
+import {NeoGraphPersistence} from "./user/content/socialGraph/NeoGraphPersistence/NeoGraphPersistence";
 
 
 
 
-const userDatabase = new MDBUserDatabase();
+const userDatabase = new MDBUserRegistrationDatabase();
 const socialGraphPersistence = new NeoGraphPersistence();
 const sessionManagement = new AuthenticationService('secret-key', 24)
 

@@ -1,14 +1,14 @@
-import {IUserDatabase} from "./IUserDatabase";
-import {StoredUserData} from "./StoredUserData";
+import {IUserRegistrationDatabase} from "../../../../contracts/IUserRegistrationDatabase";
+import {UserRegistration} from "../../../../entities/UserRegistration";
 
 
-export class MockUserDatabase implements IUserDatabase {
-    users: StoredUserData[];
+export class MockUserRegistrationDatabase implements IUserRegistrationDatabase {
+    users: UserRegistration[];
     constructor() {
         this.users = [];
     }
 
-    addUser(user: StoredUserData): Promise<void> {
+    addUser(user: UserRegistration): Promise<void> {
         return new Promise((resolve) => {
             this.users.push(user);
             resolve()
@@ -21,7 +21,7 @@ export class MockUserDatabase implements IUserDatabase {
             resolve()
         })
     }
-    getUser(username: string): Promise<StoredUserData | undefined> {
+    getUser(username: string): Promise<UserRegistration | undefined> {
         return new Promise((resolve) => {
             const user = this.users.find((element) => {
                 return element.userName === username

@@ -1,4 +1,4 @@
-import {UserPostData} from "../src/ISocialGraphPersistence/ISocialGraphPersistence";
+import {CrumbContents} from "../src/contracts/ISocialGraphPersistence";
 import {CrumbParser} from "../src/CrumbParser/CrumbParser";
 
 
@@ -6,7 +6,7 @@ import {CrumbParser} from "../src/CrumbParser/CrumbParser";
 
 test ('should successfully parse hashtags and mentions in the middle of crumb', async  () => {
 
-    let post: UserPostData =  {
+    let post: CrumbContents =  {
         flags: ["text","hashtag","text","mention","text"],
         contents: ["I'd like to bring attention to ", "#paralympics",", starting this weekend. Thanks to ", "@Bugbear98", " for bringing it to my attention."]
     }
@@ -18,7 +18,7 @@ test ('should successfully parse hashtags and mentions in the middle of crumb', 
 
 test ('should successfully parse hashtags and mentions at either end of crumb', async  () => {
 
-    let post: UserPostData =  {
+    let post: CrumbContents =  {
         flags: ["hashtag", "text", "mention"],
         contents: ["#test_tag"," some words ", "@test_user"]
     }
@@ -30,7 +30,7 @@ test ('should successfully parse hashtags and mentions at either end of crumb', 
 
 test ('should successfully parse empty string', async  () => {
 
-    let post: UserPostData =  {
+    let post: CrumbContents =  {
         flags: [],
         contents: []
     }
@@ -43,7 +43,7 @@ test ('should successfully parse empty string', async  () => {
 
 test ('should successfully parse a simple string', async  () => {
 
-    let post: UserPostData =  {
+    let post: CrumbContents =  {
         flags: ["text"],
         contents: ["A little duck waddled across the street."]
     }
@@ -55,7 +55,7 @@ test ('should successfully parse a simple string', async  () => {
 
 test ('should treat mid text and loose # or @ as regular text', async  () => {
 
-    let post: UserPostData =  {
+    let post: CrumbContents =  {
         flags: ["text"],
         contents: ["A little du@ck wad#dled across @ # the street."]
     }
@@ -68,7 +68,7 @@ test ('should treat mid text and loose # or @ as regular text', async  () => {
 
 test ('should treat comma separated tags as distinct tags', async  () => {
 
-    let post: UserPostData =  {
+    let post: CrumbContents =  {
         flags: ["text","hashtag","text","hashtag"],
         contents: ["Here are some tags ", "#tag",",","#tag2"]
     }
@@ -79,7 +79,7 @@ test ('should treat comma separated tags as distinct tags', async  () => {
 
 test ('should not treat an url as a hashtag', async  () => {
 
-    let post: UserPostData =  {
+    let post: CrumbContents =  {
         flags: ["hashtag","text"],
         contents: ["#www",".google.com"]
     }
@@ -90,7 +90,7 @@ test ('should not treat an url as a hashtag', async  () => {
 
 test ('should allow word characters a-z, A-Z, 0-9 and _', async  () => {
 
-    let post: UserPostData =  {
+    let post: CrumbContents =  {
         flags: ["hashtag"],
         contents: ["#17_Mai"]
     }
