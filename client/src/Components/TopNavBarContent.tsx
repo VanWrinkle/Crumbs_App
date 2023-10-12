@@ -1,14 +1,10 @@
-import {Container, Navbar, Nav} from "react-bootstrap"
-import { Outlet } from "react-router-dom";
-import UserLogin from "./UserLogin";
-import {useAuth} from "../context/AuthProvider";
-import {ProfileDropdown} from "./ProfileDropdown";
+import {Container, Nav, Navbar} from "react-bootstrap";
+import {ProfileDropdown} from "../Components_old/ProfileDropdown";
+import UserLogin from "../Components_old/UserLogin";
+import {Outlet} from "react-router-dom";
 
-export function CrumbNavbar() {
-    const authData = useAuth()
-
-
-    return(
+export function TopNavBarContent({loggedIn}: {loggedIn: Boolean}) {
+    return (
         <>
             <Navbar className={"navbar sticky-top"} bg="white">
                 <Container className={"main-content"}>
@@ -16,12 +12,12 @@ export function CrumbNavbar() {
                     <Navbar.Toggle aria-controls={"basic-navbar-nav"}/>
                     <Navbar.Collapse role={""} id={"basic-navbar-nav"}>
                         <Nav className='ms-auto'>
-                            {authData ? ( <ProfileDropdown /> ) : ( <UserLogin /> )}
+                            {loggedIn ? ( <ProfileDropdown /> ) : ( <UserLogin /> )}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
             <Outlet />
         </>
-    );
+    )
 }

@@ -3,7 +3,7 @@ import React, {SyntheticEvent, useEffect, useState} from "react";
 import {useAuth, useAuthUpdate} from "../context/AuthProvider";
 import {useNavigate} from "react-router-dom";
 import {Api} from "../services/Api";
-import {LoadingButton} from "../Components/CommonUI";
+import {LoadingButton} from "../components/LoadingButton";
 
 export function Settings() {
     const auth = useAuth()

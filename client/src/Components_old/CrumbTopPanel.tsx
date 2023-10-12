@@ -3,7 +3,7 @@ import {Alert, Col, Form, Image} from "react-bootstrap";
 import React, {SyntheticEvent, useState} from "react";
 import {useAuth} from "../context/AuthProvider";
 import {Api} from "../services/Api";
-import {LoadingButton} from "./CommonUI";
+import {LoadingButton} from "../components/LoadingButton";
 
 export function SocialMediaTopPanel(props: {crumbs: Crumb[], setCrumbs: SocialMediaPostDispatch}) {
     return (
