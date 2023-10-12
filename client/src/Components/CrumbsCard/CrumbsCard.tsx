@@ -1,9 +1,9 @@
-import {Crumb} from "../types/Crumb";
+import {Crumb} from "../../types/Crumb";
 import React, {SyntheticEvent} from "react";
 import {Link} from "react-router-dom";
 import {Button, Card, Col, Row, Stack} from "react-bootstrap";
-import {getTimeSince} from "../utils/utils";
-import {useAuth} from "../context/AuthProvider";
+import {getTimeSince} from "../../utils/utils";
+import {useAuth} from "../../context/AuthProvider";
 import {ThumbUp} from "@mui/icons-material";
 import {CrumbsCardBottomRow} from "./CrumbsCardBottomRow";
 import {CrumbsCardContentDecoder} from "./CrumbsCardContentDecoder";

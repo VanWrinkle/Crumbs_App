@@ -1,9 +1,9 @@
 import {Container, Nav, Navbar} from "react-bootstrap";
-import {ProfileDropdown} from "../Components_old/ProfileDropdown";
-import UserLogin from "../Components_old/UserLogin";
+import {TopNavbarUserDropdown} from "../../containers/TopNavbar/TopNavbarUserDropdown";
+import UserLogin from "../../containers/UserLogin";
 import {Outlet} from "react-router-dom";
 
-export function TopNavBarContent({loggedIn}: {loggedIn: Boolean}) {
+export function TopNavbarContent({loggedIn}: {loggedIn: Boolean}) {
     return (
         <>
             <Navbar className={"navbar sticky-top"} bg="white">
@@ -12,7 +12,7 @@ export function TopNavBarContent({loggedIn}: {loggedIn: Boolean}) {
                     <Navbar.Toggle aria-controls={"basic-navbar-nav"}/>
                     <Navbar.Collapse role={""} id={"basic-navbar-nav"}>
                         <Nav className='ms-auto'>
-                            {loggedIn ? ( <ProfileDropdown /> ) : ( <UserLogin /> )}
+                            {loggedIn ? ( <TopNavbarUserDropdown /> ) : ( <UserLogin /> )}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

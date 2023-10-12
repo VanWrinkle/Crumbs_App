@@ -1,6 +1,6 @@
 import {Link} from "react-router-dom";
 import React from "react";
-import {CrumbContent} from "../types/Crumb";
+import {CrumbContent} from "../../types/Crumb";
 
 export function CrumbsCardContentDecoder({contents}: {contents: CrumbContent[]}) {
     return(

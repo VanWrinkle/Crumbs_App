@@ -1,8 +1,8 @@
 import {Button, Stack} from "react-bootstrap";
-import {useAuth} from "../context/AuthProvider";
+import {useAuth} from "../../context/AuthProvider";
 import {ThumbUp} from "@mui/icons-material";
 import React, {SyntheticEvent} from "react";
-import {Crumb} from "../types/Crumb";
+import {Crumb} from "../../types/Crumb";
 
 export function CrumbsCardBottomRow(props: {crumb: Crumb, onLike: (e: SyntheticEvent, crumb: Crumb) => {}}) {
     return(

@@ -3,12 +3,12 @@ import './types/Crumb';
 import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {AuthProvider} from "./context/AuthProvider";
-import {PrimaryRouter} from "./routing/PrimaryRouter";
+import {PrimaryRouter} from "./routes/PrimaryRouter";
 
 export default function App() {
     return (
         <AuthProvider>
-            <PrimaryRouter />
+            <PrimaryRouter/>
         </AuthProvider>
     );
 }

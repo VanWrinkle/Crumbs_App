@@ -1,7 +1,7 @@
 import {Col, Row} from "react-bootstrap";
-import {getTimeSince} from "../utils/utils";
+import {getTimeSince} from "../../utils/utils";
 import React from "react";
-import {Crumb} from "../types/Crumb";
+import {Crumb} from "../../types/Crumb";
 
 export function CrumbsCardTopRow({crumb}: {crumb: Crumb}) {
     const date = new Date(crumb.timestamp_milliseconds);
