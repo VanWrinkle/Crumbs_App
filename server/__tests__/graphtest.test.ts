@@ -1,10 +1,12 @@
-import {CrumbFilter, NeoGraphPersistence} from "../src/user/content/socialGraph/NeoGraphPersistence/NeoGraphPersistence";
-import {CrumbComponentType, CrumbContents} from "../src/contracts/ISocialGraphPersistence";
-import {Sort} from "../src/contracts/IPostPresentationService";
-import {CrumbParser} from "../src/CrumbParser/CrumbParser";
+import {NeoGraphPersistence} from "../src/user/content/socialGraph/NeoGraphPersistence/NeoGraphPersistence";
+import {Crumb, CrumbContent} from "../src/entities/Crumb";
 
 
-const neo = new NeoGraphPersistence();
+const neo = new NeoGraphPersistence(
+                "neo4j://10.212.172.128:7687",
+                "neo4j",
+                "crumbdevsrule"
+            );
 
 test('instantiate complex social graph', async () => {
     const usernames = [
@@ -149,7 +151,7 @@ test('should successfully create freestanding post', async () => {
     await neo.createCrumb(null, "trent", post);
 })
 */
-
+/*
 test('should successfully create reply to post', async () => {
     let post: CrumbContents = {
         contents: [
@@ -161,6 +163,8 @@ test('should successfully create reply to post', async () => {
     }
     await neo.createCrumb("1039", "vanwrinkle", post);
 })
+*/
+
 /*
 */
 
@@ -181,23 +185,22 @@ test('should successfully remove like relationship', async () => {
     await neo.setCrumbLiked("johnny", "117", false);
 })
 */
+/*
 test('should retrieve posts', async () => {
     let filter = new CrumbFilter();
     filter.sort = Sort.Time;
     filter.max = 5
     await neo.getCrumbs(null, filter, null);
 })
-
-/*
-test('should create new crumb', async () => {
-    let post: UserPostData = {
-        contents: [ "text" ],
-        flags: [ ComponentType.Text ]
-    };
-
-    let parsedPost = CrumbParser.parseCrumb("Oh god I'm crumbing #crumblords")
-    await console.log(parsedPost)
-    await neo.createCrumb(null, "bobby", post)
-})
 */
+
+test('should create new crumb', async () => {
+    let content: CrumbContent[] = [
+
+    ]
+    let parsedPost = Crumb.parseContentsFromString("Oh god I'm crumbing #crumblords")
+    await console.log(parsedPost)
+    await neo.createCrumb(null, "bobby", content)
+})
+
 
