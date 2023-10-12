@@ -1,7 +1,7 @@
 import {Container, Navbar, Nav} from "react-bootstrap"
 import { Outlet } from "react-router-dom";
 import UserLogin from "./UserLogin";
-import {useAuth} from "../AuthProvider";
+import {useAuth} from "../context/AuthProvider";
 import {ProfileDropdown} from "./ProfileDropdown";
 
 export function CrumbNavbar() {

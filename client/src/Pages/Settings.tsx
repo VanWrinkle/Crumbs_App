@@ -1,8 +1,8 @@
 import {Alert, Button, Card, Container, Form, Modal, Tab, Tabs} from "react-bootstrap";
 import React, {SyntheticEvent, useEffect, useState} from "react";
-import {useAuth, useAuthUpdate} from "../AuthProvider";
+import {useAuth, useAuthUpdate} from "../context/AuthProvider";
 import {useNavigate} from "react-router-dom";
-import {Api} from "../Api";
+import {Api} from "../services/Api";
 import {LoadingButton} from "../Components/CommonUI";
 
 export function Settings() {

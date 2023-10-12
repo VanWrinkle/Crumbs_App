@@ -1,8 +1,8 @@
 import React from "react";
 import {SyntheticEvent, useState} from "react";
 import {Button, Card, Form} from "react-bootstrap"
-import {Api} from "../Api";
-import {useAuthUpdate} from "../AuthProvider";
+import {Api} from "../services/Api";
+import {useAuthUpdate} from "../context/AuthProvider";
 import {useNavigate} from 'react-router-dom';
 
 export function UserRegistration() {

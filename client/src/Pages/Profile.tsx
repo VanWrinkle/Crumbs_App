@@ -2,7 +2,7 @@ import {useParams} from "react-router-dom";
 import React from "react";
 import {Container} from "react-bootstrap";
 import {CrumbsFeed} from "../Components/CrumbsFeed";
-import {Api} from "../Api";
+import {Api} from "../services/Api";
 
 export function Profile() {
     const {userid} = useParams()
