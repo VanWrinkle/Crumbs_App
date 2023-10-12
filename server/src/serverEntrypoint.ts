@@ -3,20 +3,33 @@ import {MDBUserRegistrationDatabase} from "./user/registration/persistence/MDBUs
 import {LoginService} from "./user/login/LoginService/LoginService";
 import {RegistrationService} from "./user/registration/RegistrationService/RegistrationService";
 import {Application} from "./application/application";
-import {ConfigSettings} from "./application/config";
+import {ConfigSettings} from "./entities/ConfigSettings";
 import {AuthenticationService} from "./user/login/authentication/AuthenticationService/AuthenticationService";
 import {NeoGraphPersistence} from "./user/content/socialGraph/NeoGraphPersistence/NeoGraphPersistence";
 
 
 
 
-const userDatabase = new MDBUserRegistrationDatabase();
-const socialGraphPersistence = new NeoGraphPersistence();
+const userRegistrationDatabase =
+    new MDBUserRegistrationDatabase(
+        "crumbdevs",
+        "crumbdevsruler",
+        "userdata"
+    )
+
+const socialGraphPersistence =
+        new NeoGraphPersistence(
+            "neo4j://10.212.172.128:7687",
+            "neo4j",
+            "crumbdevsrule"
+        );
+
 const sessionManagement = new AuthenticationService('secret-key', 24)
 
 const config: ConfigSettings = {
-    registrationService: new RegistrationService(userDatabase, socialGraphPersistence),
-    loginService: new LoginService(userDatabase, sessionManagement),
+    registrationService: new RegistrationService(userRegistrationDatabase, socialGraphPersistence),
+    loginService: new LoginService(userRegistrationDatabase, sessionManagement),
+    graphPersistence: socialGraphPersistence,
     httpsPrivateKey: fs.readFileSync('private-key.pem', 'utf-8'),
     httpsCertificate: fs.readFileSync('server.crt', 'utf-8'),
 }

@@ -2,9 +2,19 @@ import {IUserRegistrationDatabase} from "../../../../contracts/IUserRegistration
 import {UserRegistration} from "../../../../entities/UserRegistration"
 import {MongoClient, ServerApiVersion} from 'mongodb';
 export class MDBUserRegistrationDatabase implements IUserRegistrationDatabase {
-    #mongo_uri = "mongodb+srv://crumbdevs:crumbdevsruler@crumbdevs.ta4zcje.mongodb.net/?retryWrites=true&w=majority";
-    #client: MongoClient = this.#createClient(this.#mongo_uri);
-    #dbName: string = "userdata";
+    #mongo_uri: string;
+    #client: MongoClient;
+    #db_name: string;
+
+    constructor(
+        db_username: string,
+        db_password: string,
+        db_name: string
+    ) {
+        this.#mongo_uri = `mongodb+srv://${db_username}:${db_password}@crumbdevs.ta4zcje.mongodb.net/?retryWrites=true&w=majority`;
+        this.#client = this.#createClient(this.#mongo_uri);
+        this.#db_name = db_name;
+    }
 
     #createClient(uri: string): MongoClient {
         return new MongoClient(uri, {
@@ -18,9 +28,9 @@ export class MDBUserRegistrationDatabase implements IUserRegistrationDatabase {
 
     async #verifySuccessfulConnection() {
         try {
-            await this.#client.db(this.#dbName).command({ ping: 1 });
+            await this.#client.db(this.#db_name).command({ ping: 1 });
         } catch(error) {
-            console.log("Failed to ping IUserDatabase <" + this.#dbName + ">: " + error);
+            console.log("Failed to ping IUserDatabase <" + this.#db_name + ">: " + error);
         }
     }
 
@@ -31,7 +41,7 @@ export class MDBUserRegistrationDatabase implements IUserRegistrationDatabase {
                 await this.#client.connect();
                 await this.#verifySuccessfulConnection();
                 await this.#client
-                    .db(this.#dbName)
+                    .db(this.#db_name)
                     .collection("login_info")
                     .insertOne(user);
             } catch {
@@ -50,7 +60,7 @@ export class MDBUserRegistrationDatabase implements IUserRegistrationDatabase {
                 await this.#client.connect();
                 await this.#verifySuccessfulConnection();
                 await this.#client
-                    .db(this.#dbName)
+                    .db(this.#db_name)
                     .collection("login_info")
                     .deleteOne({userName: username});
             } catch {
@@ -72,7 +82,7 @@ export class MDBUserRegistrationDatabase implements IUserRegistrationDatabase {
                 await this.#verifySuccessfulConnection();
 
                 let userData = await this.#client
-                    .db(this.#dbName)
+                    .db(this.#db_name)
                     .collection("login_info")
                     .findOne({userName: username});
 

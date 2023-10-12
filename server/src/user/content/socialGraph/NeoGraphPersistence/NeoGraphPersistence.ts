@@ -1,13 +1,11 @@
 import {ISocialGraphPersistence} from "../../../../contracts/ISocialGraphPersistence";
-import neo4j from 'neo4j-driver'
+import neo4j, {Driver} from 'neo4j-driver'
 
 import {Neo4jQueryBuilder} from "./Neo4jQueryBuilder";
 import {CrumbFilter} from "../../../../entities/CrumbFilter";
 import {Crumb, CrumbContent} from "../../../../entities/Crumb";
 
-const neo4j_username = "neo4j"
-const neo4j_password = "crumbdevsrule"
-const neo4j_url = "neo4j://10.212.172.128:7687"
+
 
 
 
@@ -15,7 +13,15 @@ const neo4j_url = "neo4j://10.212.172.128:7687"
 
 export class NeoGraphPersistence implements ISocialGraphPersistence {
     // TODO: Review security of connection
-    #driver = neo4j.driver(neo4j_url, neo4j.auth.basic(neo4j_username, neo4j_password))
+    #driver: Driver
+
+    constructor(
+        db_url:string,
+        db_username: string,
+        db_password: string,
+    ) {
+        this.#driver = neo4j.driver(db_url, neo4j.auth.basic(db_username, db_password))
+    }
 
     /**
      * @brief Creates a new user node in the Neo4j database.

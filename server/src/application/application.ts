@@ -15,9 +15,8 @@ import {
 } from "./controllers";
 import http from "http";
 import https from "https";
-import {ConfigSettings} from "./config";
+import {ConfigSettings} from "../entities/ConfigSettings";
 import cookieParser from "cookie-parser";
-import {NeoGraphPersistence} from "../user/content/socialGraph/NeoGraphPersistence/NeoGraphPersistence";
 
 export class Application {
     #config: ConfigSettings;
@@ -38,20 +37,20 @@ export class Application {
             .use(express.json())
             .use(cookieParser())
             .use(this.#config.loginService.tokenParser())
-            .get('/api/getMainFeed', getMainFeed(new NeoGraphPersistence()))
-            .get('/api/getUserFeed', getUserFeed(new NeoGraphPersistence()))
-            .get('/api/getReplies', getReplies(new NeoGraphPersistence()))
+            .get('/api/getMainFeed', getMainFeed(this.#config.graphPersistence))
+            .get('/api/getUserFeed', getUserFeed(this.#config.graphPersistence))
+            .get('/api/getReplies', getReplies(this.#config.graphPersistence))
             .get('*', reactApp)
             .post('/api/register', registerUser(this.#config.registrationService))
             .delete('/api/deleteUser', deleteUser(this.#config.registrationService))
             .post('/api/login', loginUser(this.#config.loginService))
             .post('/api/logout', logoutUser(this.#config.loginService))
             .post('/api/renew', renewUserToken(this.#config.loginService))
-            .post('/api/postCrumb', postCrumb(new NeoGraphPersistence())) //TODO: Inject
-            .post('/api/likeCrumb', setLike(new NeoGraphPersistence(), true))
-            .delete('/api/likeCrumb', setLike(new NeoGraphPersistence(), false))
-            .post('/api/followUser', setFollow(new NeoGraphPersistence(), true))
-            .delete('/api/followUser', setFollow(new NeoGraphPersistence(), false))
+            .post('/api/postCrumb', postCrumb(this.#config.graphPersistence)) //TODO: Inject
+            .post('/api/likeCrumb', setLike(this.#config.graphPersistence, true))
+            .delete('/api/likeCrumb', setLike(this.#config.graphPersistence, false))
+            .post('/api/followUser', setFollow(this.#config.graphPersistence, true))
+            .delete('/api/followUser', setFollow(this.#config.graphPersistence, false))
 
         this.#app.use('/', router);
     }
