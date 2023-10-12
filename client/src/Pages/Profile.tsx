@@ -1,7 +1,7 @@
 import {useParams} from "react-router-dom";
 import React from "react";
 import {Container} from "react-bootstrap";
-import {CrumbsFeed} from "../Components/CrumbsFeed";
+import {CrumbsFeed} from "../Components_old/CrumbsFeed";
 import {Api} from "../services/Api";
 
 export function Profile() {

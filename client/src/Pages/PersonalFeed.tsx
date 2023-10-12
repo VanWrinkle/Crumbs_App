@@ -1,7 +1,7 @@
 import React from "react";
 import {Container} from "react-bootstrap";
 import {Api} from "../services/Api";
-import {CrumbsFeed} from "../Components/CrumbsFeed";
+import {CrumbsFeed} from "../Components_old/CrumbsFeed";
 
 export function PersonalFeed() {
     return (

@@ -4,7 +4,7 @@ import {Form, NavDropdown, InputGroup, Alert} from "react-bootstrap";
 import { useState } from 'react';
 import {useAuthUpdate} from "../context/AuthProvider";
 import {Api} from "../services/Api";
-import {LoadingButton} from "./CommonUI";
+import {LoadingButton} from "../components/LoadingButton";
 
 function UserLogin() {
     const [userName, setUserName] = useState("");

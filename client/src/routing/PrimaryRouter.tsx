@@ -1,5 +1,5 @@
 import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
-import {CrumbNavbar} from "../Components/Navbar";
+import {TopNavbar} from "../containers/TopNavbar";
 import {PersonalFeed} from "../Pages/PersonalFeed";
 import {Signup} from "../Pages/Signup";
 import {Login} from "../Pages/Login";
@@ -11,7 +11,7 @@ export function PrimaryRouter() {
     return (
         <Router>
                 <Routes>
-                    <Route element={<CrumbNavbar/>}>
+                    <Route element={<TopNavbar/>}>
                         <Route path="/" element={<PersonalFeed />}>For you</Route>
                         <Route path="/signup" element={<Signup />}>Signup</Route>
                         <Route path="/login" element={<Login />}>Login</Route>

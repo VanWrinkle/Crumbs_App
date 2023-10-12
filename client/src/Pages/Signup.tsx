@@ -1,4 +1,4 @@
-import {UserRegistration} from "../Components/UserRegistration";
+import {UserRegistration} from "../Components_old/UserRegistration";
 
 export function Signup() {
     return (
