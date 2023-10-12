@@ -5,7 +5,8 @@ import {CrumbsFeed} from "../components/CrumbsFeed";
 
 export function Feed(props: {
     canCompose: boolean,
-    feed: (continueFrom: string) => Promise<Crumb[] | undefined>
+    feed: (continueFrom: string) => Promise<Crumb[] | undefined>,
+    feedBulkSize: number
 }) {
     const [crumbs, setCrumbs] = useState<Crumb[]>([])
     const [hasMore, setHasMore] = useState(true)
@@ -15,11 +16,10 @@ export function Feed(props: {
         props.feed(continueFrom)
             .then((response) => {
                 if (response) {
-                    if (response.length === 0) {
+                    if (response.length < props.feedBulkSize) {
                         setHasMore(false)
-                    } else {
-                        setCrumbs([...crumbs, ...response])
                     }
+                    setCrumbs([...crumbs, ...response])
                 }
             })
             .catch(() => {

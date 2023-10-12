@@ -11,9 +11,9 @@ export function PrimaryRouter() {
         <Router>
                 <Routes>
                     <Route element={<TopNavbar/>}>
-                        <Route path="/" element={<Frontpage />}>For you</Route>
+                        <Route path="/" element={<Frontpage feedBulkSize={10} />}>For you</Route>
                         <Route path="/register" element={<Register />}>Register</Route>
-                        <Route path="/profile/:userid" element={<Profile />}>Profile</Route>
+                        <Route path="/profile/:userid" element={<Profile feedBulkSize={10} />}>Profile</Route>
                         <Route path="/settings" element={<Settings />}>Settings</Route>
                     </Route>
                 </Routes>
