@@ -3,7 +3,7 @@ import React, {SyntheticEvent, useContext, useState} from "react";
 import {useAuth} from "../context/AuthProvider";
 import {Api} from "../services/Api";
 import {CrumbComposeForm} from "../components/CrumbComposeForm";
-import {useAddNotification, useNotification} from "../context/AlertProvider";
+import {toast} from "react-toastify";
 
 /**
  * panel for composing new crumbs
@@ -14,34 +14,22 @@ export function CrumbCompose(props: {crumbs: Crumb[], setCrumbs: SocialMediaPost
     const [spinner, setSpinner] = useState(false)
     const [alert, setAlert] = useState("")
     const username = useAuth()?.username
-    const addNotify = useAddNotification()
 
     async function onSubmit(e: SyntheticEvent) {
         e.preventDefault();
-        const timer = setTimeout(() => {
-            setSpinner(true)
-        }, 300)
-        try {
-            const api = new Api()
-            const crumb = new CrumbV1(username!.toString(), userInput)
-            // TODO: Remember to uncomment again!!!
-            // await api.postNewCrumb(crumb);
-            setUserInput("");
-            addNotify({
-                message: "new crumb posted successfully",
-                link: ""})
-            props.setCrumbs([crumb, ...props.crumbs]);
-
-        } catch (error) {
-            if (error instanceof Error) {
-                setAlert(error.message)
+        const crumb = new CrumbV1(username!.toString(), userInput)
+        const api = new Api().postNewCrumb(crumb)
+        await toast.promise(api, {
+            pending: "Posting",
+            success: "Your crumb has been successfully posted",
+            error: {
+                render: ({data}) => {
+                    return (data instanceof Error) ? data.message : ""
+                }
             }
-        } finally {
-            clearTimeout(timer)
-            setSpinner(false)
-
-        }
-
+        }).then(() => {
+            setUserInput("")
+        })
     }
 
     return (

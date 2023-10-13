@@ -8,7 +8,7 @@ export function TopNavbarUserDropdownItems(props: {username: String, onLogout: (
         <>
             <Image src='/profile.png' roundedCircle width='30' height='30'
                    className="d-inline-block align-self-center"/>
-            <NavDropdown title={props.username} align={{lg: 'end'}}>
+            <NavDropdown title={props.username} align='end'>
                 <NavDropdown.Item>Notifications <Badge bg='secondary'>0</Badge></NavDropdown.Item>
                 <NavDropdown.Item as={Link} to={`/profile/${props.username}`}>Profile</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/settings">Settings</NavDropdown.Item>

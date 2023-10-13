@@ -4,6 +4,7 @@ import {Api} from "../services/Api";
 import {useAuthUpdate} from "../context/AuthProvider";
 import {useNavigate} from 'react-router-dom';
 import {UserRegistrationForm} from "../components/UserRegistrationForm";
+import {toast} from "react-toastify";
 
 export function UserRegistration() {
 
@@ -38,14 +39,33 @@ export function UserRegistration() {
 
     async function onSubmit(e: SyntheticEvent) {
         e.preventDefault();
+        const api = new Api()
         try {
-            const api = new Api()
-            await api.userRegistration(name, password);
-            const response = await api.userLogin(name, password)
-            setToken(response)
-            navigate('/')
-        } catch (error) {
-            console.log(error)
+            await toast.promise(api.userRegistration(name, password), {
+                pending: "Registering your account",
+                success: "Your account was successfully created. You will now attempt to log you in",
+                error: {
+                    render: ({data}) => {
+                        return (data instanceof Error) ? data.message : ""
+                    }
+                }
+            })
+            await toast.promise(api.userLogin(name, password), {
+                pending: "Logging you in",
+                success: "You have now been logged into your new account",
+                error: {
+                    render: ({data}) => {
+                        return (data instanceof Error) ? data.message : ""
+                    }
+                }
+            }).then(token => {
+                setToken(token)
+                navigate('/')
+            })
+        } catch (e: any) {
+            if (e instanceof Error) {
+                console.log(e.message)
+            }
         }
     }
 

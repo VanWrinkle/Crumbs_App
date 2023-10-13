@@ -2,7 +2,11 @@ import React, {SyntheticEvent, useState} from "react";
 import {LoadingButton} from "../../components/LoadingButton";
 import {Button, Form, Modal} from "react-bootstrap";
 
-export function SettingsDeleteUser(props: { deleteSpinning: boolean, onDelete: (e: SyntheticEvent, password: string) => {} }) {
+export function SettingsDeleteUser(props: {
+    deleteSpinning: boolean,
+    onDelete: (e: SyntheticEvent, password: string) => {},
+    onCancelDeletion: (e: SyntheticEvent) => void}
+) {
     const [showDialogue, setShowDialogue] = useState(false);
     const [password, setPassword] = useState("")
     const handleClose = () => setShowDialogue(false);
@@ -40,14 +44,17 @@ export function SettingsDeleteUser(props: { deleteSpinning: boolean, onDelete: (
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="secondary" onClick={e => {
+                        handleClose()
+                        props.onCancelDeletion(e)
+                    }}>
                         Close
                     </Button>
                     <Button
                         variant="danger"
                         onClick={e => {
-                            handleClose();
-                            props.onDelete(e, password);
+                            handleClose()
+                            props.onDelete(e, password)
                         }}
                         disabled={password.length === 0}>
                         Delete my account

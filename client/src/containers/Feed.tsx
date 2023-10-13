@@ -48,8 +48,9 @@ export function Feed(props: {
                         return crumb.post_id === it.post_id ? crumb : it
                     }))
                 })
-                .catch(() => {
-                    // TODO error handling
+                .catch((error: any) => {
+                    if (error instanceof Error)
+                    addNotification({message: error.message, link: ""})
                 })
         } else {
             addNotification({message: "You need to log in to give reaction", link: ""})

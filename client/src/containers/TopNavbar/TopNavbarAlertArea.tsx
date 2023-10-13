@@ -5,15 +5,12 @@ export function TopNavbarAlertArea() {
     const notifications = useNotification()!
 
     return(
-        <Collapse in={true}>
             <>
                 {notifications.map(item =>
-                <Alert variant="warning" dismissible>
+                <Alert variant="warning" className={"alertfield"} dismissible>
                     {item.message}
                 </Alert>
                 )}
             </>
-        </Collapse>
-
     )
 }

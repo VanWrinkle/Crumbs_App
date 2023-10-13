@@ -5,6 +5,7 @@ import {useAuthUpdate} from "../context/AuthProvider";
 import {Api} from "../services/Api";
 import {UserLoginForm} from "../components/UserLoginForm";
 import {useAddNotification} from "../context/AlertProvider";
+import {toast} from "react-toastify";
 
 export default function UserLogin() {
     const [userName, setUserName] = useState("");
@@ -17,21 +18,20 @@ export default function UserLogin() {
 
     async function onClick(e: SyntheticEvent) {
         e.preventDefault();
-        setIsLoading(true)
-        try {
-            const response = await new Api().userLogin(userName, userPassword)
-            setToken(response)
-            addNotification({message: "You successfully logged in", link: ""})
-
-        } catch(error) {
-            if (error instanceof Error) {
-                setShowAlert(true)
-                setAlert(error.message)
-            }
-        } finally {
-            setIsLoading(false)
-        }
-
+        const api = new Api().userLogin(userName, userPassword)
+        await toast.promise(
+            api, {
+                pending: "Logging in",
+                success: "You are now logged in",
+                error: {
+                    render: ({data}) => {
+                        return (data instanceof Error) ? data.message : ""
+                    }
+                }
+            })
+            .then((token) => {
+                    setToken(token)
+            })
     }
 
     return(

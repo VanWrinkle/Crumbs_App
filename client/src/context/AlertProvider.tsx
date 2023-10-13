@@ -1,4 +1,5 @@
 import React, {createContext, useContext, useState} from "react";
+import { ToastContainer, toast } from 'react-toastify';
 
 export interface Notify {
     message: string,
@@ -23,8 +24,6 @@ export function AlertProvider({children}: { children: React.ReactNode }) {
     function addNotify(notify: Notify) {
         setNotifications([...notifications, notify]);
     }
-    console.log("run again!!")
-
     return (
         <AlertContext.Provider value={notifications}>
             <AlertUpdateContext.Provider value={addNotify}>

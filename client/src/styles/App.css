@@ -12,3 +12,13 @@ body {
 .textarea {
   resize: none;
 }
+
+/*.alertfield {*/
+/*  --bs-alert-padding-y: 0 !important;*/
+/*  --bs-alert-margin-bottom: 0 !important;*/
+/**/
+/*}*/
+/**/
+/*.alertfield .btn-close {*/
+/*  padding: 0 1rem !important;*/
+/*}*/

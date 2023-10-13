@@ -4,6 +4,7 @@ import {useAuth, useAuthUpdate} from "../../context/AuthProvider";
 import {Api} from "../../services/Api";
 import {TopNavbarUserDropdownItems} from "../../components/TopNavbar/TopNavbarUserDropdownItems";
 import {useAddNotification} from "../../context/AlertProvider";
+import {toast} from "react-toastify";
 
 export function TopNavbarUserDropdown() {
     const userData = useAuth()
@@ -13,15 +14,18 @@ export function TopNavbarUserDropdown() {
 
     function onLogout(e: SyntheticEvent) {
         e.preventDefault();
-        new Api().userLogout()
-            .then(() => {
-                updateUserData(undefined)
-                addAlert({message: "You have been successfully logged out", link: ""})
-            })
-            .catch(function (error: Promise<void>) {
-                addAlert({message: "Something went wrong: You may not have been completely logged out", link: ""})
-            });
 
+        const api = new Api().userLogout()
+            toast.promise(
+                api, {
+                    pending: "Logging you out",
+                    success: "You are now logged out",
+                    error: "Something went wrong. We could not log off your session"
+                }
+            )
+            .then(() => {
+                    updateUserData(undefined)
+            })
     }
 
     return (

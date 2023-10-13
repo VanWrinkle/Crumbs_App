@@ -3,10 +3,13 @@ import {SettingsDeleteUser} from "./SettingsDeleteUser";
 import React, {SyntheticEvent, useState} from "react";
 import {Api} from "../../services/Api";
 import {useAuth, useAuthUpdate} from "../../context/AuthProvider";
+import {toast} from "react-toastify";
+import {useNavigate} from "react-router-dom";
 
 export function SettingsTabAccount() {
     const auth = useAuth()
     const setAuth = useAuthUpdate()
+    const navigate = useNavigate()
     const [deleteSpinning, setDeleteSpinning] = useState(false)
     const [alertMessage, setAlertMessage] = useState("")
     const [showAlert, setShowAlert] = useState(false)
@@ -14,19 +17,24 @@ export function SettingsTabAccount() {
 
     async function onDeleteAccount(_: SyntheticEvent, password: string) {
         setDeleteSpinning(true)
-        await new Api().userDeletion(auth!.username, password)
-            .then(_ => {
-                setAuth(undefined)
-            })
-            .catch(error => {
-                if (error instanceof Error) {
-                    setShowAlert(true)
-                    setAlertMessage(error.message)
+        const api = new Api().userDeletion(auth!.username, password)
+        await toast.promise(api, {
+            pending: "Deleting your account",
+            success: "Your account has been deleted, and you have been logged out",
+            error: {
+                render: ({data}) => {
+                    return (data instanceof Error) ? data.message : ""
                 }
-            })
-            .finally(() => {
-                setDeleteSpinning(false)
-            })
+            }
+        }).then(() => {
+            setAuth(undefined)
+            navigate("/")
+        })
+    }
+
+    function onCancelDeletion(e: SyntheticEvent) {
+        toast.info("You decided to cancel the account deletion process. No action has been taken")
+
     }
 
 
@@ -38,7 +46,11 @@ export function SettingsTabAccount() {
                     {alertMessage}
                 </Alert>)}
             <Card.Body>
-                <SettingsDeleteUser deleteSpinning={deleteSpinning} onDelete={onDeleteAccount}/>
+                <SettingsDeleteUser
+                    deleteSpinning={deleteSpinning}
+                    onDelete={onDeleteAccount}
+                    onCancelDeletion={onCancelDeletion}
+                />
             </Card.Body>
         </Card>
     )
