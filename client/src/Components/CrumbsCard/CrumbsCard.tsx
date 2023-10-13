@@ -1,13 +1,10 @@
 import {Crumb} from "../../types/Crumb";
 import React, {SyntheticEvent} from "react";
-import {Link} from "react-router-dom";
-import {Button, Card, Col, Row, Stack} from "react-bootstrap";
-import {getTimeSince} from "../../utils/utils";
-import {useAuth} from "../../context/AuthProvider";
-import {ThumbUp} from "@mui/icons-material";
+import {Card, Col, Row} from "react-bootstrap";
 import {CrumbsCardBottomRow} from "./CrumbsCardBottomRow";
 import {CrumbsCardContentDecoder} from "./CrumbsCardContentDecoder";
 import {CrumbsCardTopRow} from "./CrumbsCardTopRow";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 /**
  * component for a single crumb
@@ -15,12 +12,12 @@ import {CrumbsCardTopRow} from "./CrumbsCardTopRow";
  */
 export function CrumbsCard(props: { crumb: Crumb, onLike: (e: SyntheticEvent, crumb: Crumb) => {} }) {
     return (
-        <Card className="mb-2">
+        <Card className={"mb-2"}>
             <Row>
-                <Col xs={3}>
-                    <Card.Img src="/logo192.png"/>
+                <Col xs={1}>
+                    <Card.Img src="/profile.png" className="rounded-circle ms-3 mt-4" style={{maxHeight: 40, width: "auto"}}/>
                 </Col>
-                <Col>
+                <Col className={"ps-3"}>
                     <Card.Body>
                         <CrumbsCardTopRow crumb={props.crumb} />
                         <Card.Text>

@@ -12,24 +12,31 @@ export function Feed(props: {
 }) {
     const authorized = useAuth()
     const [crumbs, setCrumbs] = useState<Crumb[]>([])
+    const [restartFeed, setRestartFeed] = useState(true)
     const [hasMore, setHasMore] = useState(true)
     const addNotification = useAddNotification()
 
     async function updatePosts() {
-        const continueFrom = crumbs.length > 0 ? crumbs[crumbs.length - 1].post_id : ""
+        const continueFrom = restartFeed || crumbs.length === 0 ? "" : crumbs[crumbs.length - 1].post_id
+        setRestartFeed(false)
         props.feed(continueFrom)
             .then((response) => {
                 if (response) {
+                    setCrumbs([...crumbs, ...response])
                     if (response.length < props.feedBulkSize) {
                         setHasMore(false)
                     }
-                    setCrumbs([...crumbs, ...response])
                 }
             })
             .catch(() => {
-                // TODO error handling
+                addNotification({message: "failed to load more crumbs", link: ""})
             })
     }
+
+    useEffect(() => {
+        setRestartFeed(true)
+        setHasMore(true)
+    }, [authorized]);
 
     async function onLike(crumb: Crumb) {
         if (authorized) {

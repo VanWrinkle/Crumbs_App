@@ -14,7 +14,7 @@ export function UserLoginForm(props: {
 }) {
 
     return(
-        <NavDropdown title={"Login"} align={{ lg: 'end' }}>
+        <NavDropdown title={"Login"} align='end'>
             <div style={{width: '230px', padding: '20px'}}>
                 <Form>
                     <Form.Group className="mb-2" controlId="userName">
