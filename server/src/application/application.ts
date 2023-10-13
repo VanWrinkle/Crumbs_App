@@ -42,7 +42,7 @@ export class Application {
             .get('/api/getReplies', getReplies(this.#config.graphPersistence))
             .get('*', reactApp)
             .post('/api/register', registerUser(this.#config.registrationService))
-            .delete('/api/deleteUser', deleteUser(this.#config.registrationService))
+            .delete('/api/deleteUser', deleteUser(this.#config.registrationService, this.#config.loginService))
             .post('/api/login', loginUser(this.#config.loginService))
             .post('/api/logout', logoutUser(this.#config.loginService))
             .post('/api/renew', renewUserToken(this.#config.loginService))

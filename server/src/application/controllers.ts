@@ -222,13 +222,13 @@ export function getUserFeed(persistence: ISocialGraphPersistence) {
  * Handler should delete the authenticated, all data associated with the user,
  * and finally clear the access token
  */
-export function deleteUser(userRegistration: IUserRegistrationService) {
+export function deleteUser(userRegistration: IUserRegistrationService, loginService: IUserLoginService) {
     return function(req: express.Request, res: express.Response) {
         console.log("deleteUser: " + req.user)
         if (req.user) {
             userRegistration.deleteUser(req.user.toString())
                 .then( () => {
-                    res.status(204).send();
+                    loginService.clearSessionToken(res)
                 })
                 .catch( _ => {
                     res.status(500).send();
