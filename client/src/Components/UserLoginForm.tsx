@@ -1,16 +1,13 @@
-import {Alert, Form, InputGroup, NavDropdown} from "react-bootstrap";
+import {Button, Form, InputGroup, NavDropdown} from "react-bootstrap";
 import React, {SyntheticEvent} from "react";
-import {LoadingButton} from "./LoadingButton";
+import {Link} from "react-router-dom";
 
 export function UserLoginForm(props: {
     setUserName: (name: string) => void,
     setUserPassword: (password: string) => void,
     userPassword: string,
-    isLoading: boolean,
-    showAlert: boolean
-    alert: string,
-    setShowAlert: (show: boolean) => void,
-    onClick: (e: SyntheticEvent) => void
+    onClick: (e: SyntheticEvent) => void,
+    disabled: boolean
 }) {
 
     return(
@@ -43,23 +40,16 @@ export function UserLoginForm(props: {
                             required></Form.Control>
                     </Form.Group>
 
-                    {props.showAlert && (
-                        <Alert variant="warning" onClose={() => props.setShowAlert(false)} dismissible>
-                            {props.alert}
-                        </Alert>
-                    )}
-
-                    <LoadingButton
-                        isLoading={props.isLoading}
+                    <Button
+                        type={"submit"}
                         onClick={props.onClick}
-                        buttonText={'Log in'}
-                        disabled={false}
-                        variant={'primary'}
-                    />
-
+                        disabled={props.disabled}
+                    >
+                        Log In
+                    </Button>
                     <p style={{paddingTop: '20px'}}>
-                        No account? Sign up <> </>
-                        <a href={"/register"}>here</a>
+                        <>No account? </>
+                        <Link to={"/register"}>Sign up</Link>
                         !
                     </p>
 

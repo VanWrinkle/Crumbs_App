@@ -11,24 +11,34 @@ import {toast} from "react-toastify";
  */
 export function CrumbCompose(props: {crumbs: Crumb[], setCrumbs: SocialMediaPostDispatch}) {
     const [userInput, setUserInput] = useState("");
-    const [spinner, setSpinner] = useState(false)
-    const [alert, setAlert] = useState("")
     const username = useAuth()?.username
+    const [disabledButton, setDisabledButton] = useState(false)
 
     async function onSubmit(e: SyntheticEvent) {
         e.preventDefault();
+        setDisabledButton(true)
         const crumb = new CrumbV1(username!.toString(), userInput)
         const api = new Api().postNewCrumb(crumb)
         await toast.promise(api, {
             pending: "Posting",
-            success: "Your crumb has been successfully posted",
+            success: {
+                render: () => {
+                    return (
+                        <>
+                        <div>Your crumb is ready!</div>
+                        <div><a href={`/profile/${username}`}>Take a look at it here!</a></div>
+                        </>
+                    )
+                }
+            },
             error: {
                 render: ({data}) => {
                     return (data instanceof Error) ? data.message : ""
                 }
             }
-        }).then(() => {
+        }).finally(() => {
             setUserInput("")
+            setDisabledButton(false)
         })
     }
 
@@ -36,11 +46,9 @@ export function CrumbCompose(props: {crumbs: Crumb[], setCrumbs: SocialMediaPost
         <CrumbComposeForm
             userInput={userInput}
             username={username}
-            spinner={spinner}
             setUserInput={setUserInput}
             onSubmit={onSubmit}
-            setAlert={setAlert}
-            alert={alert}
+            disabledButton={disabledButton}
         />
     );
 }

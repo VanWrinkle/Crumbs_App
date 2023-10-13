@@ -4,20 +4,17 @@ import { useState } from 'react';
 import {useAuthUpdate} from "../context/AuthProvider";
 import {Api} from "../services/Api";
 import {UserLoginForm} from "../components/UserLoginForm";
-import {useAddNotification} from "../context/AlertProvider";
 import {toast} from "react-toastify";
 
 export default function UserLogin() {
     const [userName, setUserName] = useState("");
     const [userPassword, setUserPassword] = useState("");
-    const [isLoading, setIsLoading] = useState(false)
-    const [showAlert, setShowAlert] = useState(false)
-    const [alert, setAlert] = useState("")
     const setToken = useAuthUpdate()
-    const addNotification = useAddNotification()
+    const [disableButton, setDisableButton] = useState(false)
 
     async function onClick(e: SyntheticEvent) {
         e.preventDefault();
+        setDisableButton(true)
         const api = new Api().userLogin(userName, userPassword)
         await toast.promise(
             api, {
@@ -32,6 +29,9 @@ export default function UserLogin() {
             .then((token) => {
                     setToken(token)
             })
+            .finally(() => {
+                setDisableButton(false)
+            })
     }
 
     return(
@@ -39,11 +39,8 @@ export default function UserLogin() {
             setUserName={setUserName}
             setUserPassword={setUserPassword}
             userPassword={userPassword}
-            isLoading={isLoading}
-            showAlert={showAlert}
-            alert={alert}
-            setShowAlert={setShowAlert}
             onClick={onClick}
+            disabled={userPassword.length === 0 || disableButton}
             />
     )
 }
