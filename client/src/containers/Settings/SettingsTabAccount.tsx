@@ -1,4 +1,4 @@
-import {Alert, Card} from "react-bootstrap";
+import {Card} from "react-bootstrap";
 import {SettingsDeleteUser} from "./SettingsDeleteUser";
 import React, {SyntheticEvent, useState} from "react";
 import {Api} from "../../services/Api";
@@ -11,8 +11,6 @@ export function SettingsTabAccount() {
     const setAuth = useAuthUpdate()
     const navigate = useNavigate()
     const [deleteSpinning, setDeleteSpinning] = useState(false)
-    const [alertMessage, setAlertMessage] = useState("")
-    const [showAlert, setShowAlert] = useState(false)
 
 
     async function onDeleteAccount(_: SyntheticEvent, password: string) {
@@ -32,7 +30,7 @@ export function SettingsTabAccount() {
         })
     }
 
-    function onCancelDeletion(e: SyntheticEvent) {
+    function onCancelDeletion(_: SyntheticEvent) {
         toast.info("You decided to cancel the account deletion process. No action has been taken")
 
     }
@@ -41,10 +39,6 @@ export function SettingsTabAccount() {
 
     return(
         <Card style={{borderTop: "0", borderTopLeftRadius: "0", borderTopRightRadius: "0"}}>
-            {showAlert && (
-                <Alert variant="warning" onClose={() => setShowAlert(false)} dismissible>
-                    {alertMessage}
-                </Alert>)}
             <Card.Body>
                 <SettingsDeleteUser
                     deleteSpinning={deleteSpinning}

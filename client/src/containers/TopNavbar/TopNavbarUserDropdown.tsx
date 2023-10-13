@@ -3,13 +3,11 @@ import React, {SyntheticEvent} from "react";
 import {useAuth, useAuthUpdate} from "../../context/AuthProvider";
 import {Api} from "../../services/Api";
 import {TopNavbarUserDropdownItems} from "../../components/TopNavbar/TopNavbarUserDropdownItems";
-import {useAddNotification} from "../../context/AlertProvider";
 import {toast} from "react-toastify";
 
 export function TopNavbarUserDropdown() {
     const userData = useAuth()
     const updateUserData = useAuthUpdate()
-    const addAlert = useAddNotification()
 
 
     function onLogout(e: SyntheticEvent) {
@@ -18,8 +16,8 @@ export function TopNavbarUserDropdown() {
         const api = new Api().userLogout()
             toast.promise(
                 api, {
-                    pending: "Logging you out",
-                    success: "You are now logged out",
+                    pending: "signing out",
+                    success: "You are now signed out",
                     error: "Something went wrong. We could not log off your session"
                 }
             )

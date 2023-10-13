@@ -18,8 +18,8 @@ export default function UserLogin() {
         const api = new Api().userLogin(userName, userPassword)
         await toast.promise(
             api, {
-                pending: "Logging in",
-                success: "You are now logged in",
+                pending: "Signing in",
+                success: "You are now signed in",
                 error: {
                     render: ({data}) => {
                         return (data instanceof Error) ? data.message : ""

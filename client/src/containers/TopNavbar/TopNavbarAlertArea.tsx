@@ -1,5 +1,5 @@
 import {useNotification} from "../../context/AlertProvider";
-import {Alert, Collapse} from "react-bootstrap";
+import {Alert} from "react-bootstrap";
 
 export function TopNavbarAlertArea() {
     const notifications = useNotification()!

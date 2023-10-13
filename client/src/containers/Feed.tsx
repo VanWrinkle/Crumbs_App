@@ -4,6 +4,7 @@ import {Api} from "../services/Api";
 import {CrumbsFeed} from "../components/CrumbsFeed";
 import {useAuth} from "../context/AuthProvider";
 import {useAddNotification} from "../context/AlertProvider";
+import {toast} from "react-toastify";
 
 export function Feed(props: {
     canCompose: boolean,
@@ -53,7 +54,7 @@ export function Feed(props: {
                     addNotification({message: error.message, link: ""})
                 })
         } else {
-            addNotification({message: "You need to log in to give reaction", link: ""})
+            toast.info("You need be signed into an account to leave reactions")
         }
 
     }

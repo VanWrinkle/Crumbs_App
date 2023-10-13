@@ -1,5 +1,5 @@
-import {Crumb, CrumbV1, SocialMediaPostDispatch} from "../types/Crumb";
-import React, {SyntheticEvent, useContext, useState} from "react";
+import {CrumbV1} from "../types/Crumb";
+import React, {SyntheticEvent, useState} from "react";
 import {useAuth} from "../context/AuthProvider";
 import {Api} from "../services/Api";
 import {CrumbComposeForm} from "../components/CrumbComposeForm";
@@ -7,9 +7,8 @@ import {toast} from "react-toastify";
 
 /**
  * panel for composing new crumbs
- * @param props - array of crumbs and setter
  */
-export function CrumbCompose(props: {crumbs: Crumb[], setCrumbs: SocialMediaPostDispatch}) {
+export function CrumbCompose() {
     const [userInput, setUserInput] = useState("");
     const username = useAuth()?.username
     const [disabledButton, setDisabledButton] = useState(false)
