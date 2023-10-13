@@ -1,8 +1,9 @@
 import {Crumb, CrumbV1, SocialMediaPostDispatch} from "../types/Crumb";
-import React, {SyntheticEvent, useState} from "react";
+import React, {SyntheticEvent, useContext, useState} from "react";
 import {useAuth} from "../context/AuthProvider";
 import {Api} from "../services/Api";
 import {CrumbComposeForm} from "../components/CrumbComposeForm";
+import {useAddNotification, useNotification} from "../context/AlertProvider";
 
 /**
  * panel for composing new crumbs
@@ -13,6 +14,7 @@ export function CrumbCompose(props: {crumbs: Crumb[], setCrumbs: SocialMediaPost
     const [spinner, setSpinner] = useState(false)
     const [alert, setAlert] = useState("")
     const username = useAuth()?.username
+    const addNotify = useAddNotification()
 
     async function onSubmit(e: SyntheticEvent) {
         e.preventDefault();
@@ -22,9 +24,14 @@ export function CrumbCompose(props: {crumbs: Crumb[], setCrumbs: SocialMediaPost
         try {
             const api = new Api()
             const crumb = new CrumbV1(username!.toString(), userInput)
-            await api.postNewCrumb(crumb);
+            // TODO: Remember to uncomment again!!!
+            // await api.postNewCrumb(crumb);
             setUserInput("");
+            addNotify({
+                message: "new crumb posted successfully",
+                link: ""})
             props.setCrumbs([crumb, ...props.crumbs]);
+
         } catch (error) {
             if (error instanceof Error) {
                 setAlert(error.message)
@@ -37,7 +44,6 @@ export function CrumbCompose(props: {crumbs: Crumb[], setCrumbs: SocialMediaPost
 
     }
 
-
     return (
         <CrumbComposeForm
             userInput={userInput}
@@ -47,6 +53,6 @@ export function CrumbCompose(props: {crumbs: Crumb[], setCrumbs: SocialMediaPost
             onSubmit={onSubmit}
             setAlert={setAlert}
             alert={alert}
-            />
+        />
     );
 }

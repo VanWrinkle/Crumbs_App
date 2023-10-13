@@ -16,17 +16,15 @@ export function CrumbsCardContentDecoder({contents}: {contents: CrumbContent[]})
 
 function CrumbCardHashtag({content}: {content: CrumbContent}) {
     return(
-        <Link
-            to={""}
-            style={{color: "inherit"}}>{content.value}
+        <Link to={""}>
+            {content.value}
         </Link>
     )
 }
 
 function CrumbCardMention({content}: {content: CrumbContent}) {
     return (
-        <Link
-            to={`/profile/${content.value.substring(1)}`}
-            style={{color: "inherit"}}>{content.value}
+        <Link to={`/profile/${content.value.substring(1)}`}>
+            {content.value}
         </Link>)
 }
