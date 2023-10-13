@@ -13,12 +13,11 @@ export function CrumbsFeed(props: {
     updatePosts: () => void,
 }) {
 
-    // TODO: Handle what happens in setCrumbs later!!!!
     return(
         <Container className="main-content">
             {props.canCompose && (
                 <Row>
-                    <SocialMediaTopPanel crumbs={props.crumbs} setCrumbs={_ => {}}/>
+                    <SocialMediaTopPanel />
                 </Row>
             )}
             <InfiniteScroll

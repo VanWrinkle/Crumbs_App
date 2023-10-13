@@ -12,7 +12,7 @@ export function CrumbsCardBottomRow(props: {crumb: Crumb, onLike: (e: SyntheticE
                     size="sm"
                     className="ms-auto me-2"
                     variant={"outline-info"}
-                    onClick={e => {}}>
+                    onClick={_ => {}}>
                         <span className="pe-1">
                             <Message fontSize="inherit"/>
                         </span>
