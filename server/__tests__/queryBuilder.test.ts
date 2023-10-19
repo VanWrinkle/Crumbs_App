@@ -1,5 +1,7 @@
 import {Neo4jQueryBuilder} from "../src/user/content/socialGraph/NeoGraphPersistence/Neo4jQueryBuilder";
-import {Order} from "../src/contracts/IPostPresentationService";
+import {CrumbFilter} from "../src/entities/CrumbFilter";
+
+
 
 
 test ('should inject AND between conditions', () => {
@@ -14,5 +16,5 @@ test ('should ignore empty conditions', () => {
 
 test ('should construct ORDER BY', ()=>  {
     let expected = "ORDER BY that DESC"
-    expect(Neo4jQueryBuilder.ORDER_BY(["", "that"], Order.Descending))
+    expect(Neo4jQueryBuilder.ORDER_BY(["", "that"], CrumbFilter.Order.Descending))
 })
