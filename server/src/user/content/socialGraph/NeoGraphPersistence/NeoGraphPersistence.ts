@@ -99,15 +99,16 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 contents.push(component.value)
                 flags.push(component.type)
             })
-
-            let session = this.#driver.session();
-            session
-                .run(
-                    `MATCH (u:User {username: $user}) 
+            let query = `MATCH (u:User {username: $user}) 
                     ${parent != null? "MATCH (p) WHERE ID(p) = " + parent : ""}
                     CREATE (c:Crumb {contents: $contents, flags: $flags, created: timestamp()})
                     -[:POSTED_BY]->(u)
-                    ${parent != null? "CREATE (c)-[:REPLIES_TO]->(p)":""}`,
+                    ${parent != null? "CREATE (c)-[:REPLIES_TO]->(p)":""}`
+            console.log(query)
+            let session = this.#driver.session();
+            session
+                .run(
+                    query,
                     {
                         user: username,
                         contents: contents,
@@ -148,6 +149,11 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
         if (cutoff === "") {cutoff = null} // Simplifies logic un the query construction
         let view: Crumb[] = [];
         let engagement = filter.sort === CrumbFilter.Sort.Engagement
+        let parentID = 0;
+        //TODO: do it better
+        if (filter.parent_post && parseInt(filter.parent_post.toString())) {
+            parentID = parseInt(filter.parent_post.toString());
+        }
         //TODO: fetch engagement for single post
         let query =
             `
@@ -155,6 +161,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 "MATCH (parent)<-[:REPLIES_TO]-(crumb:Crumb)-[p:POSTED_BY]->(author)"
                 :"MATCH (crumb:Crumb)-[p:POSTED_BY]->(author)"}
             ${Neo4jQueryBuilder.WHERE([
+                filter.parent_post? "ID(parent) = $parent":"",
                 (user)?"author.username <> $user":"",
                 (filter.authors)?"author.username IN $authors":"",
                 (filter.hashtags)?"":"" //TODO: Implement hashtags in DB
@@ -190,7 +197,6 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 filter.order)}
             LIMIT ${filter.max};`
         console.log(query)
-        console.log("continue_from" + cutoff)
         return new Promise( resolve => {
             let session = this.#driver.session();
             session
@@ -200,7 +206,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                         user: user,
                         authors: filter.authors,
                         hashtags: filter.hashtags,
-                        parent: filter.parent_post
+                        parent: parentID
                     }
                 )
                 .then( results => {

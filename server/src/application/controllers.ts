@@ -102,10 +102,14 @@ export function renewUserToken(loginService: IUserLoginService) {
 export function postCrumb(persistence: ISocialGraphPersistence) {
     return function(req: express.Request, res: express.Response) {
         if (req.user) {
+            console.log(req.body)
             let username = req.user.toString()
             let parsedCrumb = Crumb.parseContentsFromString(req.body.content)
             persistence
-                .createCrumb(req.body!.parent, username, parsedCrumb)
+                .createCrumb(
+                    req.body.parent ? req.body.parent.toString() : null,
+                    username,
+                    parsedCrumb)
                 .catch( () => res.status(500).send() )
                 .then(  () => res.status(201).send() )
         } else {
@@ -168,9 +172,10 @@ export function getMainFeed(persistence: ISocialGraphPersistence) {
         }
 
         if(req.query.parent) {
+            console.log("parent:" + req.query.parent.toString())
             filter.parent_post = req.query.parent.toString();
         }
-
+        console.log(req.query)
         persistence.getCrumbs(
             ((req.user != undefined)? req.user.toString() : null),
             filter,
