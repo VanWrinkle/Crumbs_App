@@ -67,11 +67,12 @@ export class Api {
         }
     }
 
-    async getMainFeed(numberOfPosts: number = 10, continue_from: string = "") {
+    async getMainFeed(numberOfPosts: number = 10, continue_from: string = "", parent: string | null = null) {
         try {
             const response = await this.client.get('/getMainFeed', {params: {
                     "max_posts": numberOfPosts,
-                    "continue_from": continue_from
+                    "continue_from": continue_from,
+                    "parent": parent
                 }});
             return response.data as Crumb[];
         } catch (error: any) {

@@ -4,7 +4,11 @@ import {Message, ThumbUp} from "@mui/icons-material";
 import React, {SyntheticEvent} from "react";
 import {Crumb} from "../../types/Crumb";
 
-export function CrumbsCardBottomRow(props: {crumb: Crumb, onLike: (e: SyntheticEvent, crumb: Crumb) => {}}) {
+export function CrumbsCardBottomRow(props: {
+    crumb: Crumb,
+    onLike: (e: SyntheticEvent, crumb: Crumb) => {},
+    onReplies: (e: SyntheticEvent) => void
+}) {
     return(
         <Stack direction="horizontal">
             <div className="ms-auto">
@@ -12,7 +16,7 @@ export function CrumbsCardBottomRow(props: {crumb: Crumb, onLike: (e: SyntheticE
                     size="sm"
                     className="ms-auto me-2"
                     variant={"outline-info"}
-                    onClick={_ => {}}>
+                    onClick={e => props.onReplies(e)}>
                         <span className="pe-1">
                             <Message fontSize="inherit"/>
                         </span>

@@ -30,6 +30,7 @@ export function Feed(props: {
                 }
             })
             .catch(() => {
+                toast.error("Could not load the last messages")
                 addNotification({message: "failed to load more crumbs", link: ""})
             })
     }
