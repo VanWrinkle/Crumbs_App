@@ -6,8 +6,8 @@ export function CrumbsCardContentDecoder({contents}: {contents: CrumbContent[]})
     return(
         <>
         {contents.map((item) =>
-            item.type == "hashtag" ? <CrumbCardHashtag content={item} /> :
-            item.type == "mention" ? <CrumbCardMention content={item} /> :
+            item.type === "hashtag" ? <CrumbCardHashtag content={item} /> :
+            item.type === "mention" ? <CrumbCardMention content={item} /> :
             <>{item.value}</>
         )}
         </>

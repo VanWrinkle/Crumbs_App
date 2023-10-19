@@ -10,6 +10,7 @@ export function Frontpage({feedBulkSize}: {feedBulkSize: number}) {
                 canCompose={true}
                 feed={(continueFrom: string) => new Api().getMainFeed(feedBulkSize, continueFrom)}
                 feedBulkSize={feedBulkSize}
+                parentId={null}
             />
         </Container>
     )

@@ -11,13 +11,14 @@ export function CrumbsFeed(props: {
     hasMore: boolean,
     onLike: (crumb: Crumb) => {},
     updatePosts: () => void,
+    parentId: string | null
 }) {
 
     return(
         <Container className="main-content">
             {props.canCompose && (
                 <Row>
-                    <SocialMediaTopPanel />
+                    <SocialMediaTopPanel parentId={props.parentId} />
                 </Row>
             )}
             <InfiniteScroll

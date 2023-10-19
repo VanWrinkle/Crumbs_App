@@ -9,7 +9,8 @@ import {toast} from "react-toastify";
 export function Feed(props: {
     canCompose: boolean,
     feed: (continueFrom: string) => Promise<Crumb[] | undefined>,
-    feedBulkSize: number
+    feedBulkSize: number,
+    parentId: string | null
 }) {
     const authorized = useAuth()
     const [crumbs, setCrumbs] = useState<Crumb[]>([])
@@ -72,6 +73,7 @@ export function Feed(props: {
             hasMore={hasMore}
             onLike={onLike}
             updatePosts={updatePosts}
+            parentId={props.parentId}
             />
     );
 }

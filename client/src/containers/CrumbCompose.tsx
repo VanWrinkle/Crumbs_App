@@ -8,7 +8,9 @@ import {toast} from "react-toastify";
 /**
  * panel for composing new crumbs
  */
-export function CrumbCompose() {
+export function CrumbCompose(props: {
+    parentId: string | null
+}) {
     const [userInput, setUserInput] = useState("");
     const username = useAuth()?.username
     const [disabledButton, setDisabledButton] = useState(false)
@@ -16,7 +18,7 @@ export function CrumbCompose() {
     async function onSubmit(e: SyntheticEvent) {
         e.preventDefault();
         setDisabledButton(true)
-        const crumb = new CrumbV1(username!.toString(), userInput)
+        const crumb = new CrumbV1(username!.toString(), userInput, props.parentId)
         const api = new Api().postNewCrumb(crumb)
         await toast.promise(api, {
             pending: "Posting",
