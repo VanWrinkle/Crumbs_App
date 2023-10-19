@@ -167,6 +167,10 @@ export function getMainFeed(persistence: ISocialGraphPersistence) {
             }
         }
 
+        if(req.query.parent) {
+            filter.parent_post = req.query.parent.toString();
+        }
+
         persistence.getCrumbs(
             ((req.user != undefined)? req.user.toString() : null),
             filter,
