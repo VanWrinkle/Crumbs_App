@@ -4,6 +4,7 @@ import {useAuth} from "../context/AuthProvider";
 import {Api} from "../services/Api";
 import {CrumbComposeForm} from "../components/CrumbComposeForm";
 import {toast} from "react-toastify";
+import { CrumbComposeFormTiny } from "../components/CrumbComposeFormTiny";
 
 /**
  * panel for composing new crumbs
@@ -44,12 +45,25 @@ export function CrumbCompose(props: {
     }
 
     return (
-        <CrumbComposeForm
-            userInput={userInput}
-            username={username}
-            setUserInput={setUserInput}
-            onSubmit={onSubmit}
-            disabledButton={disabledButton}
-        />
-    );
+        <>
+            {props.parentId == null ? (
+            <CrumbComposeForm
+                userInput={userInput}
+                username={username}
+                setUserInput={setUserInput}
+                onSubmit={onSubmit}
+                disabledButton={disabledButton}
+            />
+            ):(
+            <CrumbComposeFormTiny
+                userInput={userInput}
+                username={username}
+                setUserInput={setUserInput}
+                onSubmit={onSubmit}
+                disabledButton={disabledButton}
+            />
+            )}
+        </>
+
+    )
 }

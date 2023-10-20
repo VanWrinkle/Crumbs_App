@@ -4,6 +4,7 @@ import {CrumbsCard} from "./CrumbsCard/CrumbsCard";
 import React from "react";
 import {Crumb} from "../types/Crumb";
 import {SocialMediaTopPanel} from "./CrumbsComposePanel";
+import {CrumbCompose} from "../containers/CrumbCompose";
 
 export function CrumbsFeed(props: {
     canCompose: boolean,
@@ -14,13 +15,18 @@ export function CrumbsFeed(props: {
     parentId: string | null
 }) {
 
+    const style = "main-content" + (props.parentId != null ? " border-start border-4 ms-2 pe-2" : "")
+
     return(
-        <Container className="main-content">
-            {props.canCompose && (
-                <Row>
-                    <SocialMediaTopPanel parentId={props.parentId} />
-                </Row>
+        <Container className={style}>
+            <Row>
+            {props.canCompose && !props.parentId && (
+                <SocialMediaTopPanel parentId={props.parentId} />
             )}
+            {props.canCompose && props.parentId && (
+                <CrumbCompose parentId={props.parentId} />
+            )}
+            </Row>
             <InfiniteScroll
                 next={props.updatePosts}
                 hasMore={props.hasMore}

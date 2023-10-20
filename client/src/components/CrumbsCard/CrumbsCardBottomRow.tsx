@@ -1,12 +1,15 @@
 import {Button, Stack} from "react-bootstrap";
 import {useAuth} from "../../context/AuthProvider";
-import {Message, ThumbUp} from "@mui/icons-material";
+import {Message, Reply, ThumbUp} from "@mui/icons-material";
 import React, {SyntheticEvent} from "react";
 import {Crumb} from "../../types/Crumb";
 
 export function CrumbsCardBottomRow(props: {
     crumb: Crumb,
+    showSubfeed: Boolean
+    showComposeField: Boolean
     onLike: (e: SyntheticEvent, crumb: Crumb) => {},
+    onReply: (e: SyntheticEvent) => void,
     onReplies: (e: SyntheticEvent) => void
 }) {
     return(
@@ -15,7 +18,18 @@ export function CrumbsCardBottomRow(props: {
                 <Button
                     size="sm"
                     className="ms-auto me-2"
-                    variant={"outline-info"}
+                    disabled={props.crumb.author === useAuth()?.username}
+                    variant={props.showComposeField ? "info" : "outline-info"}
+                    onClick={e => { props.onReply(e) }}>
+                        <span className="pe-1">
+                            <Reply fontSize="inherit"/>
+                        </span>
+                    Reply
+                </Button>
+                <Button
+                    size="sm"
+                    className="ms-auto me-2"
+                    variant={props.showSubfeed ? "info" : "outline-info"}
                     onClick={e => props.onReplies(e)}>
                         <span className="pe-1">
                             <Message fontSize="inherit"/>
@@ -33,7 +47,6 @@ export function CrumbsCardBottomRow(props: {
                         </span>
                     {props.crumb.likes}
                 </Button>
-
             </div>
         </Stack>
     )
