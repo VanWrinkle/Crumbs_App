@@ -270,6 +270,8 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
 
         return new Promise( resolve => {
             let session = this.#driver.session();
+            console.log(following? addFollow : deleteFollow)
+
             session
                 .run(
                     following? addFollow : deleteFollow,

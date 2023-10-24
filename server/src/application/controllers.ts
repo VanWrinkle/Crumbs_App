@@ -124,13 +124,19 @@ export function postCrumb(persistence: ISocialGraphPersistence) {
 export function setFollow(persistence: ISocialGraphPersistence, follows: boolean) {
     return function(req: express.Request, res: express.Response) {
         if(req.user) {
-            persistence.setCrumbLiked(req.user.toString(), req.body.user, follows)
-                .catch(()=> {
-                    res.status(500).send() // TODO: Logic for not found
-                })
-                .then( () => {
-                    res.status(201).send()
-                })
+            let id = req.query.user?.toString()
+            if (id) {
+                console.log(id, req.user.toString())
+                persistence.setUserFollowing(req.user.toString(), id, follows)
+                    .catch(()=> {
+                        res.status(500).send() // TODO: Logic for not found
+                    })
+                    .then( () => {
+                        res.status(201).send()
+                    })
+            } else {
+                res.status(400).send()
+            }
         } else {
             res.status(401).send()
         }

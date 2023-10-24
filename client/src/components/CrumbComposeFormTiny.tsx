@@ -11,7 +11,9 @@ export function CrumbComposeFormTiny(props: {
 }) {
     const textAreaRef = useRef<HTMLTextAreaElement | null>(null)
 
+    // activate the text field automatically after creation
     useEffect(() => {
+        // checks whether the DOM object has been created
         if (textAreaRef.current) {
             textAreaRef.current.focus();
         }

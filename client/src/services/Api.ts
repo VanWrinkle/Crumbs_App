@@ -107,6 +107,18 @@ export class Api {
         }
     }
 
+    async toggleFollow(userId: String, remove: boolean) {
+        try {
+            if (remove) {
+                await this.client.delete('/followUser', {params: {'user': userId}})
+            } else {
+                await this.client.post('/followUser', {},{params: {'user': userId}})
+            }
+        } catch (error: any) {
+            this.handleApiError(error, {})
+        }
+    }
+
     async userDeletion(username: string, password: string) {
         try {
             await this.userLogin(username, password)
