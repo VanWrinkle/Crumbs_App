@@ -38,7 +38,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
             let session = this.#driver.session();
             session
                 .run(
-                    "CREATE (user:User {username: $user})",
+                    "CREATE (user:User {username: $user, created: timestamp()})",
                     {user: username})
                 .finally( () => {
                     session.close();
@@ -350,6 +350,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
             ])}
             ${Neo4jQueryBuilder.RETURN([
                 "user",
+                "user.created AS created",
                 "follows_count",
                 "followed_count",
                 activeUser? "following" : ""
@@ -371,6 +372,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                     results.records.forEach( record => {
                         let user: User = {
                             username: targetUser,
+                            joined: Number(record.get('created').toBigInt()),
                             is_followed_by_user: activeUser? record.get('following') : false,
                             followers_count: record.get('followed_count').low,
                             following_count: record.get('follows_count').low

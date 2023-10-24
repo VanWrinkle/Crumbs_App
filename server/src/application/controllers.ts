@@ -278,7 +278,6 @@ export function getReplies(persistence: ISocialGraphPersistence) {
 }
 
 
-
 export function getProfileInfo(persistence: ISocialGraphPersistence) {
     return function(req: express.Request, res: express.Response) {
         if(req.query.profileOwner) {
