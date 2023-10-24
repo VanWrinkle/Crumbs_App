@@ -29,12 +29,13 @@ export function CrumbsCardBottomRow(props: {
                 <Button
                     size="sm"
                     className="ms-auto me-2"
+                    disabled={props.crumb.replies == 0}
                     variant={props.showSubfeed ? "info" : "outline-info"}
                     onClick={e => props.onReplies(e)}>
                         <span className="pe-1">
                             <Message fontSize="inherit"/>
                         </span>
-                    0
+                    {props.crumb.replies}
                 </Button>
                 <Button
                     size="sm"

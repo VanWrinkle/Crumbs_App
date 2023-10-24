@@ -21,7 +21,7 @@ export function CrumbComposeFormTiny(props: {
                         placeholder={props.username
                             ? "Write your reply as " + props.username + "..."
                             : "Log in to write a reply..."}
-                        className="mt-2 mb-2 textarea"
+                        className={"mt-2 mb-2 textarea"}
                         disabled= { !props.username || props.disabledButton }
                         onChange={(e) => props.setUserInput(e.target.value)}>
                     </Form.Control>
