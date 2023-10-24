@@ -336,7 +336,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 "COUNT(following) AS follows_count",
                 "COUNT(followed_by) AS followed_count",
                 activeUser?
-                "EXISTS( (activeUser:User)-[:FOLLOWS]->(user) WHERE activeUser.username = $activeUser AND user.username = $user ) AS following"
+                "EXISTS( (:User {username: $activeUser})-[:FOLLOWS]->(:User {username: $user})) AS following"
                 :""
             ])}
             ${Neo4jQueryBuilder.RETURN([
