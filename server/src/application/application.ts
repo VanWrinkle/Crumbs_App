@@ -11,7 +11,7 @@ import {
     getMainFeed,
     setLike,
     setFollow,
-    getUserFeed, deleteUser, getReplies
+    getUserFeed, deleteUser, getReplies, getProfileInfo
 } from "./controllers";
 import http from "http";
 import https from "https";
@@ -37,6 +37,7 @@ export class Application {
             .use(express.json())
             .use(cookieParser())
             .use(this.#config.loginService.tokenParser())
+            .get("/api/getProfileInfo", getProfileInfo(this.#config.graphPersistence))
             .get('/api/getMainFeed', getMainFeed(this.#config.graphPersistence))
             .get('/api/getUserFeed', getUserFeed(this.#config.graphPersistence))
             .get('/api/getReplies', getReplies(this.#config.graphPersistence))

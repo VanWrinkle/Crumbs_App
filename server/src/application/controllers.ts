@@ -261,12 +261,29 @@ export function getReplies(persistence: ISocialGraphPersistence) {
     return function(req: express.Request, res: express.Response) {
         let filter = new CrumbFilter();
         filter.parent_post = req.body.parent;
-        persistence.getCrumbs(req.user? req.user.toString():null, filter, req.body.continue_from)
+        persistence.getCrumbs(req.user? req.user.toString() : null, filter, req.body.continue_from)
             .then( crumbs => {
                 res.status(200).send(crumbs);
             })
             .catch( _ => {
                 res.status(500).send();
             })
+    }
+}
+
+
+
+export function getProfileInfo(persistence: ISocialGraphPersistence) {
+    return function(req: express.Request, res: express.Response) {
+        if(req.query.profileOwner) {
+            persistence
+                .getProfileInfo(
+                    req.user? req.user.toString() : null,
+                    req.query.profileOwner.toString(),
+                    )
+                .then( result => {
+                        res.status(200).send( result )
+                })
+        }
     }
 }
