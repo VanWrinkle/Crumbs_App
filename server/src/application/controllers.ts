@@ -289,6 +289,9 @@ export function getProfileInfo(persistence: ISocialGraphPersistence) {
                 .then( result => {
                         res.status(200).send( result )
                 })
+                .catch( () =>  {
+                    res.status(500).send()
+                })
         }
     }
 }
