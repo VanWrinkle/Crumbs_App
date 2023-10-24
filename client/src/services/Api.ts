@@ -1,5 +1,6 @@
 import axios, {AxiosError, AxiosInstance} from "axios";
 import {Crumb} from "../types/Crumb";
+import {User} from "../types/User";
 
 export class Api {
     private client: AxiosInstance
@@ -132,6 +133,15 @@ export class Api {
         }
     }
 
+    async getProfileInfo(username: string) {
+        try {
+            const response = await this.client.get('/getProfileInfo', {params: {'profileOwner': username}})
+            return response.data as User
+        } catch (error: any) {
+            this.handleApiError(error, {})
+        }
+
+    }
 
     private handleApiError(error: AxiosError, customErrorMessages: Record<number, string> = {}) {
         if (error.response) {
