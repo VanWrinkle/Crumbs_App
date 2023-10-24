@@ -181,6 +181,9 @@ export function getMainFeed(persistence: ISocialGraphPersistence) {
             console.log("parent:" + req.query.parent.toString())
             filter.parent_post = req.query.parent.toString();
         }
+        if(req.query.filterOutOwn) {
+            filter.filter_out_own = (req.query.filterOutOwn.toString() == "true");
+        }
         console.log(req.query)
         persistence.getCrumbs(
             ((req.user != undefined)? req.user.toString() : null),
@@ -289,7 +292,7 @@ export function getProfileInfo(persistence: ISocialGraphPersistence) {
                 .then( result => {
                         res.status(200).send( result )
                 })
-                .catch( () =>  {
+                .catch( error =>  {
                     res.status(500).send()
                 })
         }

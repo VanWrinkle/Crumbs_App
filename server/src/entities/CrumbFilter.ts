@@ -23,6 +23,7 @@ export class CrumbFilter {
     private _order = Order.Descending;
     private _sort = Sort.Time;
     private _max = 15;
+    private _filter_out_own = true
 
     /**
      * Get the ID of the parent post to filter crumbs by replies.
@@ -116,6 +117,16 @@ export class CrumbFilter {
         this._max = Math.min(this._max, 200);
         this._max = Math.max(this._max, 0);
     }
+
+
+    get filter_out_own() : boolean {
+        return this._filter_out_own
+    }
+
+    set filter_out_own(should_filter: boolean) {
+        this._filter_out_own = should_filter;
+    }
+
 }
 
 export namespace CrumbFilter {

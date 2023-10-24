@@ -163,7 +163,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 :"MATCH (crumb:Crumb)-[p:POSTED_BY]->(author)"}
             ${Neo4jQueryBuilder.WHERE([
                 filter.parent_post? "ID(parent) = $parent":"",
-                (user)?"author.username <> $user":"",
+                (user && filter.filter_out_own)?"author.username <> $user":"",
                 (filter.authors)?"author.username IN $authors":"",
                 (filter.hashtags)?"":"" //TODO: Implement hashtags in DB
             ])}
@@ -236,9 +236,6 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                         view.push(crumb)
                     })
                 })
-                .catch( error => {
-                    console.error(error)
-                })
                 .finally( () => {
                     session.close();
                     resolve(view);
@@ -281,9 +278,6 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                         user: username
                     })
                 .then( () => {})
-                .catch( error => {
-                    console.error(error)
-                })
                 .finally( () => {
                     session.close();
                     resolve();
@@ -325,9 +319,6 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
             session
                 .run( likes? addLike : removeLike )
                 .then( () => {})
-                .catch( error => {
-                    console.error(error)
-                })
                 .finally( () => {
                     session.close();
                     resolve();
@@ -357,7 +348,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
             ])}
                 `;
         console.log(query);
-        return new Promise<User>( resolve => {
+        return new Promise<User>( (resolve, reject) => {
             let session = this.#driver.session();
             session
                 .run(
@@ -380,13 +371,10 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                         matches.push(user)
                     })
                     if(matches.length != 1) {
-                        //TODO: Error handling
+                        reject(new Error("No result"))
                     } else {
                         resolve(matches[0])
                     }
-                })
-                .catch( error => {
-                    console.error(error)
                 })
                 .finally( () => {
                     session.close();
