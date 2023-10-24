@@ -1,5 +1,5 @@
 import {Button, Col, Form, Row} from "react-bootstrap";
-import React, {SyntheticEvent} from "react";
+import React, {SyntheticEvent, useEffect, useRef} from "react";
 import {Send} from "@mui/icons-material";
 
 export function CrumbComposeFormTiny(props: {
@@ -9,6 +9,14 @@ export function CrumbComposeFormTiny(props: {
     onSubmit: (e: SyntheticEvent) => void,
     disabledButton: boolean
 }) {
+    const textAreaRef = useRef<HTMLTextAreaElement | null>(null)
+
+    useEffect(() => {
+        if (textAreaRef.current) {
+            textAreaRef.current.focus();
+        }
+    }, []);
+
 
     return (
         <Form>
@@ -16,6 +24,7 @@ export function CrumbComposeFormTiny(props: {
                 <Col>
                     <Form.Control
                         as="textarea"
+                        ref={textAreaRef}
                         rows={1}
                         value={props.userInput}
                         placeholder={props.username
