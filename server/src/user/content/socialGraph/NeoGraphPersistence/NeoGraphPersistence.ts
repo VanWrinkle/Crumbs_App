@@ -338,12 +338,12 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
     async getProfileInfo(activeUser: string | null, targetUser: string): Promise<User> {
         let query =
             `MATCH (user:User {username: $user})
-            OPTIONAL MATCH (user)-[follows_other:FOLLOWS]->(m)
-            OPTIONAL MATCH (user)<-[followed:FOLLOWS]->(n)
+            OPTIONAL MATCH (user)-[:FOLLOWS]->(following)
+            OPTIONAL MATCH (user)<-[:FOLLOWS]-(followed_by)
             ${Neo4jQueryBuilder.WITH([
                 "user",
-                "COUNT(follows_other) AS follows_count",
-                "COUNT(followed) AS followed_count",
+                "COUNT(following) AS follows_count",
+                "COUNT(followed_by) AS followed_count",
                 activeUser?
                 "EXISTS( (activeUser:User)-[:FOLLOWS]->(user) WHERE activeUser.username = $activeUser AND user.username = $user ) AS following"
                 :""
