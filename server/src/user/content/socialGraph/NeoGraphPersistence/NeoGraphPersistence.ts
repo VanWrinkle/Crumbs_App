@@ -4,6 +4,7 @@ import neo4j, {Driver} from 'neo4j-driver'
 import {Neo4jQueryBuilder} from "./Neo4jQueryBuilder";
 import {CrumbFilter} from "../../../../entities/CrumbFilter";
 import {Crumb, CrumbContent} from "../../../../entities/Crumb";
+import {User} from "../../../../entities/User";
 
 
 
@@ -330,6 +331,63 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 .finally( () => {
                     session.close();
                     resolve();
+                })
+        })
+    }
+
+    async getProfileInfo(activeUser: string | null, targetUser: string): Promise<User> {
+        let query =
+            `MATCH (user:User {username: $user})
+            OPTIONAL MATCH (user)-[follows_other:FOLLOWS]->(m)
+            OPTIONAL MATCH (user)<-[followed:FOLLOWS]->(n)
+            ${Neo4jQueryBuilder.WITH([
+                "user",
+                "COUNT(follows_other) AS follows_count",
+                "COUNT(followed) AS followed_count",
+                activeUser?
+                "EXISTS( (activeUser:User)-[:FOLLOWS]->(user) WHERE activeUser.username = $activeUser AND user.username = $user ) AS following"
+                :""
+            ])}
+            ${Neo4jQueryBuilder.RETURN([
+                "user",
+                "follows_count",
+                "followed_count",
+                activeUser? "following" : ""
+            ])}
+                `;
+        console.log(query);
+        return new Promise<User>( resolve => {
+            let session = this.#driver.session();
+            session
+                .run(
+                    query,
+                    {
+                        user: targetUser,
+                        activeUser: activeUser
+                    }
+                )
+                .then( results => {
+                    let matches: User[] = []
+                    results.records.forEach( record => {
+                        let user: User = {
+                            username: targetUser,
+                            is_followed_by_user: activeUser? record.get('following') : false,
+                            followers_count: record.get('followed_count').low,
+                            following_count: record.get('follows_count').low
+                        };
+                        matches.push(user)
+                    })
+                    if(matches.length != 1) {
+                        //TODO: Error handling
+                    } else {
+                        resolve(matches[0])
+                    }
+                })
+                .catch( error => {
+                    console.error(error)
+                })
+                .finally( () => {
+                    session.close();
                 })
         })
     }

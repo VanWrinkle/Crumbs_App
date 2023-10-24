@@ -1,5 +1,6 @@
 import {CrumbFilter} from "../entities/CrumbFilter";
 import {Crumb, CrumbContent} from "../entities/Crumb";
+import {User} from "../entities/User";
 
 
 export interface ISocialGraphPersistence {
@@ -12,6 +13,7 @@ export interface ISocialGraphPersistence {
     setUserFollowing(username: string, followTarget: string, following: boolean): Promise <void>
     setCrumbLiked(username: string, crumb_id: string, liked: boolean) : Promise<void>
     getCrumbs(user: string | null, filter: CrumbFilter, cutoff: string | null): Promise <Crumb[]>
+    getProfileInfo(activeUser: string | null, targetUser: string): Promise<User>
 }
 
 
