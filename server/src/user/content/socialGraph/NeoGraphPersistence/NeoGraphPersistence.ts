@@ -169,14 +169,14 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
             OPTIONAL MATCH (crumb)<-[liked:LIKES]-(liker)
             ${user? "MATCH (user:User {username: $user})":""}
             ${cutoff? "MATCH (cutoff:Crumb) WHERE ID(cutoff) = " +  cutoff:""}
-            ${engagement? "OPTIONAL MATCH (crumb)<-[:REPLIES_TO]-(reply)" : ""}
+            OPTIONAL MATCH (crumb)<-[:REPLIES_TO]-(reply)
             ${Neo4jQueryBuilder.WITH([
                 "crumb",
                 "author",
                 user ? "user" : "",
                 cutoff? "cutoff.created AS cutoff" : "",
                 "COUNT(DISTINCT liker) AS likes",
-                engagement? "COUNT(DISTINCT reply) AS replies":"",
+                "COUNT(DISTINCT reply) AS replies",
             ])}
             ${cutoff?
                 Neo4jQueryBuilder.WHERE_CUTOFF(
@@ -189,6 +189,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 "crumb",
                 "author",
                 "likes",
+                "replies",
                 `${user? "EXISTS( (user)-[:LIKES]->(crumb) )":"false"} AS liked`,
                 engagement?"likes + replies AS engagement":""
             ])}
@@ -226,6 +227,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                             timestamp_milliseconds: timestamp,
                             post_id: record.get('crumb').identity.toString(),
                             likes: record.get('likes').low,
+                            replies: record.get('replies').low,
                             liked: record.get('liked'),
                             contents: contents
                         };

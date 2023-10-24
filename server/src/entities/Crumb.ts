@@ -7,6 +7,7 @@ export class Crumb {
     timestamp_milliseconds: number
     post_id: string
     likes: number
+    replies: number
     liked: boolean
     contents: CrumbContent[]
 
@@ -15,6 +16,7 @@ export class Crumb {
         timestamp_milliseconds: number,
         post_id: string,
         likes: number,
+        replies: number,
         liked: boolean,
         contents: string | undefined
     ) {
@@ -22,6 +24,7 @@ export class Crumb {
         this.timestamp_milliseconds = timestamp_milliseconds;
         this.post_id = post_id;
         this.likes = likes;
+        this.replies = replies;
         this.liked = liked;
         if (contents) {
             this.contents = Crumb.parseContentsFromString(contents);
