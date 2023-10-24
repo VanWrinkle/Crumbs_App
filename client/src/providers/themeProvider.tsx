@@ -12,6 +12,12 @@ export function ThemeProvider(props: any) {
         localStorage.setItem("ui.theme", val);
     };
 
+    const setThemeIndex = (theme: string) => {
+        document.documentElement.setAttribute('data-bs-theme', theme)
+    }
+
+    setThemeIndex(theme)
+
     return (
         <ThemeContext.Provider value={{ theme, toggleTheme}}>
             {props.children}
