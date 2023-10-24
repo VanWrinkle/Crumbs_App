@@ -3,6 +3,7 @@ import React, {useEffect} from "react";
 import {useAuth} from "../context/AuthProvider";
 import {useNavigate} from "react-router-dom";
 import {SettingsTabAccount} from "../containers/Settings/SettingsTabAccount";
+import {SettingsTabPersonalization} from "../containers/Settings/SettingsTabPersonalization";
 
 export function Settings() {
     const auth = useAuth()
@@ -31,7 +32,7 @@ export function Settings() {
 
                 </Tab>
                 <Tab eventKey="personalization" title="Personalization">
-
+                    <SettingsTabPersonalization />
                 </Tab>
             </Tabs>
         </Container>

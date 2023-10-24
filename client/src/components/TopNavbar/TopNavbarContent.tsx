@@ -8,7 +8,7 @@ export function TopNavbarContent({loggedIn}: {loggedIn: Boolean}) {
     return (
         <>
             <div className="sticky-top">
-                <Navbar className="navbar" bg="white">
+                <Navbar className="navbar" >
                     <Container className="main-content">
                         <Navbar.Brand as={Link} to={"/"}>Crumbs</Navbar.Brand>
                         <Navbar.Toggle aria-controls={"basic-navbar-nav"}/>
