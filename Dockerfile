@@ -24,7 +24,7 @@ WORKDIR ../
 
 # Expose port 443
 EXPOSE 443
-
+WORKDIR ./server
 # Build and start server:
 CMD ["npm", "start"]
 
