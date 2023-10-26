@@ -4,9 +4,16 @@ FROM node:19
 WORKDIR /usr/src/crumbs
 
 # Install dependencies:
-COPY package*.json ./
+COPY /server/package*.json ./server
+COPY /client/package*.json ./client
 
+WORKDIR ./server
 RUN npm install
+
+WORKDIR ../client
+RUN npm install
+
+WORKDIR ../
 
 # Copy all un-ignored files into workdir:
 COPY . .
