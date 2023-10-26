@@ -1,5 +1,6 @@
 import {Crumb, CrumbContent} from "../../../../entities/Crumb";
 import {CrumbFilter} from "../../../../entities/CrumbFilter";
+import {User} from "../../../../entities/User";
 
 
 export class MockGraphPersistence {
@@ -26,7 +27,8 @@ export class MockGraphPersistence {
             contents: [],
             liked: false,
             timestamp_milliseconds: 0,
-            likes: 0
+            likes: 0,
+            replies: 0
         }
         return view });
     }
@@ -40,5 +42,9 @@ export class MockGraphPersistence {
     //setCrumbParent(crumb_id: string, parent_id: string): Promise<void>
     getCrumbs(user: string | null, filter: CrumbFilter, cutoff: string | null): Promise <Crumb[]> {
         return new Promise(()=>{ let views: Crumb[] = []; return views;});
+    }
+
+    getProfileInfo(activeUser: string | null, targetUser: string): Promise<User> {
+        return new Promise(()=>{})
     }
 }
