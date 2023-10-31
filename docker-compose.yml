@@ -8,7 +8,7 @@ services:
 
     # Volume for credentials:
     volumes:
-      - ~/crumbs/creds:/server/keys/:ro
+      - ~/crumbs/creds:/usr/src/crumbs/server/keys/:ro
 
     # Port mapping:
     ports:
