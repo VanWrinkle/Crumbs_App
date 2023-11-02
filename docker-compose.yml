@@ -12,7 +12,9 @@ services:
 
     # Port mapping:
     ports:
-      - '443:10000'
+      - '80:80'
+      - '443:443'
+
 
     # Automatic service restart at VM reboot:
     restart: always

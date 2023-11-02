@@ -21,9 +21,10 @@ RUN npm install
 
 WORKDIR ../
 
-
-# Expose port 443
+# Expose ports
+EXPOSE 80
 EXPOSE 443
+
 WORKDIR ./server
 # Build and start server:
 CMD ["npm", "start"]
