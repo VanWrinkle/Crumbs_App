@@ -1,5 +1,6 @@
 import {Crumb, CrumbContent} from "../../../../entities/Crumb";
 import {CrumbFilter} from "../../../../entities/CrumbFilter";
+import {User} from "../../../../entities/User";
 
 
 export class MockGraphPersistence {
@@ -21,6 +22,7 @@ export class MockGraphPersistence {
     }
     getCrumb(crumb_id: string): Promise <Crumb> {
         return new Promise(()=>{let view: Crumb = {
+            replies: 0,
             post_id: "0",
             author: "test_user",
             contents: [],
@@ -40,5 +42,11 @@ export class MockGraphPersistence {
     //setCrumbParent(crumb_id: string, parent_id: string): Promise<void>
     getCrumbs(user: string | null, filter: CrumbFilter, cutoff: string | null): Promise <Crumb[]> {
         return new Promise(()=>{ let views: Crumb[] = []; return views;});
+    }
+
+    getProfileInfo() : Promise<User> {
+        return new Promise<User>(resolve => {
+            resolve(new User("some_user"))
+        })
     }
 }
