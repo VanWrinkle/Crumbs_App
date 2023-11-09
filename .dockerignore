@@ -1,0 +1,7 @@
+node_modules
+.gitignore
+.gitlab-ci.yml
+/client/node_modules
+/client/build
+/server/node_modules
+/server/__tests__
