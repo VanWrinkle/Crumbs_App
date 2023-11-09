@@ -11,16 +11,26 @@ import {
     getMainFeed,
     setLike,
     setFollow,
-    getUserFeed, deleteUser, getReplies, getProfileInfo
+    getUserFeed,
+    deleteUser,
+    getReplies,
+    getProfileInfo
 } from "./controllers";
 import http from "http";
 import https from "https";
 import {ConfigSettings} from "../entities/ConfigSettings";
 import cookieParser from "cookie-parser";
 
-export class Application {
-    #config: ConfigSettings;
-    #app: Express;
+
+
+
+/**
+ * Server is a class wrapping the build-up of the server context and injection
+ * of dependencies such as Databases and business logic classes.
+ */
+export class CrumbServer {
+    #config: ConfigSettings; // Object containing injected dependencies
+    #app: Express;           // The express instance used by the server.
     #httpServer: http.Server | undefined;
     #httpsServer: https.Server | undefined;
 
@@ -30,6 +40,11 @@ export class Application {
         this.#initRouting();
     }
 
+
+    /**
+     * Setup of the client-server API routing and serving of files to visitors.
+     * @private
+     */
     #initRouting() {
         let router = express.Router()
             .use(requireHTTPS)
@@ -56,10 +71,20 @@ export class Application {
         this.#app.use('/', router);
     }
 
+
+    /**
+     * Startup of the http server
+     * @private
+     */
     #startHTTP() {
         this.#httpServer = http.createServer(this.#app).listen(80);
     }
 
+
+    /**
+     * Startup of the https server
+     * @private
+     */
     #startHTTPS() {
         this.#httpsServer = https.createServer(
             {key: this.#config.httpsPrivateKey, cert: this.#config.httpsCertificate},
@@ -68,6 +93,11 @@ export class Application {
                 console.log(`Server running at https://localhost`);}
             );
     }
+
+
+    /**
+     * Starts the http and https servers used to serve the client-server API
+     */
     public run() {
         this.#startHTTP();
         this.#startHTTPS();
