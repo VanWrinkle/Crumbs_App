@@ -30,8 +30,8 @@ const config: ConfigSettings = {
     registrationService: new RegistrationService(userRegistrationDatabase, socialGraphPersistence),
     loginService: new LoginService(userRegistrationDatabase, sessionManagement),
     graphPersistence: socialGraphPersistence,
-    httpsPrivateKey: fs.readFileSync('private-key.pem', 'utf-8'),
-    httpsCertificate: fs.readFileSync('server.crt', 'utf-8'),
+    httpsPrivateKey: fs.readFileSync('./keys/private-key.pem', 'utf-8'),
+    httpsCertificate: fs.readFileSync('./keys/server.crt', 'utf-8'),
 }
 
 const app = new CrumbServer(config);

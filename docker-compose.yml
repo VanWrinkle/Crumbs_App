@@ -1,0 +1,20 @@
+services:
+  #Service name:
+  crumbs:
+    # Build based on Dockerfile in project root:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # Volume for credentials:
+    volumes:
+      - ~/crumbs/creds:/usr/src/crumbs/server/keys/:ro
+
+    # Port mapping:
+    ports:
+      - '80:80'
+      - '443:443'
+
+
+    # Automatic service restart at VM reboot:
+    restart: always
