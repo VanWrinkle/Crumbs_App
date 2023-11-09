@@ -2,7 +2,7 @@ import fs from 'fs';
 import {MDBUserRegistrationDatabase} from "./user/registration/persistence/MDBUserRegistrationDatabase/MDBUserRegistrationDatabase";
 import {LoginService} from "./user/login/LoginService/LoginService";
 import {RegistrationService} from "./user/registration/RegistrationService/RegistrationService";
-import {Application} from "./application/application";
+import {CrumbServer} from "./server/crumbServer";
 import {ConfigSettings} from "./entities/ConfigSettings";
 import {AuthenticationService} from "./user/login/authentication/AuthenticationService/AuthenticationService";
 import {NeoGraphPersistence} from "./user/content/socialGraph/NeoGraphPersistence/NeoGraphPersistence";
@@ -34,6 +34,6 @@ const config: ConfigSettings = {
     httpsCertificate: fs.readFileSync('server.crt', 'utf-8'),
 }
 
-const app = new Application(config);
+const app = new CrumbServer(config);
 
 app.run();
