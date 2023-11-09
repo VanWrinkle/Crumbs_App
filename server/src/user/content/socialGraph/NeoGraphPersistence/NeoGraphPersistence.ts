@@ -1,5 +1,5 @@
 import {ISocialGraphPersistence} from "../../../../contracts/ISocialGraphPersistence";
-import neo4j, {Driver} from 'neo4j-driver'
+import neo4j, {Driver, QueryResult} from 'neo4j-driver'
 
 import {Neo4jQueryBuilder} from "./Neo4jQueryBuilder";
 import {CrumbFilter} from "../../../../entities/CrumbFilter";
@@ -15,6 +15,16 @@ import {User} from "../../../../entities/User";
 export class NeoGraphPersistence implements ISocialGraphPersistence {
     // TODO: Review security of connection
     #driver: Driver
+
+    #runQuery(query: string, parameters: any, handleResult: (result:any)=>void ) {
+        let session = this.#driver.session();
+        session
+            .run(query, parameters)
+            .then( result => handleResult(result))
+            .finally( () => {
+                session.close();
+            })
+    }
 
     constructor(
         db_url:string,
@@ -34,16 +44,13 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
      * @return A Promise that resolves when the user node is successfully created in the database.
      */
     async createUserNode(username: string): Promise<void> {
+        let query = "CREATE (user:User {username: $user, created: timestamp()})";
         return new Promise( resolve => {
-            let session = this.#driver.session();
-            session
-                .run(
-                    "CREATE (user:User {username: $user, created: timestamp()})",
-                    {user: username})
-                .finally( () => {
-                    session.close();
-                    resolve();
-                })
+            this.#runQuery(
+                query,
+                {user:username},
+                () => {resolve()}
+            )
         })
     }
 
@@ -58,20 +65,16 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
      * @return A Promise that resolves when the user node and associated Crumb nodes are successfully deleted from the database.
      */
     async deleteUserNodeAndUserCrumbs(username: string): Promise<void> {
-        return new Promise( resolve => {
-            let session = this.#driver.session();
-            session
-                .run(
-                    `MATCH (u:User {username: $user})
+        let query = `MATCH (u:User {username: $user})
                      OPTIONAL MATCH (c:Crumb)-[:POSTED_BY]->(u)
                      DETACH DELETE c
-                     DETACH DELETE u`,
-                    {user: username}
-                )
-                .finally( () => {
-                    session.close();
-                    resolve();
-                })
+                     DETACH DELETE u`;
+        return new Promise( resolve => {
+            this.#runQuery(
+                query,
+                {user:username},
+                () => {resolve()}
+            )
         })
     }
 
@@ -90,39 +93,27 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
      * @throws {Error} Throws an error if the parent ID is provided and is not a valid integer.
      */
     async createCrumb(parent: string | null, username: string, crumb: CrumbContent[]): Promise<void> {
-        return new Promise( resolve => {
-            if (parent != null && typeof(parent) != typeof ("")) {
-                throw new Error('post id must be integer')
-            }
-            let contents: string[] = [];
-            let flags: string[] = [];
-            crumb.forEach( component => {
-                contents.push(component.value)
-                flags.push(component.type)
-            })
-            let query = `MATCH (u:User {username: $user}) 
+        if (parent != null && typeof(parent) != typeof ("")) {
+            throw new Error('post id must be integer')
+        }
+        let contents: string[] = [];
+        let flags: string[] = [];
+        crumb.forEach( component => {
+            contents.push(component.value)
+            flags.push(component.type)
+        })
+        let query = `MATCH (u:User {username: $user}) 
                     ${parent != null? "MATCH (p) WHERE ID(p) = " + parent : ""}
                     CREATE (c:Crumb {contents: $contents, flags: $flags, created: timestamp()})
                     -[:POSTED_BY]->(u)
                     ${parent != null? "CREATE (c)-[:REPLIES_TO]->(p)":""}`
-            console.log(query)
-            let session = this.#driver.session();
-            session
-                .run(
-                    query,
-                    {
-                        user: username,
-                        contents: contents,
-                        flags: flags
-                    }
+
+        return new Promise( resolve => {
+            this.#runQuery(
+                query,
+                {user:username, contents:contents,flags:flags},
+                () => { resolve() }
                 )
-                .catch( error => {
-                    console.error(error)
-                })
-                .finally( () => {
-                    session.close();
-                    resolve();
-                })
         })
     }
 
@@ -151,7 +142,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
         let view: Crumb[] = [];
         let engagement = filter.sort === CrumbFilter.Sort.Engagement
         let parentID = 0;
-        //TODO: do it better
+
         if (filter.parent_post && parseInt(filter.parent_post.toString())) {
             parentID = parseInt(filter.parent_post.toString());
         }
@@ -198,20 +189,13 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 [engagement? "engagement":"","crumb.created"], 
                 filter.order)}
             LIMIT ${filter.max};`
-        console.log(query)
+
+
         return new Promise( resolve => {
-            let session = this.#driver.session();
-            session
-                .run(
-                    query,
-                    {
-                        user: user,
-                        authors: filter.authors,
-                        hashtags: filter.hashtags,
-                        parent: parentID
-                    }
-                )
-                .then( results => {
+            this.#runQuery(
+                query,
+                {user:user,authors:filter.authors,hashTags:filter.hashtags, parent:parentID},
+                (results: QueryResult) => {
                     results.records.forEach( record => {
                         let flags = record.get('crumb').properties.flags;
                         let values = record.get('crumb').properties.contents;
@@ -232,14 +216,10 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                             liked: record.get('liked'),
                             contents: contents
                         };
-                        console.log("id: " + crumb.post_id + "   created: " + crumb.timestamp_milliseconds)
                         view.push(crumb)
-                    })
-                })
-                .finally( () => {
-                    session.close();
-                    resolve(view);
-                })
+                        resolve(view)
+                    })}
+            )
         })
     }
 
@@ -266,22 +246,12 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
             `MATCH (n:User {username: $user})-[f:FOLLOWS]->(m:User {username: $followTarget})
             DELETE f`
 
-        return new Promise( resolve => {
-            let session = this.#driver.session();
-            console.log(following? addFollow : deleteFollow)
-
-            session
-                .run(
-                    following? addFollow : deleteFollow,
-                    {
-                        followTarget: followTarget,
-                        user: username
-                    })
-                .then( () => {})
-                .finally( () => {
-                    session.close();
-                    resolve();
-                })
+        return new Promise( () => {
+            this.#runQuery(
+                following? addFollow : deleteFollow,
+                {followTarget: followTarget, user: username},
+                ()=>{}
+            )
         })
     }
 
@@ -315,14 +285,11 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
             DELETE l`
 
         return new Promise( resolve => {
-            let session = this.#driver.session();
-            session
-                .run( likes? addLike : removeLike )
-                .then( () => {})
-                .finally( () => {
-                    session.close();
-                    resolve();
-                })
+            this.#runQuery(
+                likes? addLike : removeLike,
+                {},
+                ()=>{resolve()}
+            )
         })
     }
 
@@ -347,18 +314,12 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 activeUser? "following" : ""
             ])}
                 `;
-        console.log(query);
+
         return new Promise<User>( (resolve, reject) => {
-            let session = this.#driver.session();
-            session
-                .run(
-                    query,
-                    {
-                        user: targetUser,
-                        activeUser: activeUser
-                    }
-                )
-                .then( results => {
+            this.#runQuery(
+                query,
+                {user: targetUser, activeUser: activeUser},
+                (results:QueryResult) => {
                     let matches: User[] = []
                     results.records.forEach( record => {
                         let user: User = {
@@ -376,12 +337,12 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                         resolve(matches[0])
                     }
                 })
-                .finally( () => {
-                    session.close();
-                })
         })
     }
+
 }
+
+
 
 
 
