@@ -70,7 +70,6 @@ export function loginUser(loginService: IUserLoginService) {
                             }
                         })
                         .catch(err => {
-                            console.log(err); // hashing function failed
                             res.status(500).send('internal server error');
                         });
                 }
@@ -102,7 +101,6 @@ export function renewUserToken(loginService: IUserLoginService) {
 export function postCrumb(persistence: ISocialGraphPersistence) {
     return function(req: express.Request, res: express.Response) {
         if (req.user) {
-            console.log(req.body)
             let username = req.user.toString()
             let parsedCrumb = Crumb.parseContentsFromString(req.body.content)
             persistence
@@ -113,7 +111,6 @@ export function postCrumb(persistence: ISocialGraphPersistence) {
                 .catch( () => res.status(500).send() )
                 .then(  () => res.status(201).send() )
         } else {
-            console.log("unauthenticated user")
             res.status(401).send()
         }
     }
@@ -126,7 +123,6 @@ export function setFollow(persistence: ISocialGraphPersistence, follows: boolean
         if(req.user) {
             let id = req.query.user?.toString()
             if (id) {
-                console.log(id, req.user.toString())
                 persistence.setUserFollowing(req.user.toString(), id, follows)
                     .catch(()=> {
                         res.status(500).send() // TODO: Logic for not found
@@ -171,20 +167,17 @@ export function getMainFeed(persistence: ISocialGraphPersistence) {
 
         if(req.query.max_posts) {
             let max = Number.parseInt(req.query.max_posts.toString());
-            console.log(req.query.max_posts)
             if (!isNaN(max)) {
                 filter.max = Math.min(max, 100); //TODO: Use setters in CrumbFilter class for enforcing of rules
             }
         }
 
         if(req.query.parent) {
-            console.log("parent:" + req.query.parent.toString())
             filter.parent_post = req.query.parent.toString();
         }
         if(req.query.filterOutOwn) {
             filter.filter_out_own = (req.query.filterOutOwn.toString() == "true");
         }
-        console.log(req.query)
         persistence.getCrumbs(
             ((req.user != undefined)? req.user.toString() : null),
             filter,
@@ -213,9 +206,8 @@ export function getUserFeed(persistence: ISocialGraphPersistence) {
 
         if(req.query.max_posts) {
             let max = Number.parseInt(req.query.max_posts.toString());
-            console.log(req.query.max_posts)
             if (!isNaN(max)) {
-                filter.max = Math.min(max, 100); //TODO: Use setters in CrumbFilter class for enforcing of rules
+                filter.max = max
             }
         }
         if(req.query.user) {
@@ -242,7 +234,6 @@ export function getUserFeed(persistence: ISocialGraphPersistence) {
  */
 export function deleteUser(userRegistration: IUserRegistrationService, loginService: IUserLoginService) {
     return function(req: express.Request, res: express.Response) {
-        console.log("deleteUser: " + req.user)
         if (req.user) {
             userRegistration.deleteUser(req.user.toString())
                 .then( () => {
@@ -256,6 +247,7 @@ export function deleteUser(userRegistration: IUserRegistrationService, loginServ
         }
     }
 }
+
 
 /**
  *
@@ -281,6 +273,8 @@ export function getReplies(persistence: ISocialGraphPersistence) {
 }
 
 
+
+
 export function getProfileInfo(persistence: ISocialGraphPersistence) {
     return function(req: express.Request, res: express.Response) {
         if(req.query.profileOwner) {
@@ -289,12 +283,14 @@ export function getProfileInfo(persistence: ISocialGraphPersistence) {
                     req.user? req.user.toString() : null,
                     req.query.profileOwner.toString(),
                     )
-                .then( result => {
+                .then( result => { //TODO 403 for not found
                         res.status(200).send( result )
                 })
                 .catch( error =>  {
                     res.status(500).send()
                 })
+        } else {
+            res.status(400).send()
         }
     }
 }
