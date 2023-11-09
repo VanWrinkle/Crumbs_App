@@ -1,4 +1,9 @@
 
+interface Index {
+    start: number,
+    end: number,
+    type: string
+}
 export class Crumb {
     static #hashtagRegEx = /(?<!\w)#\w+/g;
     static #mentionRegEx = /(?<!\w)@\w+/g;
@@ -115,9 +120,4 @@ export class CrumbComponentType {
 }
 
 
-interface Index {
-    start: number,
-    end: number,
-    type: string
-}
 
