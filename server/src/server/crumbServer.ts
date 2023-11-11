@@ -30,13 +30,13 @@ import cookieParser from "cookie-parser";
  */
 export class CrumbServer {
     #config: ConfigSettings; // Object containing injected dependencies
-    #app: Express;           // The express instance used by the server.
+    app: Express;           // The express instance used by the server.
     #httpServer: http.Server | undefined;
     #httpsServer: https.Server | undefined;
 
     constructor (config: ConfigSettings) {
         this.#config = config;
-        this.#app = express();
+        this.app = express();
         this.#initRouting();
     }
 
@@ -68,7 +68,7 @@ export class CrumbServer {
             .post('/api/followUser', setFollow(this.#config.graphPersistence, true))
             .delete('/api/followUser', setFollow(this.#config.graphPersistence, false))
 
-        this.#app.use('/', router);
+        this.app.use('/', router);
     }
 
 
@@ -77,7 +77,7 @@ export class CrumbServer {
      * @private
      */
     #startHTTP() {
-        this.#httpServer = http.createServer(this.#app).listen(80);
+        this.#httpServer = http.createServer(this.app).listen(80);
     }
 
 
@@ -88,7 +88,7 @@ export class CrumbServer {
     #startHTTPS() {
         this.#httpsServer = https.createServer(
             {key: this.#config.httpsPrivateKey, cert: this.#config.httpsCertificate},
-            this.#app)
+            this.app)
             .listen(443, () => {
                 console.log(`Server running at https://localhost`);}
             );
@@ -101,6 +101,14 @@ export class CrumbServer {
     public run() {
         this.#startHTTP();
         this.#startHTTPS();
+    }
+
+    /**
+     * Stops the http and https servers used to serve the client-server API
+     */
+    public async stop() {
+        await this.#httpServer?.close();
+        await this.#httpsServer?.close();
     }
 
 
