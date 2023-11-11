@@ -3,17 +3,18 @@ import {UserRegistration} from "../../../../entities/UserRegistration"
 import {MongoClient, ServerApiVersion} from 'mongodb';
 export class MDBUserRegistrationDatabase implements IUserRegistrationDatabase {
     #mongo_uri: string;
-    #client: MongoClient;
-    #db_name: string;
+    protected client: MongoClient;
+    protected db_name: string;
 
     constructor(
         db_username: string,
         db_password: string,
+        cluster_id: string,
         db_name: string
     ) {
-        this.#mongo_uri = `mongodb+srv://${db_username}:${db_password}@crumbdevs.ta4zcje.mongodb.net/?retryWrites=true&w=majority`;
-        this.#client = this.#createClient(this.#mongo_uri);
-        this.#db_name = db_name;
+        this.#mongo_uri = `mongodb+srv://${db_username}:${db_password}@${cluster_id}.mongodb.net/?retryWrites=true&w=majority`;
+        this.client = this.#createClient(this.#mongo_uri);
+        this.db_name = db_name;
     }
 
     #createClient(uri: string): MongoClient {
@@ -28,9 +29,9 @@ export class MDBUserRegistrationDatabase implements IUserRegistrationDatabase {
 
     async #verifySuccessfulConnection() {
         try {
-            await this.#client.db(this.#db_name).command({ ping: 1 });
+            await this.client.db(this.db_name).command({ ping: 1 });
         } catch(error) {
-            console.log("Failed to ping IUserDatabase <" + this.#db_name + ">: " + error);
+            console.log("Failed to ping IUserDatabase <" + this.db_name + ">: " + error);
         }
     }
 
@@ -38,17 +39,16 @@ export class MDBUserRegistrationDatabase implements IUserRegistrationDatabase {
     public addUser(user: UserRegistration): Promise<void> {
         return new Promise(async (resolve) => {
             try {
-                await this.#client.connect();
-                await this.#verifySuccessfulConnection();
-                await this.#client
-                    .db(this.#db_name)
+                await this.client.connect();
+                await this.client
+                    .db(this.db_name)
                     .collection("login_info")
                     .insertOne(user);
             } catch {
                 console.log("Failed to insert userdata");
             } finally {
                 // Ensures that the client will close when you finish/error
-                await this.#client.close();
+                await this.client.close();
                 resolve()
             }
         });
@@ -57,17 +57,16 @@ export class MDBUserRegistrationDatabase implements IUserRegistrationDatabase {
     public deleteUser(username: string): Promise<void> {
         return new Promise(async (resolve) => {
             try {
-                await this.#client.connect();
-                await this.#verifySuccessfulConnection();
-                await this.#client
-                    .db(this.#db_name)
+                await this.client.connect();
+                await this.client
+                    .db(this.db_name)
                     .collection("login_info")
                     .deleteOne({userName: username});
             } catch {
                 console.log("Failed to insert userdata");
             } finally {
                 // Ensures that the client will close when you finish/error
-                await this.#client.close();
+                await this.client.close();
                 resolve()
             }
         });
@@ -78,11 +77,10 @@ export class MDBUserRegistrationDatabase implements IUserRegistrationDatabase {
         return new Promise(async (resolve) => {
 
             try {
-                await this.#client.connect();
-                await this.#verifySuccessfulConnection();
+                await this.client.connect();
 
-                let userData = await this.#client
-                    .db(this.#db_name)
+                let userData = await this.client
+                    .db(this.db_name)
                     .collection("login_info")
                     .findOne({userName: username});
 
@@ -101,8 +99,26 @@ export class MDBUserRegistrationDatabase implements IUserRegistrationDatabase {
             } catch (error) {
                 return error;
             } finally {
-                await this.#client.close();
+                await this.client.close();
             }
         })
     }
+}
+
+export class UserTestDB extends MDBUserRegistrationDatabase {
+    constructor(
+        db_username: string,
+        db_password: string,
+        cluster_id: string,
+        db_name: string
+    ) {
+        super(db_username, db_password, cluster_id, db_name);
+    }
+
+    public async flushLoginInfo() {
+        await this.client.connect();
+        await this.client.db(this.db_name).collection("login_info").deleteMany({});
+        await this.client.close();
+    }
+
 }
