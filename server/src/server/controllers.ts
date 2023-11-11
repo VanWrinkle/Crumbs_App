@@ -105,7 +105,8 @@ export function postCrumb(persistence: ISocialGraphPersistence) {
             let parsedCrumb = Crumb.parseContentsFromString(req.body.content)
             persistence
                 .createCrumb(
-                    req.body.parent ? req.body.parent.toString() : null,
+                    // req.body.parent ? req.body.parent.toString() : null,
+                    req.body.parent?.toString() ?? null,
                     username,
                     parsedCrumb)
                 .catch( () => res.status(500).send() )
@@ -160,28 +161,20 @@ export function setLike(persistence: ISocialGraphPersistence, likes: boolean) {
     }
 }
 
+
 export function getMainFeed(persistence: ISocialGraphPersistence) {
     return function(req: express.Request, res: express.Response) {
         let filter = new CrumbFilter();
+
         filter.sort = CrumbFilter.Sort.Time;
+        filter.max =  Number.parseInt(req.query?.max_posts?.toString() ?? "") || filter.max;
+        filter.parent_post = req.query.parent?.toString() ?? undefined;
+        filter.filter_out_own = req.query.filter_out_own?.toString() === "true";
 
-        if(req.query.max_posts) {
-            let max = Number.parseInt(req.query.max_posts.toString());
-            if (!isNaN(max)) {
-                filter.max = Math.min(max, 100); //TODO: Use setters in CrumbFilter class for enforcing of rules
-            }
-        }
-
-        if(req.query.parent) {
-            filter.parent_post = req.query.parent.toString();
-        }
-        if(req.query.filterOutOwn) {
-            filter.filter_out_own = (req.query.filterOutOwn.toString() == "true");
-        }
         persistence.getCrumbs(
-            ((req.user != undefined)? req.user.toString() : null),
+            req.user?.toString() ?? null,
             filter,
-            ((req.query.continue_from && (req.query.continue_from.toString() != ""))? req.query.continue_from.toString() : null),
+            req.query.continue_from?.toString() ?? null,
         )
             .catch( () => res.status(500).send() )
             .then( crumbs => {
@@ -202,19 +195,12 @@ export function getMainFeed(persistence: ISocialGraphPersistence) {
  */
 export function getUserFeed(persistence: ISocialGraphPersistence) {
     return function(req: express.Request, res: express.Response) {
-        let filter = new CrumbFilter();
 
-        if(req.query.max_posts) {
-            let max = Number.parseInt(req.query.max_posts.toString());
-            if (!isNaN(max)) {
-                filter.max = max
-            }
-        }
         if(req.query.user) {
+            let filter = new CrumbFilter();
+            filter.max = Number.parseInt(req.query?.max_posts?.toString() ?? "") || filter.max;
             filter.authors = [req.query.user.toString()]
-            const continue_from = (req.query.continue_from && req.query.continue_from.toString() != "")
-                    ? req.query.continue_from.toString()
-                    : null
+            const continue_from = req.query.continue_from?.toString() ?? null
             persistence
                 .getCrumbs(null, filter, continue_from)
                 .then( crumbs => {
@@ -251,12 +237,6 @@ export function deleteUser(userRegistration: IUserRegistrationService, loginServ
 
 /**
  *
- * example request body
- * {
- *   "parent": "130123",
- *   "max_posts": 15,
- *   "continue_from": "1234"
- * }
  */
 export function getReplies(persistence: ISocialGraphPersistence) {
     return function(req: express.Request, res: express.Response) {
