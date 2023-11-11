@@ -1,6 +1,17 @@
 import {Button, Card, Form} from "react-bootstrap";
 import React, {ChangeEvent, SyntheticEvent} from "react";
 
+/**
+ * UserRegistrationForm is a React component responsible for rendering the user registration form.
+ * It allows users to input their username and password for registration and provides validation feedback.
+ * @param validateName - A function to validate the username input.
+ * @param validatePassword - A function to validate the password input.
+ * @param onSubmit - A callback function for form submission.
+ * @param nameError - A boolean indicating if there is an error in the username input.
+ * @param passwordError - A boolean indicating if there is an error in the password input.
+ * @param submitDisabled - A boolean indicating if the form submission button should be disabled.
+ * @returns A React element representing the user registration form.
+ */
 export function UserRegistrationForm(props: {
     validateName: (e: ChangeEvent<HTMLInputElement>) => void,
     validatePassword: (e: ChangeEvent<HTMLInputElement>) => void,

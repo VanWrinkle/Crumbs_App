@@ -6,16 +6,25 @@ import {Api} from "../services/Api";
 import {UserLoginForm} from "../components/UserLoginForm";
 import {toast} from "react-toastify";
 
+/**
+ * UserLogin is a React component responsible for user login and authentication.
+ * It renders a login form where users can input their username and password and handles the login process.
+ * @returns A React element for user login.
+ */
 export default function UserLogin() {
+    // State variables for user input and button disable state
     const [userName, setUserName] = useState("");
     const [userPassword, setUserPassword] = useState("");
     const setToken = useAuthUpdate()
     const [disableButton, setDisableButton] = useState(false)
 
+    // Function to handle user login
     async function onClick(e: SyntheticEvent) {
         e.preventDefault();
         setDisableButton(true)
         const api = new Api().userLogin(userName, userPassword)
+
+        // Login process with toast notifications
         await toast.promise(
             api, {
                 pending: "Signing in",

@@ -5,6 +5,11 @@ import {useNavigate} from "react-router-dom";
 import {SettingsTabAccount} from "../containers/Settings/SettingsTabAccount";
 import {SettingsTabPersonalization} from "../containers/Settings/SettingsTabPersonalization";
 
+/**
+ * Settings is a React page that displays user settings and preferences.
+ * It checks the user's authentication status and redirects to the homepage if not logged in.
+ * @returns A React element representing the user settings interface.
+ */
 export function Settings() {
     const auth = useAuth()
     const navigate = useNavigate()

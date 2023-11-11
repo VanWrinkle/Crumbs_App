@@ -2,6 +2,16 @@ import {Button, Form, InputGroup, NavDropdown} from "react-bootstrap";
 import React, {SyntheticEvent} from "react";
 import {Link} from "react-router-dom";
 
+/**
+ * UserLoginForm is a React component responsible for rendering the user login form.
+ * It allows users to input their username and password for login and provides validation feedback.
+ * @param setUserName - A function to set the entered username.
+ * @param setUserPassword - A function to set the entered password.
+ * @param userPassword - The user's password.
+ * @param onClick - A callback function for the login button click.
+ * @param disabled - A boolean indicating if the login button should be disabled.
+ * @returns A React element representing the user login form.
+ */
 export function UserLoginForm(props: {
     setUserName: (name: string) => void,
     setUserPassword: (password: string) => void,

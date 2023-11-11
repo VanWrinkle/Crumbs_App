@@ -2,14 +2,27 @@ import React, {SyntheticEvent, useState} from "react";
 import {LoadingButton} from "../../components/LoadingButton";
 import {Button, Form, Modal} from "react-bootstrap";
 
+/**
+ * SettingsDeleteUser is a React component responsible for handling user account deletion in settings.
+ * It displays a confirmation dialog for account deletion and handles the deletion process.
+ * @param deleteSpinning - A boolean indicating if the delete action is in progress.
+ * @param onDelete - A callback function to initiate the account deletion.
+ * @param onCancelDeletion - A callback function to cancel the account deletion.
+ * @returns A React element for handling account deletion in settings.
+ */
 export function SettingsDeleteUser(props: {
     deleteSpinning: boolean,
     onDelete: (e: SyntheticEvent, password: string) => {},
     onCancelDeletion: (e: SyntheticEvent) => void}
 ) {
+    // State variables to manage the visibility of the deletion confirmation dialog and the entered password
     const [showDialogue, setShowDialogue] = useState(false);
     const [password, setPassword] = useState("")
+
+    // Function to close the deletion confirmation dialog
     const handleClose = () => setShowDialogue(false);
+
+    // Function to show the deletion confirmation dialog
     const handleShow = () => setShowDialogue(true);
 
     return (

@@ -6,8 +6,17 @@ import {useAuth} from "../context/AuthProvider";
 import {useEffect, useState} from "react";
 import {User} from "../types/User";
 
+/**
+ * FollowUser is a React component responsible for displaying user follow information and handling follow actions.
+ * It checks if the authenticated user is following a specific user and provides the option to follow or unfollow them.
+ * @param userId - The ID of the user to follow or unfollow.
+ * @returns A React element for user follow actions and follower count.
+ */
 export function FollowUser({userId}: {userId: string}) {
+    // Retrieve the authorized user's authentication status
     const authorized = useAuth();
+
+    // State variables to track if the user follows the target user and to store user information
     const [followsUser, setFollowsUser] = useState<boolean | null>(null)
     const [user, setUser] = useState<User | undefined>(undefined)
 
@@ -24,8 +33,10 @@ export function FollowUser({userId}: {userId: string}) {
             })
     }, []);
 
+    // Function to handle user follow or unfollow actions
     async function onFollow(userId: string) {
         if (authorized && user) {
+            // Toggle the follow status and update the user object
             new Api().toggleFollow(userId, false)
                 .then(() => {
                     setUser((prevUser) => ({
@@ -46,7 +57,6 @@ export function FollowUser({userId}: {userId: string}) {
     return(
         <>
             <span>Followers: {user ? user.followers_count : '?'}</span>
-
         <Button
             onClick={_ => onFollow(userId)}
             disabled={!authorized || !user}

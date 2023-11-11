@@ -5,6 +5,11 @@ import {Feed} from "../containers/Feed";
 import {Api} from "../services/Api";
 import {FollowUser} from "../containers/FollowUser";
 
+/**
+ * Profile is a React page that displays a user's profile information and feed.
+ * @param feedBulkSize - The number of posts to load at once in the user's feed.
+ * @returns A React element representing the user's profile and feed.
+ */
 export function Profile({feedBulkSize}: {feedBulkSize: number}) {
     const {userid} = useParams()
 

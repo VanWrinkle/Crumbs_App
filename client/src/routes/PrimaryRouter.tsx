@@ -6,6 +6,11 @@ import {Profile} from "../pages/Profile";
 import {Settings} from "../pages/Settings";
 import React from "react";
 
+/**
+ * PrimaryRouter is a React component that defines the primary routing structure for the application.
+ * It uses the React Router library to map URLs to specific components and views.
+ * @returns A React element representing the primary router configuration.
+ */
 export function PrimaryRouter() {
     return (
         <Router>

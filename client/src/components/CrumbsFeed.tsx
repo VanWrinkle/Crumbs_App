@@ -6,6 +6,17 @@ import {Crumb} from "../types/Crumb";
 import {SocialMediaTopPanel} from "./CrumbsComposePanel";
 import {CrumbCompose} from "../containers/CrumbCompose";
 
+/**
+ * CrumbsFeed is a React component responsible for rendering a feed of Crumb items with various actions.
+ * It displays a list of Crumb cards, allows liking of Crumbs, and provides infinite scrolling.
+ * @param canCompose - A boolean indicating whether users can compose new Crumbs in the feed.
+ * @param crumbs - An array of Crumb items to display in the feed.
+ * @param hasMore - A boolean indicating whether there are more items to load via infinite scrolling.
+ * @param onLike - A callback function to handle the like action for a Crumb.
+ * @param updatePosts - A function to trigger updating and loading more Crumbs in the feed.
+ * @param parentId - The ID of the parent Crumb (if any) to which the feed is related.
+ * @returns A React element representing the CrumbsFeed component.
+ */
 export function CrumbsFeed(props: {
     canCompose: boolean,
     crumbs: Crumb[],
