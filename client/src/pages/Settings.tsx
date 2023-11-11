@@ -30,12 +30,6 @@ export function Settings() {
                 <Tab eventKey="account" title="Account">
                     <SettingsTabAccount />
                 </Tab>
-                <Tab eventKey="notifications" title="Notifications" style={{color: "black"}}>
-
-                </Tab>
-                <Tab eventKey="security" title="Security & Privacy">
-
-                </Tab>
                 <Tab eventKey="personalization" title="Personalization">
                     <SettingsTabPersonalization />
                 </Tab>
