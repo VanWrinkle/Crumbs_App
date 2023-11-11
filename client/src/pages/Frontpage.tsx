@@ -16,6 +16,7 @@ export function Frontpage({feedBulkSize}: {feedBulkSize: number}) {
                 feed={(continueFrom: string) => new Api().getMainFeed(feedBulkSize, continueFrom)}
                 feedBulkSize={feedBulkSize}
                 parentId={null}
+                userId={undefined}
             />
         </Container>
     )

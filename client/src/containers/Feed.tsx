@@ -19,7 +19,8 @@ export function Feed(props: {
     canCompose: boolean,
     feed: (continueFrom: string) => Promise<Crumb[] | undefined>,
     feedBulkSize: number,
-    parentId: string | null
+    parentId: string | null,
+    userId: string | undefined
 }) {
     // Retrieve the authorized user's data
     const authorized = useAuth()
@@ -55,6 +56,13 @@ export function Feed(props: {
         setHasMore(true)
     }, [authorized]);
 
+    // Effect to reset the feed and remove all crumbs when the /profile/{user} param changes
+    useEffect(() => {
+        setCrumbs([])
+        setRestartFeed(true)
+        setHasMore(true)
+    }, [props.userId]);
+
     // Function to handle liking or unliking a Crumb post
     async function onLike(crumb: Crumb) {
         if (authorized) {
@@ -80,6 +88,8 @@ export function Feed(props: {
     useEffect(() => {
         void updatePosts()
     // eslint-disable-next-line react-hooks/exhaustive-deps
+
+
     }, []);
 
     return (
