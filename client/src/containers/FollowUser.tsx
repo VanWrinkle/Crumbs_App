@@ -1,5 +1,4 @@
-import {Button} from "react-bootstrap";
-import {Crumb} from "../types/Crumb";
+import {Button, Col} from "react-bootstrap";
 import {Api} from "../services/Api";
 import {toast} from "react-toastify";
 import {useAuth} from "../context/AuthProvider";
@@ -17,12 +16,11 @@ export function FollowUser({userId}: {userId: string}) {
     const authorized = useAuth();
 
     // State variables to track if the user follows the target user and to store user information
-    const [followsUser, setFollowsUser] = useState<boolean | null>(null)
     const [user, setUser] = useState<User | undefined>(undefined)
 
     // check if user is followed or not
     useEffect(() => {
-        const response = new Api().getProfileInfo(userId)
+        new Api().getProfileInfo(userId)
             .then((response) => {
                 setUser(response)
             })
@@ -34,18 +32,19 @@ export function FollowUser({userId}: {userId: string}) {
     }, []);
 
     // Function to handle user follow or unfollow actions
-    async function onFollow(userId: string) {
+    async function onFollow(userId: string, unfollow: boolean) {
         if (authorized && user) {
             // Toggle the follow status and update the user object
-            new Api().toggleFollow(userId, false)
+            new Api().toggleFollow(userId, unfollow)
                 .then(() => {
                     setUser((prevUser) => ({
                         ...prevUser!,
+                        followers_count: (prevUser?.followers_count ?? 0) + (unfollow ? -1 : 1),
                         is_followed_by_user: !prevUser?.is_followed_by_user
                     }))
                 })
-                .catch((error: any) => {
-                    toast.error("Failed to follow user")
+                .catch(() => {
+                    toast.error("Failed to follow/unfollow user")
                 })
         } else {
             toast.info("You need be signed into an account to leave reactions")
@@ -55,14 +54,14 @@ export function FollowUser({userId}: {userId: string}) {
 
 
     return(
-        <>
-            <span>Followers: {user ? user.followers_count : '?'}</span>
-        <Button
-            onClick={_ => onFollow(userId)}
-            disabled={!authorized || !user}
-        >
-            follow
-        </Button>
-        </>
+        <Col>
+            <Button
+                onClick={_ => onFollow(userId, user?.is_followed_by_user ?? false)}
+                disabled={!authorized || !user}>
+                {user?.is_followed_by_user ? "unfollow" : "follow"}
+            </Button>
+            <div>Followers: {user ? user.followers_count : ''}</div>
+            <div>Following: {user ? user.following_count : ''}</div>
+        </Col>
     )
 }

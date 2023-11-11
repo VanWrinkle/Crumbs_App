@@ -246,11 +246,11 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
             `MATCH (n:User {username: $user})-[f:FOLLOWS]->(m:User {username: $followTarget})
             DELETE f`
 
-        return new Promise( () => {
+        return new Promise( resolve => {
             this.#runQuery(
                 following? addFollow : deleteFollow,
                 {followTarget: followTarget, user: username},
-                ()=>{}
+                ()=>{resolve()}
             )
         })
     }
