@@ -14,24 +14,24 @@ import {User} from "../../../../entities/User";
 
 export class NeoGraphPersistence implements ISocialGraphPersistence {
     // TODO: Review security of connection
-    #driver: Driver
+    protected driver: Driver;
 
-    #runQuery(query: string, parameters: any, handleResult: (result:any)=>void ) {
-        let session = this.#driver.session();
+    protected runQuery(query: string, parameters: any, handleResult: (result: any) => void) {
+        let session = this.driver.session();
         session
             .run(query, parameters)
-            .then( result => handleResult(result))
-            .finally( () => {
+            .then(result => handleResult(result))
+            .finally(() => {
                 session.close();
             })
     }
 
     constructor(
-        db_url:string,
+        db_url: string,
         db_username: string,
-        db_password: string,
+        db_password: string
     ) {
-        this.#driver = neo4j.driver(db_url, neo4j.auth.basic(db_username, db_password))
+        this.driver = neo4j.driver(db_url, neo4j.auth.basic(db_username, db_password))
     }
 
     /**
@@ -45,11 +45,13 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
      */
     async createUserNode(username: string): Promise<void> {
         let query = "CREATE (user:User {username: $user, created: timestamp()})";
-        return new Promise( resolve => {
-            this.#runQuery(
+        return new Promise(resolve => {
+            this.runQuery(
                 query,
-                {user:username},
-                () => {resolve()}
+                {user: username},
+                () => {
+                    resolve()
+                }
             )
         })
     }
@@ -69,11 +71,13 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                      OPTIONAL MATCH (c:Crumb)-[:POSTED_BY]->(u)
                      DETACH DELETE c
                      DETACH DELETE u`;
-        return new Promise( resolve => {
-            this.#runQuery(
+        return new Promise(resolve => {
+            this.runQuery(
                 query,
-                {user:username},
-                () => {resolve()}
+                {user: username},
+                () => {
+                    resolve()
+                }
             )
         })
     }
@@ -93,39 +97,45 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
      * @throws {Error} Throws an error if the parent ID is provided and is not a valid integer.
      */
     async createCrumb(parent: string | null, username: string, crumb: CrumbContent[]): Promise<void> {
-        if (parent != null && typeof(parent) != typeof ("")) {
+        if (parent != null && typeof (parent) != typeof ("")) {
             throw new Error('post id must be integer')
         }
         let contents: string[] = [];
         let flags: string[] = [];
-        crumb.forEach( component => {
+        crumb.forEach(component => {
             contents.push(component.value)
             flags.push(component.type)
         })
         let query = `MATCH (u:User {username: $user}) 
-                    ${parent != null? "MATCH (p) WHERE ID(p) = " + parent : ""}
+                    ${parent != null ? "MATCH (p) WHERE ID(p) = " + parent : ""}
                     CREATE (c:Crumb {contents: $contents, flags: $flags, created: timestamp()})
                     -[:POSTED_BY]->(u)
-                    ${parent != null? "CREATE (c)-[:REPLIES_TO]->(p)":""}`
-
-        return new Promise( resolve => {
-            this.#runQuery(
+                    ${parent != null ? "CREATE (c)-[:REPLIES_TO]->(p)" : ""}`
+        return new Promise(resolve => {
+            this.runQuery(
                 query,
-                {user:username, contents:contents,flags:flags},
-                () => { resolve() }
-                )
+                {user: username, contents: contents, flags: flags},
+                () => {
+                    resolve()
+                }
+            )
         })
     }
 
 
     updateCrumb(crumb_id: string, newBody: CrumbContent[]): Promise<void> {
-        return new Promise(() => {})
+        return new Promise(() => {
+        })
     }
+
     deleteCrumb(crumb_id: string): Promise<void> {
-        return new Promise(() => {})
+        return new Promise(() => {
+        })
     }
-    getCrumb(crumb_id: string): Promise <Crumb> {
-        return new Promise(() => {})
+
+    getCrumb(crumb_id: string): Promise<Crumb> {
+        return new Promise(() => {
+        })
     }
 
 
@@ -137,9 +147,10 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
      * @param cutoff ID of post used to get cutoff value for time or engagement
      * @returns A Promise that resolves to an array of UserPostView objects representing the retrieved crumbs.
      */
-    async getCrumbs(user: string | null, filter: CrumbFilter, cutoff: string | null): Promise <Crumb[]> {
-        if (cutoff === "") {cutoff = null} // Simplifies logic un the query construction
-        let view: Crumb[] = [];
+    async getCrumbs(user: string | null, filter: CrumbFilter, cutoff: string | null): Promise<Crumb[]> {
+        if (cutoff === "") {
+            cutoff = null
+        } // Simplifies logic un the query construction
         let engagement = filter.sort === CrumbFilter.Sort.Engagement
         let parentID = 0;
 
@@ -149,32 +160,32 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
         //TODO: fetch engagement for single post
         let query =
             `
-            ${filter.parent_post!=undefined? 
+            ${filter.parent_post != undefined ?
                 "MATCH (parent)<-[:REPLIES_TO]-(crumb:Crumb)-[p:POSTED_BY]->(author)"
-                :"MATCH (crumb:Crumb)-[p:POSTED_BY]->(author)"}
+                : "MATCH (crumb:Crumb)-[p:POSTED_BY]->(author)"}
             ${Neo4jQueryBuilder.WHERE([
-                filter.parent_post? "ID(parent) = $parent":"",
-                (user && filter.filter_out_own)?"author.username <> $user":"",
-                (filter.authors)?"author.username IN $authors":"",
-                (filter.hashtags)?"":"" //TODO: Implement hashtags in DB
+                filter.parent_post ? "ID(parent) = $parent" : "",
+                (user && filter.filter_out_own) ? "author.username <> $user" : "",
+                (filter.authors) ? "author.username IN $authors" : "",
+                (filter.hashtags) ? "" : "" //TODO: Implement hashtags in DB
             ])}
             OPTIONAL MATCH (crumb)<-[liked:LIKES]-(liker)
-            ${user? "MATCH (user:User {username: $user})":""}
-            ${cutoff? "MATCH (cutoff:Crumb) WHERE ID(cutoff) = " +  cutoff:""}
+            ${user ? "MATCH (user:User {username: $user})" : ""}
+            ${cutoff ? "MATCH (cutoff:Crumb) WHERE ID(cutoff) = " + cutoff : ""}
             OPTIONAL MATCH (crumb)<-[:REPLIES_TO]-(reply)
             ${Neo4jQueryBuilder.WITH([
                 "crumb",
                 "author",
                 user ? "user" : "",
-                cutoff? "cutoff.created AS cutoff" : "",
+                cutoff ? "cutoff.created AS cutoff" : "",
                 "COUNT(DISTINCT liker) AS likes",
                 "COUNT(DISTINCT reply) AS replies",
             ])}
-            ${cutoff?
+            ${cutoff ?
                 Neo4jQueryBuilder.WHERE_CUTOFF(
-                engagement?"crumb.created":"crumb.created",
-                engagement?"cutoff":"cutoff",
-                filter.order)
+                    engagement ? "crumb.created" : "crumb.created",
+                    engagement ? "cutoff" : "cutoff",
+                    filter.order)
                 :
                 ""}
             ${Neo4jQueryBuilder.RETURN([
@@ -182,32 +193,28 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 "author",
                 "likes",
                 "replies",
-                `${user? "EXISTS( (user)-[:LIKES]->(crumb) )":"false"} AS liked`,
-                engagement?"likes + replies AS engagement":""
+                `${user ? "EXISTS( (user)-[:LIKES]->(crumb) )" : "false"} AS liked`,
+                engagement ? "likes + replies AS engagement" : ""
             ])}
             ${Neo4jQueryBuilder.ORDER_BY(
-                [engagement? "engagement":"","crumb.created"], 
+                [engagement ? "engagement" : "", "crumb.created"],
                 filter.order)}
             LIMIT ${filter.max};`
 
 
-        return new Promise( resolve => {
-            this.#runQuery(
+        return new Promise(resolve => {
+            this.runQuery(
                 query,
-                {user:user,authors:filter.authors,hashTags:filter.hashtags, parent:parentID},
+                {user: user, authors: filter.authors, hashTags: filter.hashtags, parent: parentID},
                 (results: QueryResult) => {
-                    results.records.forEach( record => {
+                    const crumbs: Crumb[] = results.records.map(record => {
                         let flags = record.get('crumb').properties.flags;
                         let values = record.get('crumb').properties.contents;
-                        let contents: CrumbContent[] = [];
-                        for (let i = 0; i < flags.length; i++) {
-                            contents.push({
-                                type: flags[i],
-                                value: values[i]
-                            })
-                        }
+                        const contents: CrumbContent[] = flags.map((flag: string, i: number) => {
+                            return {type: flag, value: values[i]}
+                        })
                         let timestamp = Number(record.get('crumb').properties.created.toBigInt());
-                        let crumb: Crumb = {
+                        return {
                             author: record.get('author').properties.username,
                             timestamp_milliseconds: timestamp,
                             post_id: record.get('crumb').identity.toString(),
@@ -216,9 +223,9 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                             liked: record.get('liked'),
                             contents: contents
                         };
-                        view.push(crumb)
-                        resolve(view)
-                    })}
+                    })
+                    resolve(crumbs)
+                }
             )
         })
     }
@@ -236,7 +243,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
      *
      * @return A Promise that resolves when the follow relationship is successfully updated in the database.
      */
-    async setUserFollowing(username: string, followTarget: string, following: boolean): Promise <void> {
+    async setUserFollowing(username: string, followTarget: string, following: boolean): Promise<void> {
         let addFollow =
             `MATCH (n:User {username: $user})
             MATCH (m:User {username: $followTarget})
@@ -247,8 +254,8 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
             DELETE f`
 
         return new Promise( resolve => {
-            this.#runQuery(
-                following? addFollow : deleteFollow,
+            this.runQuery(
+                following ? addFollow : deleteFollow,
                 {followTarget: followTarget, user: username},
                 ()=>{resolve()}
             )
@@ -270,9 +277,11 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
      *
      * @throws {Error} Throws an error if the provided Neo4j ID is not a valid integer.
      */
-    async setCrumbLiked(username: string, crumb_id: string, likes: boolean) : Promise<void> {
+    async setCrumbLiked(username: string, crumb_id: string, likes: boolean): Promise<void> {
         let id = parseInt(crumb_id);
-        if (id === undefined) { throw new Error('Neo4j id must be an int'); }
+        if (id === undefined) {
+            throw new Error('Neo4j id must be an int');
+        }
         let addLike =
             `MATCH (n:User {username: '${username}'})
             MATCH (m: User)<-[:POSTED_BY]-(c:Crumb)
@@ -284,11 +293,13 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
             MATCH (n:User {username: '${username}'})-[l:LIKES]->(c)
             DELETE l`
 
-        return new Promise( resolve => {
-            this.#runQuery(
-                likes? addLike : removeLike,
+        return new Promise(resolve => {
+            this.runQuery(
+                likes ? addLike : removeLike,
                 {},
-                ()=>{resolve()}
+                () => {
+                    resolve()
+                }
             )
         })
     }
@@ -302,36 +313,36 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 "user",
                 "COUNT(following) AS follows_count",
                 "COUNT(followed_by) AS followed_count",
-                activeUser?
-                "EXISTS( (:User {username: $activeUser})-[:FOLLOWS]->(:User {username: $user})) AS following"
-                :""
+                activeUser ?
+                    "EXISTS( (:User {username: $activeUser})-[:FOLLOWS]->(:User {username: $user})) AS following"
+                    : ""
             ])}
             ${Neo4jQueryBuilder.RETURN([
                 "user",
                 "user.created AS created",
                 "follows_count",
                 "followed_count",
-                activeUser? "following" : ""
+                activeUser ? "following" : ""
             ])}
                 `;
 
-        return new Promise<User>( (resolve, reject) => {
-            this.#runQuery(
+        return new Promise<User>((resolve, reject) => {
+            this.runQuery(
                 query,
                 {user: targetUser, activeUser: activeUser},
-                (results:QueryResult) => {
+                (results: QueryResult) => {
                     let matches: User[] = []
-                    results.records.forEach( record => {
+                    results.records.forEach(record => {
                         let user: User = {
                             username: targetUser,
                             joined: Number(record.get('created').toBigInt()),
-                            is_followed_by_user: activeUser? record.get('following') : false,
+                            is_followed_by_user: activeUser ? record.get('following') : false,
                             followers_count: record.get('followed_count').low,
                             following_count: record.get('follows_count').low
                         };
                         matches.push(user)
                     })
-                    if(matches.length != 1) {
+                    if (matches.length != 1) {
                         reject(new Error("No result"))
                     } else {
                         resolve(matches[0])
@@ -343,6 +354,36 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
 }
 
 
+/**
+ * @brief A class for testing the NeoGraphPersistence class. Provides the
+ * ability to drop all nodes in the database.
+ */
+export class Neo4jTestDB extends NeoGraphPersistence {
+    constructor(
+        db_url:string,
+        db_username: string,
+        db_password: string
+    ) {
+        super(db_url, db_username, db_password);
+    }
+
+    /**
+     * WARNING: This function will delete all nodes in the database.
+     */
+    public async dropDatabase(): Promise<void> {
+        let query = "MATCH (n) DETACH DELETE n"
+        return new Promise(resolve => {
+            this.runQuery(
+                query,
+                {},
+                () => {
+                    resolve()
+                }
+            )
+        })
+    }
+
+}
 
 
 
