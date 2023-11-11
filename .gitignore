@@ -1,11 +1,11 @@
 /node_modules/
 /.gitignore/
-/server/private-key.pem
-/server/server.crt
+/server/keys/private-key.pem
+/server/keys/server.crt
 /client/node_modules/
 /client/build/
 /server/node_modules/
 /.idea/
 /.idea/.gitignore
-/server/private-key.pem
-/server/server.crt
+/server/keys/private-key.pem
+/server/keys/server.crt
