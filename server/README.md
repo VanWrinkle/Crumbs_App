@@ -597,19 +597,20 @@ On Failure:
 
 #### Request
 
-- URL: `/api/deleteUser`
+- URL: `/api/deleteUser/:username`
 - HTTP Method: `DELETE`
-- Query:
-  - `user=[username]`
-    - The username of the user to delete
 
 #### Response
-On Success:
+**On Success:**
 - HTTP Method: `204 No Content`
   - Issued when the user is successfully deleted
-- HTTP Method: `401 Unauthorized`
+
+**On Failure:**
+- [ ] HTTP Method: `400 Bad Request`
+  - Issued in cases where the username is missing
+- [ ] HTTP Method: `401 Unauthorized`
   - Issued in cases where the user is not logged in
-- HTTP Method: `500 Internal Server Error`
+- [ ] HTTP Method: `500 Internal Server Error`
   - Issued when the server fails to handle the request for deletion due to an internal error
 
 ---
@@ -624,11 +625,8 @@ On Success:
 
 #### Request
 
-- URL: `/api/followUser`
+- URL: `/api/followUser/:username`
 - HTTP Method: `DELETE`
-- Query:
-  - `user=[username]`
-    - The username of the user to unfollow
 
 #### Response
 
@@ -637,13 +635,13 @@ On Success:
   - Issued when the user is successfully unfollowed, or if the user was not followed in the first place
 
 On Failure:
-- HTTP Method: `401 Unauthorized`
+- [ ] HTTP Method: `401 Unauthorized`
   - Issued in cases where the user is not logged in
-- HTTP Method: `500 Internal Server Error`
+- [ ] HTTP Method: `500 Internal Server Error`
   - Issued when the server fails to handle the request.
-- HTTP Method: `400 Bad Request`
+- [ ] HTTP Method: `400 Bad Request`
   - Issued when the username is missing
-- HTTP Method: `404 Not Found`
+- [ ] HTTP Method: `404 Not Found`
   - Issued when the user to unfollow does not exist
 
 
