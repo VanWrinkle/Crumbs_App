@@ -26,6 +26,7 @@ export function Profile({feedBulkSize}: {feedBulkSize: number}) {
                 feed={(continueFrom: string) => new Api().getUserFeed(userid!, feedBulkSize, continueFrom)}
                 feedBulkSize={feedBulkSize}
                 parentId={null}
+                userId={userid}
             />
 
         </Container>

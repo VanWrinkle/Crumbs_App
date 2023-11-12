@@ -3,7 +3,6 @@ import {Crumb} from "../types/Crumb";
 import {Api} from "../services/Api";
 import {CrumbsFeed} from "../components/CrumbsFeed";
 import {useAuth} from "../context/AuthProvider";
-import {useAddNotification} from "../context/AlertProvider";
 import {toast} from "react-toastify";
 
 /**
@@ -19,7 +18,8 @@ export function Feed(props: {
     canCompose: boolean,
     feed: (continueFrom: string) => Promise<Crumb[] | undefined>,
     feedBulkSize: number,
-    parentId: string | null
+    parentId: string | null,
+    userId: string | undefined
 }) {
     // Retrieve the authorized user's data
     const authorized = useAuth()
@@ -28,7 +28,6 @@ export function Feed(props: {
     const [crumbs, setCrumbs] = useState<Crumb[]>([])
     const [restartFeed, setRestartFeed] = useState(true)
     const [hasMore, setHasMore] = useState(true)
-    const addNotification = useAddNotification()
 
     // Function to update and load posts in the feed
     async function updatePosts() {
@@ -43,9 +42,11 @@ export function Feed(props: {
                     }
                 }
             })
-            .catch(() => {
+            .catch(error => {
+                if (error instanceof Error) {
+                    console.log(error)
+                }
                 toast.error("Could not load the last messages")
-                addNotification({message: "failed to load more crumbs", link: ""})
             })
     }
 
@@ -54,6 +55,13 @@ export function Feed(props: {
         setRestartFeed(true)
         setHasMore(true)
     }, [authorized]);
+
+    // Effect to reset the feed and remove all crumbs when the /profile/{user} param changes
+    useEffect(() => {
+        setCrumbs([])
+        setRestartFeed(true)
+        setHasMore(true)
+    }, [props.userId]);
 
     // Function to handle liking or unliking a Crumb post
     async function onLike(crumb: Crumb) {
@@ -68,7 +76,7 @@ export function Feed(props: {
                 })
                 .catch((error: any) => {
                     if (error instanceof Error)
-                    addNotification({message: error.message, link: ""})
+                        toast.error(error.message)
                 })
         } else {
             toast.info("You need be signed into an account to leave reactions")
@@ -79,7 +87,6 @@ export function Feed(props: {
     // Effect to load initial posts when the component mounts
     useEffect(() => {
         void updatePosts()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
