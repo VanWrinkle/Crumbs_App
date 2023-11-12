@@ -60,25 +60,26 @@ On Success:
   - `200 OK`
     - The request was successful
 - Body:
-
-````json
-{
-    "username": "vanwrinkle",
-    "joined": 1698146653614,
-    "is_followed_by_user": false,
-    "followers_count": 8,
-    "following_count": 8
-}
-````
+  ````json
+  {
+      "username": "vanwrinkle",
+      "joined": 1698146653614,
+      "is_followed_by_user": false,
+      "followers_count": 8,
+      "following_count": 8
+  }
+  ````
 
 On Failure:
 
-- HTTP Method: `400 Bad Request`
+- [ ] HTTP Method: `400 Bad Request`
   - Issued in cases where the username is missing
-- HTTP Method: `404 Not Found`
+- [ ] HTTP Method: `404 Not Found`
   - Issued in cases where the user does not exist
-- HTTP Method: `500 Internal Server Error`
+- [ ] HTTP Method: `500 Internal Server Error`
   - Issued in cases where the server fails to handle the request due to an internal error
+- [ ] HTTP Method: `504 Gateway Timeout`
+  - Issued in cases where the database connection fails
 
 ---
 
@@ -95,6 +96,7 @@ On Failure:
 - Queries:
   - `filter_out_own=[true:false]`
     - If true, the user's own posts will not be included in the feed
+    - Default: `true`
   - `parent=[parent_crumb_id]`
     - If this query is present, the feed will return the replies to the crumb with the given id
     - Default: `null`
@@ -154,16 +156,23 @@ On Success:
 ```
 
 On Failure:
-- HTTP Method: `400 Bad Request`
+- [ ] HTTP Method: `400 Bad Request`
   - Issued in cases where the queries are invalid
-- HTTP Method: `500 Internal Server Error`
-  - Issued in cases where the server fails to handle the request due to an internal error
-- HTTP Method: `404 Not Found`
+- [ ] HTTP Method: `404 Not Found`
   - Issued in cases where the parent crumb does not exist
+- [ ] HTTP Method: `500 Internal Server Error`
+  - Issued in cases where the server fails to handle the request due to an internal error
+- [ ] HTTP Method: `504 Gateway Timeout`
+  - Issued in cases where the database connection fails
+
 
 ---
 
 ### getReplies
+
+#### Description
+
+> This endpoint is used to get the replies to a crumb. The replies are returned as a JSON array of posts.
 
 #### Request
 
@@ -217,18 +226,23 @@ On Failure:
   ```
 
 **On Failure:**
-- HTTP Method: `400 Bad Request`
-  - Issued in cases where the queries are invalid
-- HTTP Method: `500 Internal Server Error`
-  - Issued in cases where the server fails to handle the request due to an internal error
-- HTTP Method: `404 Not Found`
+- [ ] HTTP Method: `400 Bad Request`
+  - Issued in cases where the parent id is missing
+- [ ] HTTP Method: `404 Not Found`
   - Issued in cases where the parent crumb does not exist
-- HTTP Method: `401 Unauthorized`
-  - Issued in cases where the user is not logged in
+- [ ] HTTP Method: `500 Internal Server Error`
+  - Issued in cases where the server fails to handle the request due to an internal error
+- [ ] HTTP Method: `504 Gateway Timeout`
+  - Issued in cases where the database connection fails
+
 
 ---
 
 ### getUserFeed
+
+#### Description
+
+> This endpoint is used to get the feed of a specific user. The feed is returned as a JSON array of posts.
 
 #### Request 
 
@@ -273,12 +287,14 @@ On Failure:
 
 **On Failure:**
 
-  - HTTP Method: `400 Bad Request` 
-    - If any of the queries are invalid or the username is missing
-  - HTTP Method: `404 Not Found`
+  - [ ] HTTP Method: `400 Bad Request` 
+    - Issued if the username is missing
+  - [ ] HTTP Method: `404 Not Found`
     - If there is no such user
-  - HTTP Method `500 Internal Server Error`
+  - [ ] HTTP Method `500 Internal Server Error`
     - Undisclosed internal error
+  - [ ] HTTP Method: `504 Gateway Timeout`
+    - Issued in cases where the database connection fails
 
 ---
 
@@ -310,13 +326,13 @@ On Failure:
 
 **On Failure:**
 
-  - HTTP Method: `400 Bad Request`
+  - [ ] HTTP Method: `400 Bad Request`
     - Issued in cases where the password does not meet the security requirements or are missing
-  - HTTP Method: `409 Conflict`
+  - [ ]HTTP Method: `409 Conflict`
     - Issued in cases where a an account already exist with that username
-  - HTTP Method: `500 Internal Server Error`
+  - [ ] HTTP Method: `500 Internal Server Error`
     - Issued in cases where the hashing algorithm fails
-  - HTTP Method: `504 Gateway Timeout`
+  - [ ] HTTP Method: `504 Gateway Timeout`
     - Issued in cases where the database connection fails
 
 ---
@@ -349,14 +365,12 @@ On Failure:
     }
     ```
 **On Failure:**
-  - HTTP Method: `400 Bad Request`
+  - [ ] HTTP Method: `400 Bad Request`
     - Issued in cases where username or password are missing
-  - HTTP Method: `401 Unauthorized`
+  - [ ] HTTP Method: `401 Unauthorized`
     - Issued in cases where the username and/or password does not match any existing account
-  - HTTP Method: `500 Internal Server Error`
+  - [ ] HTTP Method: `500 Internal Server Error`
     - Issued in cases where the hashing algorithm fails
-  - HTTP Method: `504 Gateway Timeout`
-    - Issued in cases where the database connection fails
 
 ---
 
@@ -401,15 +415,16 @@ On Success:
 ````
 
 On Failure:
-- HTTP Method: `401 Unauthorized`
+- [ ] HTTP Method: `401 Unauthorized`
   - Issued in cases where the user is not logged in
-- HTTP Method: `500 Internal Server Error`
+- [ ] HTTP Method: `500 Internal Server Error`
   - Issued when the server fails to handle the request for renewal due to an internal error
-
 
 ---
 
 ### postCrumb
+
+#### Description
 
 > This endpoint is used to post a crumb. The user must be logged in to use this endpoint. The crumb can be a reply or a free-standing crumb.
 
