@@ -15,13 +15,19 @@
 [TOC]
 
 
-  
+<br>
+<br>
+<br>
 
 ## GET
 
 ---
 
+
+
 [back to top](#toc)
+
+
 
 ### / root
 
@@ -46,6 +52,10 @@
 ---
 
 [back to top](#toc)
+
+<br>
+<br>
+<br>
 
 ###  getProfileInfo
 
@@ -91,6 +101,10 @@ On Failure:
 ---
 
 [back to top](#toc)
+
+<br>
+<br>
+<br>
 
 ### getMainFeed
 
@@ -181,6 +195,10 @@ On Failure:
 
 [back to top](#toc)
 
+<br>
+<br>
+<br>
+
 ### getReplies
 
 
@@ -254,6 +272,10 @@ On Failure:
 
 [back to top](#toc)
 
+<br>
+<br>
+<br>
+
 ### getUserFeed
 
 
@@ -315,6 +337,10 @@ On Failure:
 
 ---
 
+<br>
+<br>
+<br>
+
 ---
 
 ## POST
@@ -359,6 +385,10 @@ On Failure:
 
 [back to top](#toc)
 
+<br>
+<br>
+<br>
+
 ### login
 
 
@@ -398,6 +428,10 @@ On Failure:
 ---
 
 [back to top](#toc)
+
+<br>
+<br>
+<br>
 
 ### logout
 
@@ -450,6 +484,10 @@ On Failure:
 
 [back to top](#toc)
 
+<br>
+<br>
+<br>
+
 ### postCrumb
 
 #### Description
@@ -488,6 +526,10 @@ On Failure:
 
 [back to top](#toc)
 
+<br>
+<br>
+<br>
+
 ### likeCrumb
 
 > This endpoint is used to like a crumb. The user must be logged in to use this endpoint.
@@ -519,6 +561,10 @@ On Failure:
 
 [back to top](#toc)
 
+<br>
+<br>
+<br>
+
 ### followUser
 
 #### Description 
@@ -545,6 +591,11 @@ On Failure:
 - [ ] HTTP Method: `400 Bad Request`
   - Issued when the username is missing
 
+---
+
+<br>
+<br>
+<br>
 
 ---
 
@@ -554,6 +605,8 @@ On Failure:
 
 
 [back to top](#toc)
+
+
 
 ### likeCrumb
 
@@ -587,6 +640,10 @@ On Failure:
 
 [back to top](#toc)
 
+<br>
+<br>
+<br>
+
 ### deleteUser 
 
 #### Description 
@@ -616,6 +673,10 @@ On Failure:
 ---
 
 [back to top](#toc)
+
+<br>
+<br>
+<br>
   
 ### followUser
 
