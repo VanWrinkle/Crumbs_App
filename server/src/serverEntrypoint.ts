@@ -12,6 +12,7 @@ import {
     socialGraphPersistence,
     userRegistrationDatabase,
 } from "./globals";
+import {TestServerConfigs} from "./testUtility/testServerConfig";
 
 
 

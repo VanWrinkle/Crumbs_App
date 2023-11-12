@@ -8,25 +8,52 @@ import {User} from "../../../../entities/User";
 
 
 
+// https://neo4j.com/docs/api/javascript-driver/current/file/lib6/error.js.html for reference
 
 
+class DBError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = "DBError";
+    }
+}
 
+class DBErrors {
+    static CONNECTION_ERROR = new DBError("Connection error");
+    static UNKNOWN_ERROR = new DBError("Unknown error");
+    static SYNTAX_ERROR = new DBError("Syntax error");
+}
 
 export class NeoGraphPersistence implements ISocialGraphPersistence {
     // TODO: Review security of connection
     protected driver: Driver;
 
-    protected runQuery(query: string, parameters: any, handleResult: (result: any) => void) {
+    protected runQuery(query: string, parameters: any, handleResult: (result: any) => void) : void | DBError {
+        // console.log("Running query: " + query)
         let session = this.driver.session();
         session
             .run(query, parameters)
-            .then(result => handleResult(result))
+            .then( result => {
+                // console.log("Query result: " + JSON.stringify(result));
+                handleResult(result);
+            })
+            .catch( error => {
+                // console.log(error)
+                switch(error.code) {
+                    case neo4j.error.SERVICE_UNAVAILABLE:
+                        return DBErrors.CONNECTION_ERROR;
+                    case neo4j.error.PROTOCOL_ERROR:
+                        return DBErrors.CONNECTION_ERROR
+                    default:
+                        return DBErrors.UNKNOWN_ERROR;
+                }
+            })
             .finally(() => {
                 session.close();
             })
     }
 
-    constructor(
+    constructor( //TODO: Crashes on unauthorized user
         db_url: string,
         db_username: string,
         db_password: string
@@ -45,14 +72,17 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
      */
     async createUserNode(username: string): Promise<void> {
         let query = "CREATE (user:User {username: $user, created: timestamp()})";
-        return new Promise(resolve => {
-            this.runQuery(
+        return new Promise((resolve, reject) => {
+            let error = this.runQuery(
                 query,
                 {user: username},
                 () => {
                     resolve()
                 }
             )
+            if(error) {
+                reject(error)
+            }
         })
     }
 
@@ -71,14 +101,17 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                      OPTIONAL MATCH (c:Crumb)-[:POSTED_BY]->(u)
                      DETACH DELETE c
                      DETACH DELETE u`;
-        return new Promise(resolve => {
-            this.runQuery(
+        return new Promise((resolve, reject) => {
+            let error = this.runQuery(
                 query,
                 {user: username},
                 () => {
                     resolve()
                 }
             )
+            if (error) {
+                reject(error);
+            }
         })
     }
 
@@ -111,14 +144,17 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                     CREATE (c:Crumb {contents: $contents, flags: $flags, created: timestamp()})
                     -[:POSTED_BY]->(u)
                     ${parent != null ? "CREATE (c)-[:REPLIES_TO]->(p)" : ""}`
-        return new Promise(resolve => {
-            this.runQuery(
+        return new Promise((resolve, reject) => {
+            let error = this.runQuery(
                 query,
                 {user: username, contents: contents, flags: flags},
                 () => {
                     resolve()
                 }
             )
+            if(error) {
+                reject(error)
+            }
         })
     }
 
@@ -202,8 +238,8 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
             LIMIT ${filter.max};`
 
 
-        return new Promise(resolve => {
-            this.runQuery(
+        return new Promise((resolve, reject) => {
+            let error = this.runQuery(
                 query,
                 {user: user, authors: filter.authors, hashTags: filter.hashtags, parent: parentID},
                 (results: QueryResult) => {
@@ -227,6 +263,10 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                     resolve(crumbs)
                 }
             )
+            if(error) {
+                reject(error)
+            }
+
         })
     }
 
@@ -253,12 +293,15 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
             `MATCH (n:User {username: $user})-[f:FOLLOWS]->(m:User {username: $followTarget})
             DELETE f`
 
-        return new Promise( resolve => {
-            this.runQuery(
+        return new Promise( (resolve, reject) => {
+            let error = this.runQuery(
                 following ? addFollow : deleteFollow,
                 {followTarget: followTarget, user: username},
                 ()=>{resolve()}
             )
+            if(error) {
+                reject(error)
+            }
         })
     }
 
@@ -293,14 +336,17 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
             MATCH (n:User {username: '${username}'})-[l:LIKES]->(c)
             DELETE l`
 
-        return new Promise(resolve => {
-            this.runQuery(
+        return new Promise((resolve, reject) => {
+            let error = this.runQuery(
                 likes ? addLike : removeLike,
                 {},
                 () => {
                     resolve()
                 }
             )
+            if(error) {
+                reject(error)
+            }
         })
     }
 
@@ -327,7 +373,7 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 `;
 
         return new Promise<User>((resolve, reject) => {
-            this.runQuery(
+            let error = this.runQuery(
                 query,
                 {user: targetUser, activeUser: activeUser},
                 (results: QueryResult) => {
@@ -348,6 +394,9 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                         resolve(matches[0])
                     }
                 })
+            if (error) {
+                reject(error)
+            }
         })
     }
 
@@ -372,14 +421,17 @@ export class Neo4jTestDB extends NeoGraphPersistence {
      */
     public async dropDatabase(): Promise<void> {
         let query = "MATCH (n) DETACH DELETE n"
-        return new Promise(resolve => {
-            this.runQuery(
+        return new Promise((resolve, reject) => {
+            let error = this.runQuery(
                 query,
                 {},
                 () => {
                     resolve()
                 }
             )
+            if (error) {
+                reject(error)
+            }
         })
     }
 

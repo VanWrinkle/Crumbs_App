@@ -7,6 +7,15 @@ import {ISocialGraphPersistence} from "../contracts/ISocialGraphPersistence";
 import {CrumbFilter} from "../entities/CrumbFilter";
 import {Crumb} from "../entities/Crumb";
 
+function withTimeout(promise: any, timeout: number = 1000) {
+    return Promise.race([
+        promise,
+        new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Promise timed out')), timeout)
+        )
+    ]);
+}
+
 
 export function reactApp(req: express.Request, res: express.Response) {
     res.sendFile(path.join(reactDir, 'index.html'));
@@ -171,15 +180,29 @@ export function getMainFeed(persistence: ISocialGraphPersistence) {
         filter.parent_post = req.query.parent?.toString() ?? undefined;
         filter.filter_out_own = req.query.filter_out_own?.toString() === "true";
 
-        persistence.getCrumbs(
-            req.user?.toString() ?? null,
-            filter,
-            req.query.continue_from?.toString() ?? null,
-        )
-            .catch( () => res.status(500).send() )
+        persistence
+            .getCrumbs(
+                req.user?.toString() ?? null,
+                filter,
+                req.query.continue_from?.toString() ?? null,
+            )
             .then( crumbs => {
                     res.status(200).send(crumbs);
                 })
+            .catch( error => {
+                console.log(error)
+            } )
+
+        // withTimeout( persistence
+        //     .getCrumbs(
+        //         req.user?.toString() ?? null,
+        //         filter,
+        //         req.query.continue_from?.toString() ?? null,
+        //     ))
+        //     .then( crumbs => {
+        //             res.status(200).send(crumbs);
+        //         })
+        //     .catch( () => res.status(500).send() )
     }
 }
 
