@@ -1,4 +1,4 @@
-# Crumbs API
+# API
 
 [TOC]
 
@@ -17,6 +17,8 @@
 ## GET
 
 ---
+
+[back to top](#instructions)
 
 ### / root
 
@@ -39,6 +41,8 @@
 
 
 ---
+
+[back to top](#instructions)
 
 ###  getProfileInfo
 
@@ -83,7 +87,11 @@ On Failure:
 
 ---
 
+[back to top](#instructions)
+
 ### getMainFeed
+
+
 
 #### Description
 
@@ -168,7 +176,10 @@ On Failure:
 
 ---
 
+[back to top](#instructions)
+
 ### getReplies
+
 
 #### Description
 
@@ -238,7 +249,10 @@ On Failure:
 
 ---
 
+[back to top](#instructions)
+
 ### getUserFeed
+
 
 #### Description
 
@@ -304,7 +318,10 @@ On Failure:
 
 ---
 
+[back to top](#instructions)
+
 ### register
+
 
 #### Description
 
@@ -337,7 +354,10 @@ On Failure:
 
 ---
 
+[back to top](#instructions)
+
 ### login
+
 
 #### Description
 
@@ -374,7 +394,10 @@ On Failure:
 
 ---
 
+[back to top](#instructions)
+
 ### logout
+
 
 #### Description
 
@@ -422,6 +445,8 @@ On Failure:
 
 ---
 
+[back to top](#instructions)
+
 ### postCrumb
 
 #### Description
@@ -458,17 +483,16 @@ On Failure:
 
 ---
 
+[back to top](#instructions)
+
 ### likeCrumb
 
 > This endpoint is used to like a crumb. The user must be logged in to use this endpoint.
 
 #### Request
 
-- URL: `/api/likeCrumb`
+- URL: `/api/likeCrumb/:crumb_id`
 - HTTP Method: `POST`
-- Query:
-  - `crumb=[id]`
-    - The id of the crumb to like
 
 #### Response
 On Success:
@@ -477,26 +501,31 @@ On Success:
 
 On Failure:
 
-- HTTP Method: `401 Unauthorized`
+- [ ] HTTP Method: `400 Bad Request`
+  - Issued in cases where the crumb id is missing
+- [ ] HTTP Method: `401 Unauthorized`
   - Issued in cases where the user is not logged in
-- HTTP Method: `500 Internal Server Error`
+- [ ] HTTP Method: `404 Not Found`
+  - Issued in cases where the crumb does not exist
+- [ ] HTTP Method: `500 Internal Server Error`
   - Issued when the server fails to handle the request for renewal due to an internal error
-- HTTP Method: `400 Bad Request`
-  - Issued when the crumb id is missing
+- [ ] HTTP Method: `504 Gateway Timeout`
+  - Issued in cases where the database connection fails
 
 ---
 
+[back to top](#instructions)
+
 ### followUser
+
+#### Description 
 
 > This endpoint is used to follow a user. The user must be logged in to use this endpoint.
 
 #### Request
 
-- URL: `/api/followUser`
+- URL: `/api/followUser/:username`
 - HTTP Method: `POST`
-- Query:
-  - `user=[username]`
-    - The username of the user to follow
 
 #### Response
 
@@ -504,11 +533,13 @@ On Success:
 - HTTP Method: `201 Created`
 
 On Failure:
-- HTTP Method: `401 Unauthorized`
+- [ ] HTTP Method: `400 Bad Request`
+  - Issued in cases where the username is missing
+- [ ] HTTP Method: `401 Unauthorized`
   - Issued in cases where the user is not logged in
-- HTTP Method: `500 Internal Server Error`
+- [ ] HTTP Method: `500 Internal Server Error`
   - Issued when the server fails to handle the request for renewal due to an internal error
-- HTTP Method: `400 Bad Request`
+- [ ] HTTP Method: `400 Bad Request`
   - Issued when the username is missing
 
 
@@ -519,34 +550,42 @@ On Failure:
 ---
 
 
+[back to top](#instructions)
+
 ### likeCrumb
 
 #### Request
 
-- URL: `/api/likeCrumb`
+- URL: `/api/likeCrumb/:crumb_id`
 - HTTP Method: `DELETE`
-- Query:
-  - `crumb=[id]`
-    - The id of the crumb to like
 
 #### Response
-On Success:
+**On Success:**
 - HTTP Method: `204 No Content`
   - Issued when the crumb is successfully unliked
 
-On Failure:
-- HTTP Method: `401 Unauthorized`
-  - Issued in cases where the user is not logged in
-- HTTP Method: `500 Internal Server Error`
-  - Issued when the server fails to handle the request for renewal due to an internal error
-- HTTP Method: `400 Bad Request`
+**On Failure:**
+- [ ] HTTP Method: `400 Bad Request`
   - Issued when the crumb id is missing
+- [ ] HTTP Method: `401 Unauthorized`
+  - Issued in cases where the user is not logged in
+- [ ] HTTP Method: `404 Not Found`
+  - Issued in cases where the crumb does not exist
+- [ ] HTTP Method: `500 Internal Server Error`
+  - Issued when the server fails to handle the request for renewal due to an internal error
+- [ ] HTTP Method: `504 Gateway Timeout`
+  - Issued in cases where the database connection fails
 
 ---
 
-### deleteUser
+[back to top](#instructions)
+
+### deleteUser 
+
+#### Description 
 
 > This endpoint is used to delete a user. The user must be logged in to use this endpoint.
+
 
 
 #### Request
@@ -567,6 +606,8 @@ On Success:
   - Issued when the server fails to handle the request for deletion due to an internal error
 
 ---
+
+[back to top](#instructions)
   
 ### followUser
 
