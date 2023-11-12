@@ -1,8 +1,6 @@
 # API
 
-[TOC]
-
-## Instructions
+## instructions
 
 - React and Express (this API) are built as separate projects for now.
 - Prerequisites:
@@ -12,13 +10,18 @@
 - The service does not immediately reflect changes from React. This service must either be restarted to trigger a new build or
   by manually executing `npm run build` from the client directory.
 
+## toc
+
+[TOC]
+
+
   
 
 ## GET
 
 ---
 
-[back to top](#instructions)
+[back to top](#toc)
 
 ### / root
 
@@ -42,7 +45,7 @@
 
 ---
 
-[back to top](#instructions)
+[back to top](#toc)
 
 ###  getProfileInfo
 
@@ -87,7 +90,7 @@ On Failure:
 
 ---
 
-[back to top](#instructions)
+[back to top](#toc)
 
 ### getMainFeed
 
@@ -176,7 +179,7 @@ On Failure:
 
 ---
 
-[back to top](#instructions)
+[back to top](#toc)
 
 ### getReplies
 
@@ -249,7 +252,7 @@ On Failure:
 
 ---
 
-[back to top](#instructions)
+[back to top](#toc)
 
 ### getUserFeed
 
@@ -318,7 +321,7 @@ On Failure:
 
 ---
 
-[back to top](#instructions)
+[back to top](#toc)
 
 ### register
 
@@ -354,7 +357,7 @@ On Failure:
 
 ---
 
-[back to top](#instructions)
+[back to top](#toc)
 
 ### login
 
@@ -394,7 +397,7 @@ On Failure:
 
 ---
 
-[back to top](#instructions)
+[back to top](#toc)
 
 ### logout
 
@@ -445,7 +448,7 @@ On Failure:
 
 ---
 
-[back to top](#instructions)
+[back to top](#toc)
 
 ### postCrumb
 
@@ -483,7 +486,7 @@ On Failure:
 
 ---
 
-[back to top](#instructions)
+[back to top](#toc)
 
 ### likeCrumb
 
@@ -514,7 +517,7 @@ On Failure:
 
 ---
 
-[back to top](#instructions)
+[back to top](#toc)
 
 ### followUser
 
@@ -550,7 +553,7 @@ On Failure:
 ---
 
 
-[back to top](#instructions)
+[back to top](#toc)
 
 ### likeCrumb
 
@@ -578,7 +581,7 @@ On Failure:
 
 ---
 
-[back to top](#instructions)
+[back to top](#toc)
 
 ### deleteUser 
 
@@ -607,7 +610,7 @@ On Success:
 
 ---
 
-[back to top](#instructions)
+[back to top](#toc)
   
 ### followUser
 
