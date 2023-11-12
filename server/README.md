@@ -557,6 +557,10 @@ On Failure:
 
 ### likeCrumb
 
+#### Description
+
+> This endpoint is used to unlike a crumb. The user must be logged in to use this endpoint.
+
 #### Request
 
 - URL: `/api/likeCrumb/:crumb_id`
@@ -613,6 +617,8 @@ On Success:
 [back to top](#toc)
   
 ### followUser
+
+#### Description
 
 > This endpoint is used to unfollow a user. The user must be logged in to use this endpoint.
 
