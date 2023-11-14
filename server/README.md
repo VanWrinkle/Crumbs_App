@@ -392,7 +392,7 @@ On Failure:
 
 #### Description
 
-> Logging in is mandatory for all endpoints that are capable of performing actions on behalf of the user, such as posting crumbs, deletion of an account and similar.
+> Logging in is mandatory for all endpoints that are capable of performing actions on behalf of the user, such as posting crumbs, deletion of an account and similar. The server sets a cookie on the client containing a JSON Web Token (JWT) containg a payload, hash and timestamp for verifying authentication on incoming requests. It also returns information on the user and time-to-live (TTL) on the cookie/token.
 
 #### Request
 - URL: `/api/login`
@@ -409,19 +409,23 @@ On Failure:
 **On Success:**
   - HTTP Method: `200 OK`
   - Content-Type: `application/json`
+  - Set-Cookie: JSON Web Token (HttpOnly, Secure)
   - Response Body:
     ```json
     {
-      "token": "JSON_WEB_TOKEN_STRING....."
+      "username": "exampleName",
+      "ttl": 1698146653614
     }
     ```
 **On Failure:**
-  - [ ] HTTP Method: `400 Bad Request`
+- [ ] HTTP Method: `400 Bad Request`
     - Issued in cases where username or password are missing
-  - [ ] HTTP Method: `401 Unauthorized`
+- [ ] HTTP Method: `401 Unauthorized`
     - Issued in cases where the username and/or password does not match any existing account
-  - [ ] HTTP Method: `500 Internal Server Error`
+- [ ] HTTP Method: `500 Internal Server Error`
     - Issued in cases where the hashing algorithm fails
+- [ ] HTTP Method: `504 Gateway Timeout`
+  - Issued in cases where the database connection fails
 
 ---
 
@@ -436,7 +440,7 @@ On Failure:
 
 #### Description
 
-> This endpoint is used to log out the user.
+> This endpoint is used to log out the user. This endpoint does not have any failure scenarios.
 
 #### Request
 
@@ -447,8 +451,8 @@ On Failure:
 
 - Success:
   - HTTP Method: `200 OK`
-
-
+- Failure:
+  - See description
 ---
 
 ### renew
@@ -476,7 +480,7 @@ On Failure:
 - [ ] HTTP Method: `401 Unauthorized`
   - Issued in cases where the user is not logged in
 - [ ] HTTP Method: `500 Internal Server Error`
-  - Issued when the server fails to handle the request for renewal due to an internal error
+  - Issued in cases where the hashing algorithm fails
 
 ---
 
@@ -512,12 +516,14 @@ On Success:
 - HTTP Method: `201 Created`
 
 On Failure:
-- HTTP Method: `400 Bad Request`
+- [ ] HTTP Method: `400 Bad Request`
   - Issued in cases where the contents are missing
-- HTTP Method: `401 Unauthorized`
+- [ ] HTTP Method: `401 Unauthorized`
   - Issued in cases where the user is not logged in
-- HTTP Method: `500 Internal Server Error`
-  - Issued when the server fails to handle the request for renewal due to an internal error
+- [ ] HTTP Method: `500 Internal Server Error`
+  - Issued when the server fails to handle the request
+- [ ] HTTP Method: `504 Gateway Timeout`
+  - Issued in cases where the database connection fails
 
 
 ---
@@ -586,8 +592,8 @@ On Failure:
   - Issued in cases where the user is not logged in
 - [ ] HTTP Method: `500 Internal Server Error`
   - Issued when the server fails to handle the request for renewal due to an internal error
-- [ ] HTTP Method: `400 Bad Request`
-  - Issued when the username is missing
+- [ ] HTTP Method: `504 Gateway Timeout`
+  - Issued in cases where the database connection fails
 
 ---
 
@@ -652,7 +658,7 @@ On Failure:
 
 #### Request
 
-- URL: `/api/deleteUser/:username`
+- URL: `/api/deleteUser`
 - HTTP Method: `DELETE`
 
 #### Response
@@ -661,12 +667,12 @@ On Failure:
   - Issued when the user is successfully deleted
 
 **On Failure:**
-- [ ] HTTP Method: `400 Bad Request`
-  - Issued in cases where the username is missing
 - [ ] HTTP Method: `401 Unauthorized`
   - Issued in cases where the user is not logged in
 - [ ] HTTP Method: `500 Internal Server Error`
   - Issued when the server fails to handle the request for deletion due to an internal error
+- [ ] HTTP Method: `504 Gateway Timeout`
+  - Issued in cases where the database connection fails
 
 ---
 
@@ -694,45 +700,14 @@ On Success:
   - Issued when the user is successfully unfollowed, or if the user was not followed in the first place
 
 On Failure:
-- [ ] HTTP Method: `401 Unauthorized`
-  - Issued in cases where the user is not logged in
-- [ ] HTTP Method: `500 Internal Server Error`
-  - Issued when the server fails to handle the request.
 - [ ] HTTP Method: `400 Bad Request`
   - Issued when the username is missing
+- [ ] HTTP Method: `401 Unauthorized`
+  - Issued in cases where the user is not logged in
 - [ ] HTTP Method: `404 Not Found`
   - Issued when the user to unfollow does not exist
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- [ ] HTTP Method: `500 Internal Server Error`
+  - Issued when the server fails to handle the request for deletion due to an internal error
+- [ ] HTTP Method: `504 Gateway Timeout`
+  - Issued in cases where the database connection fails
 
