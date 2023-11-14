@@ -181,8 +181,6 @@ On Success:
 ```
 
 On Failure:
-- [ ] HTTP Method: `400 Bad Request`
-  - Issued in cases where the queries are invalid
 - [ ] HTTP Method: `404 Not Found`
   - Issued in cases where the parent crumb does not exist
 - [ ] HTTP Method: `500 Internal Server Error`
@@ -281,7 +279,7 @@ On Failure:
 
 #### Description
 
-> This endpoint is used to get the feed of a specific user. The feed is returned as a JSON array of posts.
+> This endpoint is used to get the feed of a specific user. The feed is returned as a JSON array of posts. The feed is sorted on time
 
 #### Request 
 
@@ -292,7 +290,7 @@ On Failure:
     - Max count of returned entities per request
     - Default: `10`
   - `continue_from=[post_id]`
-    - The post id to continue from. If sorting on time, the timestamp of that post is used as the starting point. If sorting on engagement, the engagement score of that post is used as the starting point.
+    - The post id to continue from. 
     - Default: `null`
 
 #### Response
@@ -372,14 +370,14 @@ On Failure:
 
 **On Failure:**
 
-  - [ ] HTTP Method: `400 Bad Request`
-    - Issued in cases where the password does not meet the security requirements or are missing
-  - [ ]HTTP Method: `409 Conflict`
-    - Issued in cases where a an account already exist with that username
-  - [ ] HTTP Method: `500 Internal Server Error`
-    - Issued in cases where the hashing algorithm fails
-  - [ ] HTTP Method: `504 Gateway Timeout`
-    - Issued in cases where the database connection fails
+- [ ] HTTP Method: `409 Conflict`
+  - Issued in cases where an account already exist with that username
+- [ ] HTTP Method: `422 Unprocessable Entity`
+  - Issued in cases where the password does not meet the security requirements or are missing
+- [ ] HTTP Method: `500 Internal Server Error`
+  - Issued in cases where the hashing algorithm fails
+- [ ] HTTP Method: `504 Gateway Timeout`
+  - Issued in cases where the database connection fails
 
 ---
 
