@@ -20,7 +20,7 @@ export function SettingsTabPersonalization() {
         <Card style={{borderTop: "0", borderTopLeftRadius: "0", borderTopRightRadius: "0"}}>
             <Card.Body>
                 <Button variant={"primary"} size={"lg"} onClick={handleClick}>
-                    {theme} mode
+                    {theme === "dark" ? "Light" : "Dark"} mode
                 </Button>
             </Card.Body>
         </Card>
