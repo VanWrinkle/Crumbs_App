@@ -33,12 +33,12 @@
 
 #### Description
 
-> The base url, or any route that does not match one of the registered controllers will result in the user being served the application through index.html.
+> The base url will result in the user being served the application through index.html.
 
 #### Request
 
 - HTTP Method: `GET`
-- URL: `/` or `/some/invalid/route`
+- URL: `/`
 - Content-Type: `text/html`
 
 #### Response
@@ -66,7 +66,7 @@
 #### Request
 
 - HTTP Method: `GET`
-- URL: `/api/getProfileInfo?profileOwner=[username]`
+- URL: `/api/getProfileInfo/:profileOwner`
 
 
 #### Response
