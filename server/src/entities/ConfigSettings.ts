@@ -1,11 +1,11 @@
-import {IUserRegistrationService} from "../contracts/IUserRegistrationService";
-import {IUserLoginService} from "../contracts/IUserLoginService";
-import {ISocialGraphPersistence} from "../contracts/ISocialGraphPersistence";
+import {IRegistrationService} from "../contracts/IRegistrationService";
+import {ILoginService} from "../contracts/ILoginService";
+import {ISocialNetworkPersistence} from "../contracts/ISocialNetworkPersistence";
 
 export interface ConfigSettings {
-    registrationService: IUserRegistrationService;
-    loginService: IUserLoginService;
-    graphPersistence: ISocialGraphPersistence;
+    registrationService: IRegistrationService;
+    loginService: ILoginService;
+    graphPersistence: ISocialNetworkPersistence;
     httpsPrivateKey: string;
     httpsCertificate: string;
 }

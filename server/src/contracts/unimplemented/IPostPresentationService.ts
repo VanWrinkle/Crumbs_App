@@ -1,4 +1,4 @@
-import {Crumb} from "../entities/Crumb";
+import {Crumb} from "../../entities/Crumb";
 
 
 /*

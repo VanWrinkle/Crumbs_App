@@ -1,11 +1,12 @@
-import express from "express";
+import express, {NextFunction} from "express";
 import path from "path";
 import {reactDir} from "../globals";
-import {IUserLoginService} from "../contracts/IUserLoginService";
-import {IUserRegistrationService} from "../contracts/IUserRegistrationService";
-import {ISocialGraphPersistence} from "../contracts/ISocialGraphPersistence";
+import {ILoginService} from "../contracts/ILoginService";
+import {IRegistrationService} from "../contracts/IRegistrationService";
+import {ISocialNetworkPersistence} from "../contracts/ISocialNetworkPersistence";
 import {CrumbFilter} from "../entities/CrumbFilter";
 import {Crumb} from "../entities/Crumb";
+import {DBErrors} from "../logging/errors";
 
 function withTimeout(promise: any, timeout: number = 1000) {
     return Promise.race([
@@ -21,7 +22,7 @@ export function reactApp(req: express.Request, res: express.Response) {
     res.sendFile(path.join(reactDir, 'index.html'));
 }
 
-export function registerUser(registrationService: IUserRegistrationService) {
+export function registerUser(registrationService: IRegistrationService) {
     return async function(req: express.Request, res: express.Response) {
         const {username, password} = req.body as any;
 
@@ -55,7 +56,7 @@ export function registerUser(registrationService: IUserRegistrationService) {
 }
 
 
-export function loginUser(loginService: IUserLoginService) {
+export function loginUser(loginService: ILoginService) {
     return async function loginUser(req: express.Request, res: express.Response) {
         const {username, password} = req.body as any;
         if (!username || !password) {
@@ -90,13 +91,13 @@ export function loginUser(loginService: IUserLoginService) {
 }
 
 
-export function logoutUser(loginService: IUserLoginService) {
+export function logoutUser(loginService: ILoginService) {
     return function (req: express.Request, res: express.Response) {
         loginService.clearSessionToken(res)
     }
 }
 
-export function renewUserToken(loginService: IUserLoginService) {
+export function renewUserToken(loginService: ILoginService) {
     return function renewUserToken(req: express.Request, res: express.Response) {
         if (req.user) {
             loginService.sendSessionToken(req.user.toString(), res)
@@ -107,7 +108,7 @@ export function renewUserToken(loginService: IUserLoginService) {
 }
 
 
-export function postCrumb(persistence: ISocialGraphPersistence) {
+export function postCrumb(persistence: ISocialNetworkPersistence) {
     return function(req: express.Request, res: express.Response) {
         if (req.user) {
             let username = req.user.toString()
@@ -128,7 +129,7 @@ export function postCrumb(persistence: ISocialGraphPersistence) {
 
 
 
-export function setFollow(persistence: ISocialGraphPersistence, follows: boolean) {
+export function setFollow(persistence: ISocialNetworkPersistence, follows: boolean) {
     return function(req: express.Request, res: express.Response) {
         if(req.user) {
             let id = req.query.user?.toString()
@@ -149,14 +150,14 @@ export function setFollow(persistence: ISocialGraphPersistence, follows: boolean
     }
 }
 
-export function setLike(persistence: ISocialGraphPersistence, likes: boolean) {
+export function setLike(persistence: ISocialNetworkPersistence, likes: boolean) {
     return function(req: express.Request, res: express.Response) {
         if(req.user) {
             let id = req.query.crumb?.toString()
             if (id) {
                 persistence.setCrumbLiked(req.user.toString(), id, likes)
                     .catch(() => {
-                        res.status(500).send() // TODO: Logic for not found
+                        res.status(500).send()
                     })
                     .then(() => {
                         res.status(201).send()
@@ -171,7 +172,8 @@ export function setLike(persistence: ISocialGraphPersistence, likes: boolean) {
 }
 
 
-export function getMainFeed(persistence: ISocialGraphPersistence) {
+
+export function getMainFeed(persistence: ISocialNetworkPersistence) {
     return function(req: express.Request, res: express.Response) {
         let filter = new CrumbFilter();
 
@@ -190,19 +192,15 @@ export function getMainFeed(persistence: ISocialGraphPersistence) {
                     res.status(200).send(crumbs);
                 })
             .catch( error => {
-                console.log(error)
+                switch(error) {
+                    case DBErrors.CONNECTION_ERROR:
+                        res.status(504).send();
+                        break;
+                    default:
+                        res.status(500).send();
+                        break;
+                }
             } )
-
-        // withTimeout( persistence
-        //     .getCrumbs(
-        //         req.user?.toString() ?? null,
-        //         filter,
-        //         req.query.continue_from?.toString() ?? null,
-        //     ))
-        //     .then( crumbs => {
-        //             res.status(200).send(crumbs);
-        //         })
-        //     .catch( () => res.status(500).send() )
     }
 }
 
@@ -216,7 +214,7 @@ export function getMainFeed(persistence: ISocialGraphPersistence) {
  * @param persistence
  * @return - same output format as main feed
  */
-export function getUserFeed(persistence: ISocialGraphPersistence) {
+export function getUserFeed(persistence: ISocialNetworkPersistence) {
     return function(req: express.Request, res: express.Response) {
 
         if(req.query.user) {
@@ -241,7 +239,7 @@ export function getUserFeed(persistence: ISocialGraphPersistence) {
  * Handler should delete the authenticated, all data associated with the user,
  * and finally clear the access token
  */
-export function deleteUser(userRegistration: IUserRegistrationService, loginService: IUserLoginService) {
+export function deleteUser(userRegistration: IRegistrationService, loginService: ILoginService) {
     return function(req: express.Request, res: express.Response) {
         if (req.user) {
             userRegistration.deleteUser(req.user.toString())
@@ -261,7 +259,7 @@ export function deleteUser(userRegistration: IUserRegistrationService, loginServ
 /**
  *
  */
-export function getReplies(persistence: ISocialGraphPersistence) {
+export function getReplies(persistence: ISocialNetworkPersistence) {
     return function(req: express.Request, res: express.Response) {
         let filter = new CrumbFilter();
         filter.parent_post = req.body.parent;
@@ -278,7 +276,7 @@ export function getReplies(persistence: ISocialGraphPersistence) {
 
 
 
-export function getProfileInfo(persistence: ISocialGraphPersistence) {
+export function getProfileInfo(persistence: ISocialNetworkPersistence) {
     return function(req: express.Request, res: express.Response) {
         if(req.query.profileOwner) {
             persistence

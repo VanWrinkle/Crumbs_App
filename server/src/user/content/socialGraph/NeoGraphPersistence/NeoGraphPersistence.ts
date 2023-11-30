@@ -1,73 +1,84 @@
-import {ISocialGraphPersistence} from "../../../../contracts/ISocialGraphPersistence";
+import {ISocialNetworkPersistence} from "../../../../contracts/ISocialNetworkPersistence";
 import neo4j, {Driver, QueryResult} from 'neo4j-driver'
 
 import {Neo4jQueryBuilder} from "./Neo4jQueryBuilder";
 import {CrumbFilter} from "../../../../entities/CrumbFilter";
 import {Crumb, CrumbContent} from "../../../../entities/Crumb";
 import {User} from "../../../../entities/User";
+import {DBError, DBErrors, Severity} from "../../../../logging/errors";
+import {CrumbLog, DBType} from "../../../../logging/logging";
+import {DBloggingOutput} from "../../../../globals";
+
 
 
 
 // https://neo4j.com/docs/api/javascript-driver/current/file/lib6/error.js.html for reference
 
 
-class DBError extends Error {
-    constructor(message: string) {
-        super(message);
-        this.name = "DBError";
-    }
-}
 
-class DBErrors {
-    static CONNECTION_ERROR = new DBError("Connection error");
-    static UNKNOWN_ERROR = new DBError("Unknown error");
-    static SYNTAX_ERROR = new DBError("Syntax error");
-}
 
-export class NeoGraphPersistence implements ISocialGraphPersistence {
+export class NeoGraphPersistence implements ISocialNetworkPersistence {
     // TODO: Review security of connection
-    protected driver: Driver;
+    protected driver: Driver | null = null;
+    #db_url: string;
+    #db_username: string;
+    #db_password: string;
 
-    protected runQuery(query: string, parameters: any, handleResult: (result: any) => void) : void | DBError {
-        // console.log("Running query: " + query)
-        let session = this.driver.session();
-        session
-            .run(query, parameters)
-            .then( result => {
-                // console.log("Query result: " + JSON.stringify(result));
-                handleResult(result);
-            })
-            .catch( error => {
-                // console.log(error)
-                switch(error.code) {
-                    case neo4j.error.SERVICE_UNAVAILABLE:
-                        return DBErrors.CONNECTION_ERROR;
-                    case neo4j.error.PROTOCOL_ERROR:
-                        return DBErrors.CONNECTION_ERROR
-                    default:
-                        return DBErrors.UNKNOWN_ERROR;
-                }
-            })
-            .finally(() => {
-                session.close();
-            })
-    }
+
 
     constructor( //TODO: Crashes on unauthorized user
         db_url: string,
         db_username: string,
         db_password: string
     ) {
-        this.driver = neo4j.driver(db_url, neo4j.auth.basic(db_username, db_password))
+        this.#db_url = db_url;
+        this.#db_username = db_username;
+        this.#db_password = db_password;
+
+        let driver: null | Driver = null;
+        try {
+            driver = neo4j.driver(db_url, neo4j.auth.basic(db_username, db_password))
+        } catch (error) {
+            CrumbLog.Error(
+                DBloggingOutput,
+                {
+                    type: DBErrors.CONNECTION_ERROR.name,
+                    source: DBType.USER_CONTENT_DB,
+                    severity: Severity.ERROR,
+                    message: `Connection error: ${error}`,
+                    timestamp: new Date()
+                }
+            )
+        } finally {
+            if(driver) {
+                driver?.getServerInfo()
+                    .catch(error => {
+                        CrumbLog.Error(
+                            DBloggingOutput,
+                            {
+                                type: DBErrors.CONNECTION_ERROR.name,
+                                source: DBType.USER_CONTENT_DB,
+                                severity: Severity.ERROR,
+                                message: `Connection error: ${error}`,
+                                timestamp: new Date()
+                            }
+                        )
+                    })
+                    .then(
+                        (serverInfo) => {
+                            this.driver = driver;
+                        }
+                    )
+            }
+        }
     }
+
 
     /**
      * @brief Creates a new user node in the Neo4j database.
-     *
      * This function creates a new user node in the Neo4j database with the provided username.
      *
      * @param username The username of the user to be created as a new user node.
-     *
      * @return A Promise that resolves when the user node is successfully created in the database.
      */
     async createUserNode(username: string): Promise<void> {
@@ -84,6 +95,63 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
                 reject(error)
             }
         })
+    }
+
+
+    /**
+     * Runs the supplied query with the supplied parameters and handles the result.
+     * Performs logging of errors and notifications.
+     *
+     * @param query - The query to run.
+     * @param parameters - The parameters to pass to the query.
+     * @param handleResult - A callback to handle the result of the query.
+     * @protected
+     */
+    protected runQuery(query: string, parameters: any, handleResult: (result: any) => void) : void | DBError {
+        if(this.driver) {
+            let session = this.driver.session()
+            session.run(query, parameters)
+                .then( result => {
+                    result.summary.notifications.forEach( notification => {
+                        CrumbLog.Error(
+                            DBloggingOutput,
+                            {
+                                type: DBErrors.UNKNOWN_ERROR.name,
+                                source: DBType.USER_CONTENT_DB,
+                                severity: Severity.WARNING,
+                                message: `Neo4j notification: ${notification.code} ${notification.title} ${notification.description}`,
+                                timestamp: new Date()
+                            }
+                        )
+                    })
+                    handleResult(result);
+                })
+                .catch( error => {
+                    switch(error.code) {
+                        case neo4j.error.SERVICE_UNAVAILABLE:
+                            return DBErrors.CONNECTION_ERROR;
+                        case neo4j.error.PROTOCOL_ERROR:
+                            return DBErrors.CONNECTION_ERROR
+                        default:
+                            return DBErrors.UNKNOWN_ERROR;
+                    }
+                })
+                .finally(() => {
+                    session.close();
+                })
+        } else {
+            CrumbLog.Error(
+                DBloggingOutput,
+                {
+                    type: DBErrors.CONNECTION_ERROR.name,
+                    source: DBType.USER_CONTENT_DB,
+                    severity: Severity.ERROR,
+                    message: "Connection error",
+                    timestamp: new Date()
+                }
+            )
+            return DBErrors.CONNECTION_ERROR;
+        }
     }
 
 
@@ -266,7 +334,6 @@ export class NeoGraphPersistence implements ISocialGraphPersistence {
             if(error) {
                 reject(error)
             }
-
         })
     }
 

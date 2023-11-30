@@ -2,7 +2,7 @@ import {UserRegistration} from "../entities/UserRegistration";
 import express from "express";
 
 
-export interface IUserLoginService {
+export interface ILoginService {
     retrieveUserData(name: string): Promise<UserRegistration | undefined>;
     validateUserCredentials(userData: UserRegistration, password: string): Promise<boolean>;
     sendSessionToken(username: string, response: express.Response): void;

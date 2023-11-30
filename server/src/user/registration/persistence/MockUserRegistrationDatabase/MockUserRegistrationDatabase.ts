@@ -1,8 +1,8 @@
-import {IUserRegistrationDatabase} from "../../../../contracts/IUserRegistrationDatabase";
+import {ICredentialsPersistence} from "../../../../contracts/ICredentialsPersistence";
 import {UserRegistration} from "../../../../entities/UserRegistration";
 
 
-export class MockUserRegistrationDatabase implements IUserRegistrationDatabase {
+export class MockUserRegistrationDatabase implements ICredentialsPersistence {
     users: UserRegistration[];
     constructor() {
         this.users = [];

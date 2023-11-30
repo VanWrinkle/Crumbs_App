@@ -3,7 +3,7 @@ import {UserRegistration} from "../entities/UserRegistration";
 /**
  * Interface for user databases containing username, hash and salt.
  */
-export interface IUserRegistrationDatabase {
+export interface ICredentialsPersistence {
     /**
      * Adds a user to the database. Failing to add the user to the
      * database due to technical problems raises an error.

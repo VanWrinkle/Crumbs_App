@@ -15,18 +15,19 @@ import {
 import {TestServerConfigs} from "./testUtility/testServerConfig";
 
 
+// let user_db = userRegistrationDatabase();
+// let graph_db = socialGraphPersistence();
+//
+// const sessionManagement = new AuthenticationService('secret-key', 24)
+//
+// const config: ConfigSettings = {
+//     registrationService: new RegistrationService(user_db, graph_db),
+//     loginService: new LoginService(user_db, sessionManagement),
+//     graphPersistence: graph_db,
+//     httpsPrivateKey: httpsPrivateKey,
+//     httpsCertificate: httpsCertificate,
+// }
 
-
-const sessionManagement = new AuthenticationService('secret-key', 24)
-
-const config: ConfigSettings = {
-    registrationService: new RegistrationService(userRegistrationDatabase, socialGraphPersistence),
-    loginService: new LoginService(userRegistrationDatabase, sessionManagement),
-    graphPersistence: socialGraphPersistence,
-    httpsPrivateKey: httpsPrivateKey,
-    httpsCertificate: httpsCertificate,
-}
-
-const app = new CrumbServer(config);
+const app = TestServerConfigs.graphDBErrorServer();//new CrumbServer(config);
 
 app.run();

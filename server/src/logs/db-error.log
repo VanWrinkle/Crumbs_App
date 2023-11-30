@@ -1,0 +1,19 @@
+{
+  "type": "DBError",
+  "source": "USER_CONTENT_DB",
+  "severity": "ERROR",
+  "message": "Connection error",
+  "timestamp": "2023-11-16T14:45:29.891Z"
+}{
+  "type": "DBError",
+  "source": "USER_CONTENT_DB",
+  "severity": "ERROR",
+  "message": "Connection error",
+  "timestamp": "2023-11-16T14:45:33.741Z"
+}{
+  "type": "DBError",
+  "source": "USER_CONTENT_DB",
+  "severity": "ERROR",
+  "message": "Connection error: Neo4jError: Could not perform discovery. No routing servers available. Known routing table: RoutingTable[database=default database, expirationTime=0, currentTime=1700145950579, routers=[], readers=[], writers=[]]",
+  "timestamp": "2023-11-16T14:45:50.579Z"
+}

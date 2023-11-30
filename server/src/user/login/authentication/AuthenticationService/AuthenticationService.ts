@@ -1,8 +1,8 @@
-import {IUserAuthenticationService} from "../../../../contracts/IUserAuthenticationService";
+import {IAuthenticationService} from "../../../../contracts/IAuthenticationService";
 import express from "express";
 import jwt from "jsonwebtoken";
 
-export class AuthenticationService implements IUserAuthenticationService {
+export class AuthenticationService implements IAuthenticationService {
     readonly #secretKey: string;
     readonly #expirationTimeMilliseconds: number;
 

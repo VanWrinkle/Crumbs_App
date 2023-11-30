@@ -18,42 +18,56 @@ const userDBTestusername = "crumbdevs_test"
 const userDBTestpassword = "3Rt23jd9oWHqlgpy"
 const userDBTestcluster = "cluster0.x06e66b"
 
-export const testUserDB =
-    new UserTestDB(
+
+export function testUserDB() : UserTestDB {
+    return new UserTestDB(
         userDBTestusername,
         userDBTestpassword,
         userDBTestcluster,
         "cluster0"
     )
+}
 
 
-
-export const socialGraphTestDB: Neo4jTestDB =
-    new Neo4jTestDB(
+export function socialGraphTestDB() : Neo4jTestDB {
+    return new Neo4jTestDB(
         "neo4j://10.212.173.46:7687",
         "neo4j",
         "crumbdevsrule"
     )
+}
 
-export const socialGraphConnectionError: Neo4jTestDB =
-    new Neo4jTestDB(
+export function socialGraphConnectionError() : Neo4jTestDB {
+    return new Neo4jTestDB(
         "neo4j://10.212.173.46:7627",
         "neo4j2",
         "wrongpassword"
     )
+}
 
-export const userDBConnectionError = new UserTestDB(
-    userDBTestusername,
-    "wrongpassword",
-    userDBTestcluster,
-    "cluster0"
-)
+export function userDBConnectionError() : UserTestDB {
+    return new UserTestDB(
+        userDBTestusername,
+        "wrongpassword",
+        userDBTestcluster,
+        "cluster0"
+    )
+}
 
 export class TestServerConfigs {
-    static readonly default = configureTestServer(testUserDB, socialGraphTestDB);
-    static readonly userDBConnectionErrorServer = configureTestServer(userDBConnectionError, socialGraphTestDB)
-    static readonly graphDBError = configureTestServer(testUserDB, socialGraphConnectionError)
-    static readonly bothDBConnectionErrorServer = configureTestServer(userDBConnectionError, socialGraphConnectionError)
+    static default() : CrumbServer {
+        return configureTestServer(testUserDB(), socialGraphTestDB());
+    }
+    static userDBConnectionErrorServer() : CrumbServer {
+        return configureTestServer(userDBConnectionError(), socialGraphTestDB());
+
+    }
+    static graphDBErrorServer() : CrumbServer {
+        return configureTestServer(testUserDB(), socialGraphConnectionError());
+    }
+    static bothDBConnectionErrorServer() : CrumbServer {
+        return configureTestServer(userDBConnectionError(), socialGraphConnectionError());
+    }
 }
 
 /**
@@ -67,7 +81,7 @@ export function configureTestServer(userDB: UserTestDB, graphDB: Neo4jTestDB) : 
     const config: ConfigSettings = {
         registrationService: new RegistrationService(userDB, graphDB),
         loginService: new LoginService(userDB, sessionManagement),
-        graphPersistence: socialGraphTestDB,
+        graphPersistence: graphDB,
         httpsPrivateKey: httpsPrivateKey,
         httpsCertificate: httpsCertificate,
     }

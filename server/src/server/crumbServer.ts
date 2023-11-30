@@ -1,5 +1,5 @@
 import express, {Express} from "express";
-import {requireHTTPS} from "./middleware";
+import {requireHTTPS, responseLogger} from "./middleware";
 import {reactDir} from "../globals";
 import {
     loginUser,
@@ -51,6 +51,7 @@ export class CrumbServer {
             .use(express.static(reactDir))
             .use(express.json())
             .use(cookieParser())
+            .use(responseLogger)
             .use(this.#config.loginService.tokenParser())
             .get("/api/getProfileInfo", getProfileInfo(this.#config.graphPersistence))
             .get('/api/getMainFeed', getMainFeed(this.#config.graphPersistence))

@@ -13,3 +13,24 @@ export function requireHTTPS(req: Request, res: Response, next: NextFunction) {
     next();
 }
 
+
+/**
+ * Middleware that logs the request body and status code
+ *
+ * @param req - request object
+ * @param res - response object
+ * @param next - next middleware, equivalent to return in the middleware chain
+ */
+export function responseLogger(req: Request, res: Response, next: NextFunction) {
+    const originalSend = res.send.bind(res);
+    res.send = (body) => {
+        console.log("Request:", req.body);
+        console.log('Status Code:', res.statusCode);
+        console.log('Response Body:', body);
+        return originalSend(body);
+    };
+    // res.on('finish', () => {
+    //     console.log("")
+    // });
+    next();
+}

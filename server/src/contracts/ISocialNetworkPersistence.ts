@@ -3,7 +3,7 @@ import {Crumb, CrumbContent} from "../entities/Crumb";
 import {User} from "../entities/User";
 
 
-export interface ISocialGraphPersistence {
+export interface ISocialNetworkPersistence {
     createUserNode(username: string): Promise<void>
     deleteUserNodeAndUserCrumbs(username: string): Promise<void>
     createCrumb(parent: string | null, username: string, crumb: CrumbContent[]): Promise<void>

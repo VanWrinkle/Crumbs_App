@@ -33,7 +33,8 @@ describe('GET /api/getMainFeed', () => {
 
 
     it('should return an array of crumbs with default max length', async () => {
-        await TestServerConfigs.default.run();
+        let server = TestServerConfigs.default();
+        await server.run();
         const response = await request("https://localhost")
             .get(`/api/getMainFeed`)
             .trustLocalhost(true)
@@ -55,12 +56,13 @@ describe('GET /api/getMainFeed', () => {
         expect(response.body[0]).toHaveProperty('replies');
         expect(response.body[0]).toHaveProperty('liked');
         expect(response.body[0]).toHaveProperty('contents');
-        await TestServerConfigs.default.stop();
+        await server.stop();
     })
 
 
     it('should handle malformed query values', async () => {
-        await TestServerConfigs.default.run();
+        let server = TestServerConfigs.default();
+        await server.run();
 
         const res = await request("https://localhost")
             .get(`/api/getMainFeed?max_posts=not_a_number&sort=12`)
@@ -76,12 +78,13 @@ describe('GET /api/getMainFeed', () => {
         expect(res.body[0].timestamp_milliseconds)
             .toBeGreaterThan(res.body[defaultFilter.max-1].timestamp_milliseconds);
 
-        await TestServerConfigs.default.stop();
+        await server.stop();
     });
 
 
     it('should return Status 500 when the graph database connection fails', async () => {
-        await TestServerConfigs.graphDBError.run();
+        let server = TestServerConfigs.graphDBErrorServer();
+        await server.run();
 
         await request("https://localhost")
             .get(`/api/getMainFeed`)
@@ -89,7 +92,7 @@ describe('GET /api/getMainFeed', () => {
             .key(httpsPrivateKey)
             .cert(httpsCertificate)
             .expect(500);
-        await TestServerConfigs.graphDBError.stop();
+        await server.stop();
     })
 });
 

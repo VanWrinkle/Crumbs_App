@@ -1,16 +1,16 @@
-import {IUserLoginService} from "../../../contracts/IUserLoginService";
-import {IUserRegistrationDatabase} from "../../../contracts/IUserRegistrationDatabase";
+import {ILoginService} from "../../../contracts/ILoginService";
+import {ICredentialsPersistence} from "../../../contracts/ICredentialsPersistence";
 import bcrypt from "bcrypt";
 import {UserRegistration} from "../../../entities/UserRegistration";
-import {IUserAuthenticationService} from "../../../contracts/IUserAuthenticationService";
+import {IAuthenticationService} from "../../../contracts/IAuthenticationService";
 import e from "express";
 
 
-export class LoginService implements IUserLoginService {
-    #persistence: IUserRegistrationDatabase;
-    #session: IUserAuthenticationService;
+export class LoginService implements ILoginService {
+    #persistence: ICredentialsPersistence;
+    #session: IAuthenticationService;
 
-    constructor(persistence: IUserRegistrationDatabase, session: IUserAuthenticationService) {
+    constructor(persistence: ICredentialsPersistence, session: IAuthenticationService) {
         this.#persistence = persistence;
         this.#session = session;
     }

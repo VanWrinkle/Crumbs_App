@@ -1,7 +1,7 @@
-import {IUserRegistrationDatabase} from "../../../../contracts/IUserRegistrationDatabase";
+import {ICredentialsPersistence} from "../../../../contracts/ICredentialsPersistence";
 import {UserRegistration} from "../../../../entities/UserRegistration"
 import {MongoClient, ServerApiVersion} from 'mongodb';
-export class MDBUserRegistrationDatabase implements IUserRegistrationDatabase {
+export class MDBUserRegistrationDatabase implements ICredentialsPersistence {
     #mongo_uri: string;
     protected client: MongoClient;
     protected db_name: string;
