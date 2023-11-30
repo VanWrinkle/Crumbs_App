@@ -126,6 +126,27 @@ export class Api {
     }
 
     /**
+     * Retrieves replies with a specified number of posts and optional pagination parameters.
+     * @param numberOfPosts - The maximum number of posts to retrieve (default: 10).
+     * @param continue_from - A token for paginating through the feed (default: "").
+     * @param parent - The ID of the parent crumb for nested posts (default: null).
+     * @returns A promise that resolves with an array of crumb data.
+     * @throws An error object with an optional error message on failure.
+     */
+    async getReplies(numberOfPosts: number = 10, contine_from: string = "", parent: string) {
+        try {
+            const response = await this.client.get('/getReplies', {params: {
+                    "continue_from": contine_from,
+                    "parent": parent,
+                    "max_posts": numberOfPosts,
+                }});
+            return response.data as Crumb[];
+        } catch (error: any) {
+            this.handleApiError(error, {})
+        }
+    }
+
+    /**
      * Retrieves a feed of posts written by a specific user with a specified number of posts and optional pagination parameters.
      * @param username - The username of the user whose feed is to be retrieved.
      * @param numberOfPosts - The maximum number of posts to retrieve (default: 10).

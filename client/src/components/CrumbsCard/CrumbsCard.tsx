@@ -50,8 +50,8 @@ export function CrumbsCard(props: { crumb: Crumb, onLike: (e: SyntheticEvent, cr
             {subfeed &&
                 <Feed
                     canCompose={false}
-                    feed={(continueFrom: string) => new Api().getMainFeed(5, continueFrom, props.crumb.post_id)}
-                    feedBulkSize={5}
+                    feed={(continueFrom: string) => new Api().getReplies(15, continueFrom, props.crumb.post_id)}
+                    feedBulkSize={15}
                     parentId={props.crumb.post_id}
                     userId={undefined}
                 />

@@ -255,15 +255,23 @@ export function deleteUser(userRegistration: IRegistrationService, loginService:
     }
 }
 
-
 /**
- *
+ * Handler should fetch in bulk replices from a parent post
+ * requested in by queries. Accepted queries:
+ *    "parent": string
+ *    "max_posts": number
+ *    "continue_from": string
+ * Should be requestable by anyone, including anonymously
+ * @param persistence
+ * @return - same output format as main feed
  */
 export function getReplies(persistence: ISocialNetworkPersistence) {
     return function(req: express.Request, res: express.Response) {
         let filter = new CrumbFilter();
-        filter.parent_post = req.body.parent;
-        persistence.getCrumbs(req.user? req.user.toString() : null, filter, req.body.continue_from)
+        filter.max = Number.parseInt(req.query?.max_posts?.toString() ?? "") || filter.max;
+        filter.parent_post = req.query.parent?.toString() ?? undefined;
+        const continue_from = req.query.continue_from?.toString() ?? null
+        persistence.getCrumbs(null, filter, continue_from)
             .then( crumbs => {
                 res.status(200).send(crumbs);
             })
