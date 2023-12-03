@@ -1,5 +1,5 @@
-import {NeoGraphPersistence} from "../src/user/content/socialGraph/NeoGraphPersistence/NeoGraphPersistence";
-import {Crumb, CrumbContent} from "../src/entities/Crumb";
+import {NeoGraphPersistence} from "../../src/user/content/socialGraph/NeoGraphPersistence/NeoGraphPersistence";
+import {Crumb, CrumbContent} from "../../src/entities/Crumb";
 
 
 const neo = new NeoGraphPersistence(
@@ -194,13 +194,5 @@ test('should retrieve posts', async () => {
 })
 */
 
-test('should create new crumb', async () => {
-    let content: CrumbContent[] = [
-
-    ]
-    let parsedPost = Crumb.parseContentsFromString("Oh god I'm crumbing #crumblords")
-    await console.log(parsedPost)
-    await neo.createCrumb(null, "bobby", content)
-})
 
 
