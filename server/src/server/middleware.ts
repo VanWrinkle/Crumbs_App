@@ -24,13 +24,11 @@ export function requireHTTPS(req: Request, res: Response, next: NextFunction) {
 export function responseLogger(req: Request, res: Response, next: NextFunction) {
     const originalSend = res.send.bind(res);
     res.send = (body) => {
-        console.log("Request:", req.body);
+        console.log("request url:", req.url);
+        console.log("request body:", req.body);
         console.log('Status Code:', res.statusCode);
         console.log('Response Body:', body);
         return originalSend(body);
     };
-    // res.on('finish', () => {
-    //     console.log("")
-    // });
     next();
 }

@@ -25,7 +25,6 @@ export class NeoGraphPersistence implements ISocialNetworkPersistence {
     #db_password: string;
 
 
-
     constructor( //TODO: Crashes on unauthorized user
         db_url: string,
         db_username: string,
@@ -34,23 +33,27 @@ export class NeoGraphPersistence implements ISocialNetworkPersistence {
         this.#db_url = db_url;
         this.#db_username = db_username;
         this.#db_password = db_password;
+        this.init().catch();
+    }
 
+    async init() : Promise<void> {
         let driver: null | Driver = null;
-        try {
-            driver = neo4j.driver(db_url, neo4j.auth.basic(db_username, db_password))
-        } catch (error) {
-            CrumbLog.Error(
-                DBloggingOutput,
-                {
-                    type: DBErrors.CONNECTION_ERROR.name,
-                    source: DBType.USER_CONTENT_DB,
-                    severity: Severity.ERROR,
-                    message: `Connection error: ${error}`,
-                    timestamp: new Date()
-                }
-            )
-        } finally {
-            if(driver) {
+        return new Promise((resolve, reject) => {
+            if(this.driver != null) resolve();
+            try {
+                driver = neo4j.driver(this.#db_url, neo4j.auth.basic(this.#db_username, this.#db_password))
+            } catch (error) {
+                CrumbLog.Error(
+                    DBloggingOutput,
+                    {
+                        type: DBErrors.CONNECTION_ERROR.name,
+                        source: DBType.USER_CONTENT_DB,
+                        severity: Severity.ERROR,
+                        message: `Connection error: Error creating client - ${error}`,
+                        timestamp: new Date()
+                    }
+                )
+            } finally {
                 driver?.getServerInfo()
                     .catch(error => {
                         CrumbLog.Error(
@@ -59,18 +62,20 @@ export class NeoGraphPersistence implements ISocialNetworkPersistence {
                                 type: DBErrors.CONNECTION_ERROR.name,
                                 source: DBType.USER_CONTENT_DB,
                                 severity: Severity.ERROR,
-                                message: `Connection error: ${error}`,
+                                message: `Connection error: Could not verify connection - ${error}`,
                                 timestamp: new Date()
                             }
                         )
+                        reject(DBErrors.CONNECTION_ERROR)
                     })
                     .then(
                         (serverInfo) => {
                             this.driver = driver;
+                            resolve();
                         }
                     )
             }
-        }
+        })
     }
 
 
@@ -127,6 +132,16 @@ export class NeoGraphPersistence implements ISocialNetworkPersistence {
                     handleResult(result);
                 })
                 .catch( error => {
+                    CrumbLog.Error(
+                        DBloggingOutput,
+                        {
+                            type: DBErrors.UNKNOWN_ERROR.name,
+                            source: DBType.USER_CONTENT_DB,
+                            severity: Severity.CRITICAL,
+                            message: error.message,
+                            timestamp: new Date()
+                        }
+                    )
                     switch(error.code) {
                         case neo4j.error.SERVICE_UNAVAILABLE:
                             return DBErrors.CONNECTION_ERROR;
@@ -146,7 +161,7 @@ export class NeoGraphPersistence implements ISocialNetworkPersistence {
                     type: DBErrors.CONNECTION_ERROR.name,
                     source: DBType.USER_CONTENT_DB,
                     severity: Severity.ERROR,
-                    message: "Connection error",
+                    message: "No client",
                     timestamp: new Date()
                 }
             )
@@ -456,6 +471,16 @@ export class NeoGraphPersistence implements ISocialNetworkPersistence {
                         matches.push(user)
                     })
                     if (matches.length != 1) {
+                        CrumbLog.Error(
+                            DBloggingOutput,
+                            {
+                                type: DBErrors.UNKNOWN_ERROR.name,
+                                source: DBType.USER_CONTENT_DB,
+                                severity: Severity.CRITICAL,
+                                message: `Neo4j query error: ${matches.length} matches found. Expected 1`,
+                                timestamp: new Date()
+                            }
+                        )
                         reject(new Error("No result"))
                     } else {
                         resolve(matches[0])

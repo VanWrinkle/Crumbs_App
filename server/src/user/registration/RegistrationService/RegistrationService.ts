@@ -42,7 +42,6 @@ export class RegistrationService implements IRegistrationService {
     }
 
     async registerUser(userName: string, password:string): Promise<void> {
-        console.log("registering new user");
         return bcrypt
             .genSalt(numberOfSaltRounds)
             .then(salt => {
