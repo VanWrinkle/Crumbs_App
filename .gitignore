@@ -9,3 +9,5 @@
 /.idea/.gitignore
 /server/keys/private-key.pem
 /server/keys/server.crt
+/server/config/config.yaml
+/server/config/test_config.yaml
