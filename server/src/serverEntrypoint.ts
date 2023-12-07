@@ -12,6 +12,7 @@ import {
 } from "./user/registration/persistence/MDBUserRegistrationDatabase/MDBUserRegistrationDatabase";
 import {NeoGraphPersistence} from "./user/content/socialGraph/NeoGraphPersistence/NeoGraphPersistence";
 import {TestServerConfigs} from "./testUtility/testServerConfig";
+import {CrumbServer} from "./server/crumbServer";
 
 
 let user_db = new MDBUserRegistrationDatabase(
@@ -40,6 +41,6 @@ const serverConfig: ConfigSettings = {
 
 
 
-const app = TestServerConfigs.default();//new CrumbServer(serverConfig);
+const app = new CrumbServer(serverConfig);
 
 app.run();
