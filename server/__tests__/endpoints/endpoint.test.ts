@@ -12,11 +12,11 @@ import {flushDatabases, seedDatabase} from "../../src/testUtility/serverTestUtil
 /// TEST SETUP AND TEARDOWN ////////////////////////////////////////////////////
 
 // See https://jestjs.io/docs/setup-teardown for reference
-beforeAll(async () =>{
-    await seedDatabase();
+beforeAll(() =>{
+    return seedDatabase();
 });
-afterAll(async () => {
-    await flushDatabases();
+afterAll(() => {
+    return flushDatabases();
 });
 
 
@@ -34,7 +34,8 @@ describe('GET /api/getMainFeed', () => {
 
     it('should return an array of crumbs with default max length', async () => {
         let server = TestServerConfigs.default();
-        await server.run();
+        server.run();
+        await new Promise(resolve => setTimeout(resolve, 200));
         const response = await request("https://localhost")
             .get(`/api/getMainFeed`)
             .trustLocalhost(true)
@@ -63,7 +64,7 @@ describe('GET /api/getMainFeed', () => {
     it('should handle malformed query values', async () => {
         let server = TestServerConfigs.default();
         await server.run();
-
+        await new Promise(resolve => setTimeout(resolve, 200));
         const res = await request("https://localhost")
             .get(`/api/getMainFeed?max_posts=not_a_number&sort=12`)
             .trustLocalhost(true)
@@ -82,16 +83,17 @@ describe('GET /api/getMainFeed', () => {
     });
 
 
-    it('should return Status 500 when the graph database connection fails', async () => {
+    it('should return Status 504 when the graph database connection fails', async () => {
         let server = TestServerConfigs.graphDBErrorServer();
         await server.run();
+        await new Promise(resolve => setTimeout(resolve, 200));
 
         await request("https://localhost")
             .get(`/api/getMainFeed`)
             .trustLocalhost(true)
             .key(httpsPrivateKey)
             .cert(httpsCertificate)
-            .expect(500);
+            .expect(504);
         await server.stop();
     })
 });

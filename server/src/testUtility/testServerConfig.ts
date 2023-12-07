@@ -1,6 +1,7 @@
 import {
     httpsCertificate,
     httpsPrivateKey,
+    testConfig,
 } from "../globals";
 import {
     UserTestDB
@@ -13,77 +14,74 @@ import {RegistrationService} from "../user/registration/RegistrationService/Regi
 import {LoginService} from "../user/login/LoginService/LoginService";
 
 
-
-const userDBTestusername = "crumbdevs_test"
-const userDBTestpassword = "3Rt23jd9oWHqlgpy"
-const userDBTestcluster = "cluster0.x06e66b"
-
-
 export function testUserDB() : UserTestDB {
     return new UserTestDB(
-        userDBTestusername,
-        userDBTestpassword,
-        userDBTestcluster,
-        "cluster0"
+        testConfig.user_credentials_persistence.usr,
+        testConfig.user_credentials_persistence.pwd,
+        testConfig.user_credentials_persistence.cluster,
+        testConfig.user_credentials_persistence.db
     )
 }
-
 
 export function socialGraphTestDB() : Neo4jTestDB {
     return new Neo4jTestDB(
-        "neo4j://10.212.173.46:7687",
-        "neo4j",
-        "crumbdevsrule"
+        testConfig.user_content_persistence.url,
+        testConfig.user_content_persistence.usr,
+        testConfig.user_content_persistence.pwd
     )
 }
 
-export function socialGraphConnectionError() : Neo4jTestDB {
+function socialGraphConnectionError() : Neo4jTestDB {
     return new Neo4jTestDB(
-        "neo4j://10.212.173.46:7627",
+        testConfig.user_content_persistence.url,
         "neo4j2",
         "wrongpassword"
     )
 }
 
-export function userDBConnectionError() : UserTestDB {
+function userDBConnectionError() : UserTestDB {
     return new UserTestDB(
-        userDBTestusername,
+        testConfig.user_credentials_persistence.usr,
         "wrongpassword",
-        userDBTestcluster,
+        testConfig.user_credentials_persistence.cluster,
         "cluster0"
     )
 }
 
 export class TestServerConfigs {
+
+    /**
+     * This function is used to get an instance of the server for testing with
+     * test databases and test certificates injected.
+     *
+     * @returns {CrumbServer} The server instance
+     */
+    private static configureTestServer(userDB: UserTestDB, graphDB: Neo4jTestDB) : CrumbServer {
+        const sessionManagement = new AuthenticationService('secret-key', 24)
+        const config: ConfigSettings = {
+            registrationService: new RegistrationService(userDB, graphDB),
+            loginService: new LoginService(userDB, sessionManagement),
+            graphPersistence: graphDB,
+            httpsPrivateKey: httpsPrivateKey,
+            httpsCertificate: httpsCertificate,
+        }
+        return new CrumbServer(config);
+    }
+
     static default() : CrumbServer {
-        return configureTestServer(testUserDB(), socialGraphTestDB());
+        let userDB = testUserDB();
+        let graphDB = socialGraphTestDB();
+        return this.configureTestServer(testUserDB(), socialGraphTestDB());
     }
     static userDBConnectionErrorServer() : CrumbServer {
-        return configureTestServer(userDBConnectionError(), socialGraphTestDB());
+        return this.configureTestServer(userDBConnectionError(), socialGraphTestDB());
 
     }
     static graphDBErrorServer() : CrumbServer {
-        return configureTestServer(testUserDB(), socialGraphConnectionError());
+        return this.configureTestServer(testUserDB(), socialGraphConnectionError());
     }
     static bothDBConnectionErrorServer() : CrumbServer {
-        return configureTestServer(userDBConnectionError(), socialGraphConnectionError());
+        return this.configureTestServer(userDBConnectionError(), socialGraphConnectionError());
     }
 }
 
-/**
- * This function is used to get an instance of the server for testing with
- * test databases and test certificates injected.
- *
- * @returns {CrumbServer} The server instance
- */
-export function configureTestServer(userDB: UserTestDB, graphDB: Neo4jTestDB) : CrumbServer {
-    const sessionManagement = new AuthenticationService('secret-key', 24)
-    const config: ConfigSettings = {
-        registrationService: new RegistrationService(userDB, graphDB),
-        loginService: new LoginService(userDB, sessionManagement),
-        graphPersistence: graphDB,
-        httpsPrivateKey: httpsPrivateKey,
-        httpsCertificate: httpsCertificate,
-    }
-    return new CrumbServer(config);
-}
