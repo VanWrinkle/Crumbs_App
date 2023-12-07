@@ -86,7 +86,7 @@ export class NeoGraphPersistence implements ISocialNetworkPersistence {
      * @param username The username of the user to be created as a new user node.
      * @return A Promise that resolves when the user node is successfully created in the database.
      */
-    async createUserNode(username: string): Promise<void> {
+    async createUser(username: string): Promise<void> {
         let query = "CREATE (user:User {username: $user, created: timestamp()})";
         return new Promise((resolve, reject) => {
             let error = this.runQuery(
@@ -179,7 +179,7 @@ export class NeoGraphPersistence implements ISocialNetworkPersistence {
      *
      * @return A Promise that resolves when the user node and associated Crumb nodes are successfully deleted from the database.
      */
-    async deleteUserNodeAndUserCrumbs(username: string): Promise<void> {
+    async deleteUserAndCrumbs(username: string): Promise<void> {
         let query = `MATCH (u:User {username: $user})
                      OPTIONAL MATCH (c:Crumb)-[:POSTED_BY]->(u)
                      DETACH DELETE c
@@ -283,7 +283,7 @@ export class NeoGraphPersistence implements ISocialNetworkPersistence {
                 "MATCH (parent)<-[:REPLIES_TO]-(crumb:Crumb)-[p:POSTED_BY]->(author)"
                 : "MATCH (crumb:Crumb)-[p:POSTED_BY]->(author)"}
             ${Neo4jQueryBuilder.WHERE([
-                filter.parent_post ? "ID(parent) = $parent" : "",
+                filter.parent_post ? "ID(parent) = $parent" : "(NOT exists{(crumb)-[:REPLIES_TO]->(n)})",
                 (user && filter.filter_out_own) ? "author.username <> $user" : "",
                 (filter.authors) ? "author.username IN $authors" : "",
                 (filter.hashtags) ? "" : "" //TODO: Implement hashtags in DB
@@ -320,7 +320,7 @@ export class NeoGraphPersistence implements ISocialNetworkPersistence {
                 filter.order)}
             LIMIT ${filter.max};`
 
-
+        console.log(query)
         return new Promise((resolve, reject) => {
             let error = this.runQuery(
                 query,
@@ -365,7 +365,7 @@ export class NeoGraphPersistence implements ISocialNetworkPersistence {
      *
      * @return A Promise that resolves when the follow relationship is successfully updated in the database.
      */
-    async setUserFollowing(username: string, followTarget: string, following: boolean): Promise<void> {
+    async setFollow(username: string, followTarget: string, following: boolean): Promise<void> {
         let addFollow =
             `MATCH (n:User {username: $user})
             MATCH (m:User {username: $followTarget})
@@ -402,7 +402,7 @@ export class NeoGraphPersistence implements ISocialNetworkPersistence {
      *
      * @throws {Error} Throws an error if the provided Neo4j ID is not a valid integer.
      */
-    async setCrumbLiked(username: string, crumb_id: string, likes: boolean): Promise<void> {
+    async setLike(username: string, crumb_id: string, likes: boolean): Promise<void> {
         let id = parseInt(crumb_id);
         if (id === undefined) {
             throw new Error('Neo4j id must be an int');

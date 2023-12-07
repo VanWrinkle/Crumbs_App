@@ -2104,4 +2104,28 @@
   "severity": "WARNING",
   "message": "Neo4j notification: Neo.ClientNotification.Statement.UnknownRelationshipTypeWarning The provided relationship type is not in the database. One of the relationship types in your query is not available in the database, make sure you didn't misspell it or that the label is available when you run this statement in your application (the missing relationship type is: REPLIES_TO)",
   "timestamp": "2023-11-30T14:21:39.064Z"
+}{
+  "type": "DBError",
+  "source": "USER_CONTENT_DB",
+  "severity": "CRITICAL",
+  "message": "Invalid input '(': expected <init> (line 2, column 1 (offset: 13))\n\"            (crumb:Crumb)-[p:POSTED_BY]->(author)\"\n             ^",
+  "timestamp": "2023-12-07T16:13:19.012Z"
+}{
+  "type": "DBError",
+  "source": "USER_CONTENT_DB",
+  "severity": "CRITICAL",
+  "message": "Invalid input '(': expected <init> (line 2, column 1 (offset: 13))\n\"            (crumb:Crumb)-[p:POSTED_BY]->(author)\"\n             ^",
+  "timestamp": "2023-12-07T16:14:46.759Z"
+}{
+  "type": "DBError",
+  "source": "USER_CONTENT_DB",
+  "severity": "CRITICAL",
+  "message": "Invalid input '(': expected <init> (line 2, column 1 (offset: 13))\n\"            (crumb:Crumb)-[p:POSTED_BY]->(author)\"\n             ^",
+  "timestamp": "2023-12-07T16:14:50.550Z"
+}{
+  "type": "DBError",
+  "source": "USER_CONTENT_DB",
+  "severity": "CRITICAL",
+  "message": "Invalid input '(': expected <init> (line 2, column 1 (offset: 13))\n\"            (crumb:Crumb)-[p:POSTED_BY]->(author)\"\n             ^",
+  "timestamp": "2023-12-07T16:16:48.019Z"
 }

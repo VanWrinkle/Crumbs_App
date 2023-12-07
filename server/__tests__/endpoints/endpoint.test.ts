@@ -30,8 +30,6 @@ let defaultFilter = new CrumbFilter();
 /// GET TESTS //////////////////////////////////////////////////////////////////
 
 describe('GET /api/getMainFeed', () => {
-
-
     it('should return an array of crumbs with default max length', async () => {
         let server = TestServerConfigs.default();
         server.run();

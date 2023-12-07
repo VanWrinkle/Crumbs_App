@@ -35,7 +35,7 @@ export class RegistrationService implements IRegistrationService {
             this.userPersistence.deleteUser(username)
                 .then( () => {
                     this.graphPersistence
-                        .deleteUserNodeAndUserCrumbs(username)
+                        .deleteUserAndCrumbs(username)
                         .then( () => resolve() )
                 });
         });
@@ -48,7 +48,7 @@ export class RegistrationService implements IRegistrationService {
                 return Promise.all([bcrypt.hash(password, salt), salt]);
             })
             .then(([hash, salt]) => {
-                this.graphPersistence.createUserNode(userName); //TODO: Any need for synchronization rules?
+                this.graphPersistence.createUser(userName); //TODO: Any need for synchronization rules?
                 return this.userPersistence.addUser({userName, hash, salt});
             })
             .catch( error => {

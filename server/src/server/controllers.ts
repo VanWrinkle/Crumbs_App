@@ -134,7 +134,7 @@ export function setFollow(persistence: ISocialNetworkPersistence, follows: boole
         if(req.user) {
             let id = req.query.user?.toString()
             if (id) {
-                persistence.setUserFollowing(req.user.toString(), id, follows)
+                persistence.setFollow(req.user.toString(), id, follows)
                     .catch(()=> {
                         res.status(500).send() // TODO: Logic for not found
                     })
@@ -155,7 +155,7 @@ export function setLike(persistence: ISocialNetworkPersistence, likes: boolean) 
         if(req.user) {
             let id = req.query.crumb?.toString()
             if (id) {
-                persistence.setCrumbLiked(req.user.toString(), id, likes)
+                persistence.setLike(req.user.toString(), id, likes)
                     .catch(() => {
                         res.status(500).send()
                     })

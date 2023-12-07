@@ -98,7 +98,7 @@ test('should successfully delete user and their posts', async () => {
         'GamerPro99',
         'TravelBug88'
     ];
-    await usernames.forEach(async name => await neo.deleteUserNodeAndUserCrumbs(name))
+    await usernames.forEach(async name => await neo.deleteUserAndCrumbs(name))
     // await neo.deleteUserNodeAndUserCrumbs("NightOwl17")
 })
 /*
