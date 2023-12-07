@@ -15,7 +15,7 @@ export default function UserLogin() {
     // State variables for user input and button disable state
     const [userName, setUserName] = useState("");
     const [userPassword, setUserPassword] = useState("");
-    const setToken = useAuthUpdate()
+    const setAuthData = useAuthUpdate()
     const [disableButton, setDisableButton] = useState(false)
 
     // Function to handle user login
@@ -35,8 +35,8 @@ export default function UserLogin() {
                     }
                 }
             })
-            .then((token) => {
-                    setToken(token)
+            .then((payload) => {
+                setAuthData(payload)
             })
             .finally(() => {
                 setDisableButton(false)

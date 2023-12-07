@@ -1,3 +1,10 @@
+[data-bs-theme=light] .navbar {
+  background: white
+}
+
+[data-bs-theme=dark] .navbar {
+  background: var(--bs-dark)
+}
 body {
   /*background: linear-gradient(to top, #dfe9f3 0%, white 100%);*/
   min-height: 100vh;

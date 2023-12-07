@@ -106,13 +106,13 @@ export class Api {
 
     /**
      * Retrieves the main feed with a specified number of posts and optional pagination parameters.
-     * @param numberOfPosts - The maximum number of posts to retrieve (default: 10).
+     * @param numberOfPosts - The maximum number of posts to retrieve (default: 15).
      * @param continue_from - A token for paginating through the feed (default: "").
      * @param parent - The ID of the parent crumb for nested posts (default: null).
      * @returns A promise that resolves with an array of crumb data.
      * @throws An error object with an optional error message on failure.
      */
-    async getMainFeed(numberOfPosts: number = 10, continue_from: string = "", parent: string | null = null) {
+    async getMainFeed(numberOfPosts: number = 15, continue_from: string = "", parent: string | null = null) {
         try {
             const response = await this.client.get('/getMainFeed', {params: {
                     "max_posts": numberOfPosts,
@@ -121,7 +121,7 @@ export class Api {
                 }});
             return response.data as Crumb[];
         } catch (error: any) {
-            this.handleApiError(error, {}) // TODO: Handle custom handler errors
+            this.handleApiError(error, {})
         }
     }
 
