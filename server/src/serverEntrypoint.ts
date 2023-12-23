@@ -13,20 +13,27 @@ import {
 import {NeoGraphPersistence} from "./user/content/socialGraph/NeoGraphPersistence/NeoGraphPersistence";
 import {TestServerConfigs} from "./testUtility/testServerConfig";
 import {CrumbServer} from "./server/crumbServer";
+import {
+    MockUserRegistrationDatabase
+} from "./user/registration/persistence/MockUserRegistrationDatabase/MockUserRegistrationDatabase";
+import {MockGraphPersistence} from "./user/content/socialGraph/MockGraphPeristence/MockGraphPersistence";
 
 
-let user_db = new MDBUserRegistrationDatabase(
-    config.user_credentials_persistence.usr,
-    config.user_credentials_persistence.pwd,
-    config.user_credentials_persistence.cluster,
-    config.user_credentials_persistence.db
-)
+// let user_db = new MDBUserRegistrationDatabase(
+//     config.user_credentials_persistence.usr,
+//     config.user_credentials_persistence.pwd,
+//     config.user_credentials_persistence.cluster,
+//     config.user_credentials_persistence.db
+// )
+//
+// let graph_db = new NeoGraphPersistence(
+//     config.user_content_persistence.url,
+//     config.user_content_persistence.usr,
+//     config.user_content_persistence.pwd
+// );
 
-let graph_db = new NeoGraphPersistence(
-    config.user_content_persistence.url,
-    config.user_content_persistence.usr,
-    config.user_content_persistence.pwd
-);
+let user_db = new MockUserRegistrationDatabase();
+let graph_db = new MockGraphPersistence();
 
 const sessionManagement = new AuthenticationService(
     config.authentication_service.key, 24)

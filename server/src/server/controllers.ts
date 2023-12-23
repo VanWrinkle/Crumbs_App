@@ -84,7 +84,8 @@ export function loginUser(loginService: ILoginService) {
                         });
                 }
             })
-            .catch(() => {
+            .catch((e) => {
+                console.log(e)
                 res.status(504).send('IUserDatabase connection failed');
             })
     }
