@@ -7,7 +7,7 @@ interact with other users' content by liking and commenting on it. Crumbs was de
 the course PROG2052 Integration Project at NTNU Gjøvik, where previous knowledge was to be integrated
 into a project of our choosing. The application is built using a MERN stack, with the addition of Neo4j 
 for storing social graph information, understood as relationships between users and user content, such as 
-likes of posts, who posted what content, which users follows which users and so on.
+likes of posts, who posted what content, which users follows which users and similar relations.
 
 ## Purpose
 
