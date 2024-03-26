@@ -2,16 +2,7 @@ import {LoginService} from "./user/login/LoginService/LoginService";
 import {RegistrationService} from "./user/registration/RegistrationService/RegistrationService";
 import {ConfigSettings} from "./entities/ConfigSettings";
 import {AuthenticationService} from "./user/login/authentication/AuthenticationService/AuthenticationService";
-import {
-    config,
-    httpsCertificate,
-    httpsPrivateKey,
-} from "./globals";
-import {
-    MDBUserRegistrationDatabase
-} from "./user/registration/persistence/MDBUserRegistrationDatabase/MDBUserRegistrationDatabase";
-import {NeoGraphPersistence} from "./user/content/socialGraph/NeoGraphPersistence/NeoGraphPersistence";
-import {TestServerConfigs} from "./testUtility/testServerConfig";
+import {config, httpsCertificate, httpsPrivateKey,} from "./globals";
 import {CrumbServer} from "./server/crumbServer";
 import {
     MockUserRegistrationDatabase
